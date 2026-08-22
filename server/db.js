@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS articles (
   title TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
   description TEXT,
+  meta_keywords TEXT,
   content TEXT,
   featured_image_url TEXT,
   reading_time_minutes INTEGER,
@@ -103,9 +104,25 @@ CREATE TABLE IF NOT EXISTS view_events (
   country_code TEXT NOT NULL,
   rpm_usd REAL NOT NULL,
   earning_usd REAL NOT NULL,
+  ip_address TEXT,
+  user_agent TEXT,
+  duration_seconds INTEGER,
+  is_fraud INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE,
   FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  type TEXT NOT NULL DEFAULT 'info',
+  message TEXT NOT NULL,
+  article_id INTEGER,
+  is_read INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS payment_accounts (
@@ -132,7 +149,44 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
 );
 `);
 
+// يضيف أعمدة جديدة لجداول موجودة بالفعل بأمان (CREATE TABLE IF NOT EXISTS لا يعدّل جدولاً قائماً).
+(function migrateColumns() {
+  function hasColumn(table, column) {
+    return db.prepare(`PRAGMA table_info(${table})`).all().some((c) => c.name === column);
+  }
+  if (!hasColumn('articles', 'meta_keywords')) {
+    db.exec('ALTER TABLE articles ADD COLUMN meta_keywords TEXT');
+  }
+  if (!hasColumn('view_events', 'ip_address')) {
+    db.exec('ALTER TABLE view_events ADD COLUMN ip_address TEXT');
+  }
+  if (!hasColumn('view_events', 'user_agent')) {
+    db.exec('ALTER TABLE view_events ADD COLUMN user_agent TEXT');
+  }
+  if (!hasColumn('view_events', 'duration_seconds')) {
+    db.exec('ALTER TABLE view_events ADD COLUMN duration_seconds INTEGER');
+  }
+  if (!hasColumn('view_events', 'is_fraud')) {
+    db.exec('ALTER TABLE view_events ADD COLUMN is_fraud INTEGER NOT NULL DEFAULT 0');
+  }
+})();
+
 const MIN_WITHDRAWAL_USD = 10;
+
+// يضمن وجود كل التصنيفات الـ٢٠ في كل تشغيل (INSERT OR IGNORE لا يكسر البيانات الموجودة).
+(function seedAllCategories() {
+  const insertCat = db.prepare('INSERT OR IGNORE INTO categories (name, slug) VALUES (?, ?)');
+  const allCats = [
+    ['ثقافة وأدب', 'culture'], ['علوم وتقنية', 'tech'], ['اقتصاد وأعمال', 'business'],
+    ['فن وإبداع', 'art'], ['صحة ومجتمع', 'health'], ['سياسة وعالم', 'politics'],
+    ['تاريخ وحضارة', 'history'], ['دين وفلسفة', 'religion'], ['بيئة وطبيعة', 'environment'],
+    ['تسويق رقمي', 'marketing'], ['ريادة الأعمال', 'entrepreneurship'], ['تعليم وتطوير', 'education'],
+    ['سفر وسياحة', 'travel'], ['رياضة ولياقة', 'sports'], ['أدب وقصص', 'literature'],
+    ['شعر وخواطر', 'poetry'], ['ذكاء اصطناعي', 'ai'], ['برمجة وتطوير', 'programming'],
+    ['لغة وترجمة', 'language'], ['أسرة ومجتمع', 'family'],
+  ];
+  for (const [name, slug] of allCats) insertCat.run(name, slug);
+})();
 
 (function seedRpmRatesIfEmpty() {
   const { count } = db.prepare('SELECT COUNT(*) AS count FROM rpm_rates').get();
@@ -151,11 +205,11 @@ function seedIfEmpty() {
   const { count } = db.prepare('SELECT COUNT(*) AS count FROM users').get();
   if (count > 0) return;
 
-  const insertCategory = db.prepare('INSERT INTO categories (name, slug) VALUES (?, ?)');
+  const getCategoryId = (slug) => db.prepare('SELECT id FROM categories WHERE slug = ?').get(slug).id;
   const categories = {
-    culture: insertCategory.run('ثقافة وأدب', 'culture').lastInsertRowid,
-    tech: insertCategory.run('علوم وتقنية', 'tech').lastInsertRowid,
-    business: insertCategory.run('اقتصاد وأعمال', 'business').lastInsertRowid,
+    culture: getCategoryId('culture'),
+    tech: getCategoryId('tech'),
+    business: getCategoryId('business'),
   };
 
   const insertUser = db.prepare(`
@@ -166,8 +220,8 @@ function seedIfEmpty() {
     INSERT INTO writer_profiles (user_id, bio_full, country, specialization, follower_count, article_count, total_views) VALUES (?, ?, ?, ?, ?, ?, ?)
   `);
   const insertArticle = db.prepare(`
-    INSERT INTO articles (user_id, category_id, title, slug, description, featured_image_url, reading_time_minutes, view_count, like_count)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO articles (user_id, category_id, title, slug, description, meta_keywords, content, featured_image_url, reading_time_minutes, view_count, like_count, status, is_published, published_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'published', 1, datetime('now'))
   `);
 
   const demoPasswordHash = hashPassword('demo12345');
@@ -176,49 +230,121 @@ function seedIfEmpty() {
     {
       username: 'mariam-alansari', email: 'mariam@harf.demo', first: 'مريم', last: 'الأنصاري',
       bio: 'كاتبة أدبية من القاهرة، تكتب في الثقافة والهوية والمجتمع.',
-      avatar: '/images/authors/mariam-alansari.png',
+      avatar: '/images/authors/mariam-alansari.jpg',
       country: 'مصر', specialization: 'ثقافة وأدب',
       followers: 18, views: 4200,
       article: {
         category: categories.culture, title: 'الكتابة فعل مقاومة: لماذا نكتب في زمن السرعة؟',
         slug: 'article-writing-resistance', description: 'في عصر تتسابق فيه المنشورات وتتراكم المحتويات، تصبح الكتابة الواعية صوتاً فردياً يقاوم الضجيج.',
+        metaKeywords: 'الكتابة الواعية, الكتابة في العصر الرقمي, أهمية الكتابة, الكتابة كمقاومة',
         image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80', minutes: 7, views: 4200, likes: 231,
+        content: `في زمن تتدفق فيه المعلومات بلا توقف، وتتراكم المنشورات فوق بعضها في كل ثانية، يجد الكاتب نفسه أمام سؤال جوهري: هل ما زالت الكتابة الهادئة والمتأنية تستحق الوقت الذي تستهلكه؟ الإجابة، وبثقة، نعم. فالكتابة الواعية ليست ترفاً في عصر السرعة، بل هي فعل مقاومة حقيقي ضد ثقافة الاستهلاك السريع للمحتوى.
+
+حين ننظر إلى المشهد الرقمي اليوم، نجد كماً هائلاً من المحتوى المُنتَج على عجل، بلا تفكير عميق أو مراجعة حقيقية، هدفه الوحيد ملء الفراغ وجذب النقرات. في المقابل، يظل النص المكتوب بعناية، والذي يحمل صوتاً فردياً واضحاً، هو ما يبقى في ذاكرة القارئ بعد أن تُنسى عشرات المنشورات العابرة.
+
+الكتابة الواعية تبدأ من اختيار الفكرة قبل اختيار الكلمات. الكاتب الذي يتوقف ليسأل نفسه "ماذا أريد أن أقول فعلاً؟" قبل أن يبدأ الكتابة، يصنع نصاً مختلفاً جذرياً عن ذلك الذي يُكتب فقط لملء مساحة أو لمجاراة موضوع رائج. هذا التوقف، هذه اللحظة من التأمل، هي جوهر ما يميز الكتابة الحقيقية عن مجرد إنتاج الكلمات.
+
+من الناحية العملية، هناك عادات بسيطة تساعد أي كاتب على استعادة هذا الوعي في كتابته:
+
+أولاً، القراءة قبل الكتابة. الكاتب الذي يقرأ باستمرار يمتلك مخزوناً من الأفكار والأساليب يغذي كتابته دون أن يشعر. القراءة ليست ترفاً موازياً للكتابة، بل هي وقودها الأساسي.
+
+ثانياً، مراجعة النص بعد فترة زمنية. النص المكتوب اليوم يبدو مختلفاً تماماً حين تعود إليه بعد يوم أو يومين. هذه المسافة الزمنية تمنح الكاتب عيناً أكثر موضوعية لتحسين ما كتبه.
+
+ثالثاً، مقاومة إغراء النشر الفوري. ليست كل فكرة تستحق النشر لحظة ولادتها. أحياناً، الفكرة تحتاج لبضعة أيام كي تنضج وتصل لصيغتها الأفضل.
+
+في النهاية، الكتابة الواعية ليست عن الكمال، بل عن الصدق مع الفكرة ومع القارئ. وحين يلتزم الكاتب بهذا الصدق، يجد أن كلماته تصل أبعد بكثير من أي محتوى سريع الإنتاج، مهما كان عدد المنشورات التي ينافسها في فضاء رقمي مزدحم.
+
+منصات مثل حرف تمنح الكاتب مساحة حقيقية لهذا النوع من الكتابة العميقة، بعيداً عن ضغط النشر اللحظي، ومع نظام مراجعة يضمن أن ما يصل للقارئ هو محتوى يستحق فعلاً وقته واهتمامه.`,
       },
     },
     {
       username: 'hoda-yassin', email: 'hoda@harf.demo', first: 'هدى', last: 'ياسين',
       bio: 'كاتبة مستقلة من مصر متخصصة في الذكاء الاصطناعي، تجمع بين خلفية تقنية عميقة وقلم سلس يقرّب أعقد المفاهيم للقارئ العادي. نشرت ٧ مقالات حول الذكاء الاصطناعي وتطبيقاته عبر مسيرتها المهنية.',
-      avatar: '/images/authors/hoda-yassin.png',
+      avatar: '/images/authors/hoda-yassin.jpg',
       country: 'مصر', specialization: 'الذكاء الاصطناعي',
       followers: 233, views: 32000,
       article: {
         category: categories.tech, title: 'الذكاء الاصطناعي والإبداع: هل يستطيع الآلة أن تكتب رواية؟',
         slug: 'article-ai-creativity', description: 'جدل فلسفي عميق بين الإبداع الإنساني والذكاء الاصطناعي، وحدود ما يمكن للآلة أن تكتبه.',
+        metaKeywords: 'الذكاء الاصطناعي والإبداع, هل يمكن للذكاء الاصطناعي الكتابة, الرواية والذكاء الاصطناعي',
         image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80', minutes: 12, views: 2100, likes: 98,
+        content: `مع تطور نماذج الذكاء الاصطناعي التوليدي في السنوات الأخيرة، أصبح سؤال "هل تستطيع الآلة أن تكتب رواية حقيقية؟" أكثر إلحاحاً من أي وقت مضى. الإجابة السريعة والمبسطة قد تكون "نعم من الناحية التقنية"، لكن الإجابة الأعمق تكشف تعقيداً أكبر بكثير حول معنى الإبداع نفسه.
+
+من الناحية التقنية، تستطيع نماذج الذكاء الاصطناعي اليوم إنتاج نصوص سردية متماسكة، بشخصيات وحبكة وحوار، بل وحتى بأسلوب أدبي يحاكي كتّاباً معروفين. هذه القدرة مذهلة تقنياً، لكنها تطرح سؤالاً أعمق: هل إنتاج نص متماسك هو نفسه الإبداع؟
+
+الإبداع الإنساني في الكتابة ليس مجرد ترتيب كلمات بطريقة منطقية ومتماسكة. إنه نابع من تجربة حياتية حقيقية، من ألم عاشه الكاتب أو فرح لمسه، من رؤية فريدة للعالم تشكّلت عبر سنوات من العيش والملاحظة والتأمل. الآلة، مهما بلغت دقتها، لا "تعيش" هذه التجارب، بل تعيد تدوير أنماط لغوية استخلصتها من نصوص بشرية سابقة.
+
+هذا لا يعني أن الذكاء الاصطناعي لا فائدة منه في العملية الإبداعية، بل العكس تماماً. الكتّاب اليوم يستخدمون هذه الأدوات كمساعد في مراحل مختلفة:
+
+توليد الأفكار الأولية: حين يواجه الكاتب "حاجز الكتابة"، يمكن لأداة ذكاء اصطناعي أن تقترح زوايا جديدة أو أسئلة لم يفكر فيها.
+
+المراجعة والتحرير: تحليل بنية النص، اكتشاف التكرار، اقتراح صياغات أوضح، كلها مهام تؤديها هذه الأدوات بكفاءة عالية.
+
+البحث السريع: جمع معلومات خلفية عن موضوع معين قبل الغوص في الكتابة الفعلية.
+
+لكن اللحظة التي يتحول فيها الذكاء الاصطناعي من "أداة مساعدة" إلى "كاتب بديل"، تفقد الكتابة جوهرها. القارئ لا يبحث فقط عن نص متماسك لغوياً، بل عن صوت إنساني يشاركه تجربة أو رؤية حقيقية.
+
+في النهاية، السؤال الأدق ليس "هل يستطيع الذكاء الاصطناعي أن يكتب رواية؟" بل "هل يستطيع أن يكتب رواية تستحق أن تُقرأ؟". وحتى تتغير طبيعة هذه النماذج جذرياً لتمتلك وعياً وتجربة حقيقية، تبقى الإجابة الصادقة: لا، ليس بعد. الإبداع الحقيقي لا يزال، وربما سيبقى لفترة طويلة، ميداناً إنسانياً بامتياز.`,
       },
     },
     {
       username: 'siham-sayed', email: 'siham@harf.demo', first: 'سهام', last: 'سيد',
       bio: 'كاتبة مستقلة من مصر متخصصة في التسويق الرقمي، تحوّل أدوات التسويق الحديثة إلى محتوى عملي مباشر لأصحاب المشاريع الصغيرة والمستقلين.',
-      avatar: '/images/authors/siham-sayed.png',
+      avatar: '/images/authors/siham-sayed.jpg',
       country: 'مصر', specialization: 'التسويق الرقمي',
       followers: 120, views: 19000,
       article: {
         category: categories.business, title: 'الكاتب المستقل: كيف تحوّل قلمك إلى مصدر دخل ثابت؟',
         slug: 'article-freelance-income', description: 'دليل عملي شامل للكتّاب الراغبين في تحويل شغفهم بالكتابة إلى مهنة ناجحة ومصدر دخل حقيقي.',
+        metaKeywords: 'الكتابة المستقلة, الربح من الكتابة, العمل الحر للكتاب, تحويل الكتابة لمهنة',
         image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=80', minutes: 10, views: 3700, likes: 175,
+        content: `يحلم كثير من الكتّاب بتحويل شغفهم بالكتابة إلى مصدر دخل حقيقي، لكن الفجوة بين الحلم والتطبيق العملي تبدو واسعة لمن لا يعرف من أين يبدأ. الحقيقة أن الكتابة المستقلة أصبحت اليوم مهنة قابلة للاستمرار فعلياً، بشرط اتباع استراتيجية واضحة بدلاً من الاعتماد على الحظ أو الانتظار السلبي.
+
+الخطوة الأولى: تحديد التخصص. الكاتب الذي يحاول الكتابة في كل المجالات غالباً ما ينتهي به الأمر بلا هوية واضحة. اختيار مجال محدد، سواء كان التسويق الرقمي أو التقنية أو الصحة أو الأدب، يجعل الكاتب مرجعاً في هذا المجال، ويسهّل على القراء والعملاء المحتملين إيجاده والثقة به.
+
+الخطوة الثانية: بناء أرشيف أعمال قوي. قبل أن يثق أي قارئ أو منصة بكاتب، يحتاج لرؤية عينات حقيقية من كتاباته. نشر مقالات منتظمة على منصات موثوقة، وبناء سجل من المحتوى الجيد، هو الاستثمار الأهم في المراحل الأولى.
+
+الخطوة الثالثة: فهم مصادر الدخل المتعددة. الكتابة المستقلة اليوم لا تعتمد على مصدر دخل واحد، بل على مزيج من:
+
+الأرباح من المشاهدات على منصات النشر التي تدفع مقابل القراءة الفعلية للمحتوى.
+
+كتابة المحتوى المدفوع للشركات والعلامات التجارية.
+
+بناء جمهور مباشر عبر النشرات البريدية أو وسائل التواصل، ما يفتح لاحقاً باب الدورات التدريبية أو الكتب الرقمية.
+
+الخطوة الرابعة: الاستمرارية قبل الكمال. كثير من الكتّاب المبتدئين يتوقفون عند أول شهر بلا نتائج ملموسة. لكن بناء جمهور وسمعة ككاتب يحتاج وقتاً، وغالباً ما تأتي النتائج الحقيقية بعد أشهر من النشر المنتظم، لا بعد مقال أو مقالين.
+
+الخطوة الخامسة: تعلّم أساسيات السيو والتوزيع. كتابة مقال ممتاز لا تكفي إن لم يصل لقراء حقيقيين. فهم كيفية اختيار العناوين، وكتابة وصف جذاب، واستخدام الكلمات المفتاحية المناسبة، يضاعف فرصة وصول المقال لجمهور أوسع بكثير.
+
+الطريق من الكتابة كهواية إلى الكتابة كمهنة ليس سهلاً، لكنه ممكن تماماً لمن يتعامل معه بجدية واستمرارية. آلاف الكتّاب حول العالم يثبتون يومياً أن القلم، حين يُدار باحترافية، يمكن أن يكون مصدر دخل حقيقياً ومستداماً.`,
       },
     },
     {
       username: 'ahmed-awadallah', email: 'ahmed.awadallah@harf.demo', first: 'أحمد', last: 'عوض الله',
       bio: 'كاتب مستقل متخصص في الترجمة وتعلم اللغات، وله خبرة في التدريس عن بعد ساعدته على فهم أكبر التحديات التي تواجه متعلمي اللغات العرب.',
-      avatar: '/images/authors/ahmed-awadallah.png',
+      avatar: '/images/authors/ahmed-awadallah.jpg',
       country: 'مصر', specialization: 'الترجمة وتعلم اللغات',
       followers: 177, views: 23000,
       article: {
         category: categories.culture, title: 'في رحلة البحث عن الهوية: الكاتب العربي بين الأصالة والحداثة',
         slug: 'article-arab-writer-identity', description: 'يجد الكاتب العربي نفسه بين قوى الموروث الثقافي الغني ومتطلبات العالم المتغير.',
-        image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80', minutes: 9, views: 4200, likes: 0,
+        metaKeywords: 'الهوية العربية, الكاتب العربي, الأصالة والحداثة, الأدب العربي المعاصر',
+        image: 'https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?auto=format&fit=crop&w=1200&q=80', minutes: 9, views: 4200, likes: 0,
+        content: `يقف الكاتب العربي اليوم عند تقاطع طرق معقد، بين إرث ثقافي وأدبي غني يمتد لقرون، وعالم متغير بسرعة يفرض أدوات وأساليب وتوقعات جديدة كل يوم. هذا التقاطع هو ما يصنع سؤال الهوية الأكثر إلحاحاً في المشهد الأدبي العربي المعاصر: كيف نكتب بأصالة دون أن نتجمد في الماضي، وكيف نواكب الحداثة دون أن نفقد جذورنا؟
+
+الموروث الثقافي العربي ليس عبئاً، كما يظن البعض، بل هو خزان هائل من اللغة والصور والرموز التي يمكن للكاتب المعاصر أن يستلهم منها دون أن ينسخها حرفياً. القصيدة العربية القديمة، والحكاية الشعبية، وأسلوب السرد التراثي، كلها مصادر يمكن إعادة توظيفها بلغة تخاطب القارئ اليوم.
+
+في المقابل، الحداثة ليست استيراداً أعمى لأساليب غربية، بل هي انفتاح واعٍ على أدوات جديدة في السرد والتعبير، مع الحفاظ على خصوصية الصوت العربي. الكاتب الذي ينجح في هذا التوازن هو من يقرأ عالمياً لكنه يكتب من موقعه الثقافي الخاص.
+
+من أبرز التحديات التي تواجه الكاتب العربي في هذا السياق:
+
+اللغة نفسها: الفصحى تحمل ثقلاً تاريخياً وجمالياً، لكنها قد تبدو بعيدة عن إيقاع الحياة اليومية. كثير من الكتّاب المعاصرين ينجحون في خلق لغة وسطى، فصيحة لكنها حية ونابضة، تحافظ على جمال العربية دون أن تفقد قدرتها على التواصل المباشر.
+
+الموضوعات: الكاتب العربي اليوم مطالَب بمعالجة قضايا معاصرة، كالهجرة والهوية الرقمية والتحولات الاجتماعية السريعة، لكن دون أن يفصل هذه القضايا عن السياق الثقافي الذي نشأ فيه.
+
+الجمهور: القارئ العربي أصبح أكثر تنوعاً، بين من يقيم في الوطن العربي ومن يعيش في الشتات، وهذا يفرض على الكاتب مرونة في الطرح دون التخلي عن جوهر رسالته.
+
+الحل، كما يبدو من تجارب كتّاب عرب معاصرين ناجحين، ليس في اختيار طرف على حساب الآخر، بل في صناعة مساحة ثالثة: كتابة تحترم الموروث وتتحدث بلغة العصر في آن واحد. هذه المساحة هي ما يجعل الأدب العربي المعاصر حياً ومتجدداً، قادراً على مخاطبة أجيال جديدة دون أن يفقد عمقه التاريخي.`,
       },
     },
   ];
@@ -227,17 +353,83 @@ function seedIfEmpty() {
     INSERT INTO user_earnings (user_id, total_earnings, available_balance, total_views) VALUES (?, ?, ?, ?)
   `);
   const defaultRpm = db.prepare("SELECT rpm_usd FROM rpm_rates WHERE country_code = 'DEFAULT'").get().rpm_usd;
+  const userIdByUsername = {};
 
   for (const author of authors) {
     const userId = insertUser.run(
       author.username, author.email, null, demoPasswordHash,
       author.first, author.last, author.bio, author.avatar
     ).lastInsertRowid;
+    userIdByUsername[author.username] = userId;
     insertProfile.run(userId, author.bio, author.country, author.specialization, author.followers, 1, author.views);
     const a = author.article;
-    const articleId = insertArticle.run(userId, a.category, a.title, a.slug, a.description, a.image, a.minutes, a.views, a.likes).lastInsertRowid;
+    const articleId = insertArticle.run(userId, a.category, a.title, a.slug, a.description, a.metaKeywords, a.content, a.image, a.minutes, a.views, a.likes).lastInsertRowid;
     const earning = Math.round((a.views / 1000) * defaultRpm * 100) / 100;
     insertEarnings.run(userId, earning, earning, a.views);
+    db.prepare(`
+      INSERT INTO view_events (article_id, author_id, country_code, rpm_usd, earning_usd, created_at)
+      VALUES (?, ?, 'DEFAULT', ?, ?, datetime('now'))
+    `).run(articleId, userId, defaultRpm, earning);
+  }
+
+  // مقالات إضافية ترندي بمحتوى قوي للسيو لتعزيز صفحتي هدى وسهام بأكثر من مقال واحد.
+  const extraArticles = [
+    {
+      username: 'hoda-yassin', category: categories.tech,
+      title: 'دليل الذكاء الاصطناعي التوليدي: كيف تستخدم ChatGPT في الكتابة دون أن تفقد بصمتك؟',
+      slug: 'ai-writing-guide', description: 'دليل عملي لاستخدام أدوات الذكاء الاصطناعي التوليدي في تحسين الكتابة دون التضحية بالصوت الشخصي والأصالة.',
+      metaKeywords: 'الذكاء الاصطناعي التوليدي, استخدام ChatGPT في الكتابة, الكتابة بمساعدة الذكاء الاصطناعي, أدوات الكتابة الذكية',
+      image: 'https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=1200&q=80',
+      minutes: 8, views: 2620, likes: 118,
+      content: `أصبحت أدوات الذكاء الاصطناعي التوليدي مثل ChatGPT جزءاً يومياً من عمل كثير من الكتّاب، لكن السؤال الحقيقي ليس "هل تستخدمها؟" بل "كيف تستخدمها دون أن تفقد صوتك الخاص كصانع محتوى؟". الفرق بين كاتب يستثمر هذه الأدوات بذكاء وآخر يعتمد عليها بالكامل هو ما يحدد مستقبل مسيرته الكتابية.
+
+القاعدة الأولى: استخدم الذكاء الاصطناعي لتوليد الأفكار، لا لتوليد المحتوى النهائي. حين تواجه حاجز الكتابة، اطلب من الأداة عشر زوايا مختلفة لمعالجة موضوعك، ثم اختر الزاوية التي تشعر أنها الأقرب لرؤيتك، واكتبها بأسلوبك أنت.
+
+القاعدة الثانية: لا تنسخ، بل حاور. بدلاً من نسخ نص جاهز من الأداة، استخدمها كمحاور. اطرح عليها أسئلة، ناقش أفكارك معها، واستخرج من هذا الحوار رؤى تكتبها بلغتك الخاصة. هذا الفرق البسيط يحافظ على أصالة النص بشكل كامل.
+
+القاعدة الثالثة: استخدمها في التحرير لا في التأليف. من أقوى استخدامات هذه الأدوات هو مراجعة نص كتبته أنت بالكامل، لاكتشاف الجمل الملتبسة أو الأخطاء اللغوية أو التكرار غير الضروري. هنا تصبح الأداة محرراً مساعداً ممتازاً دون أن تمس جوهر النص.
+
+القاعدة الرابعة: احذر من "الأسلوب المتوسط". نماذج الذكاء الاصطناعي تميل لإنتاج نصوص بأسلوب معتدل ومتوقع لأنها مدربة على متوسط ملايين النصوص. إذا اعتمدت عليها بالكامل، ستجد أن كتاباتك تفقد حدتها وتميزها الشخصي تدريجياً.
+
+القاعدة الخامسة: اجعل تجربتك الشخصية هي المحور. مهما بلغت قوة أي أداة ذكاء اصطناعي، لا يمكنها أن تروي تجربتك الخاصة، أو ألمك، أو نظرتك الفريدة لموقف عشته. هذه العناصر هي جوهر ما يجعل القارئ يثق بك ككاتب، ولا بديل بشري أو آلي عنها.
+
+الكتّاب الذين ينجحون في هذا العصر ليسوا من يرفضون هذه الأدوات، ولا من يستسلمون لها بالكامل، بل من يجيدون التعامل معها كمساعد ذكي يوفر الوقت في المهام الروتينية، بينما يحتفظون بجوهر الكتابة الإنسانية: الصدق، والتجربة، والصوت الفريد الذي لا يمكن لأي خوارزمية أن تكرره.
+
+في النهاية، الذكاء الاصطناعي أداة، والأداة بقدر ما تُمكّن صاحبها، بقدر ما تكشف أيضاً غياب المهارة إن اعتمد عليها بشكل أعمى. استثمرها بذكاء، واحتفظ ببصمتك.`,
+    },
+    {
+      username: 'siham-sayed', category: categories.business,
+      title: 'خوارزمية السوشيال ميديا 2026: كيف تجعل مقالك ينتشر ويصل لآلاف القراء؟',
+      slug: 'social-virality-guide', description: 'استراتيجيات عملية مبنية على فهم خوارزميات منصات التواصل الاجتماعي لزيادة انتشار مقالاتك ومشاهداتها الحقيقية.',
+      metaKeywords: 'انتشار المحتوى, خوارزمية السوشيال ميديا, زيادة مشاهدات المقالات, تسويق المحتوى الرقمي',
+      image: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=1200&q=80',
+      minutes: 8, views: 1978, likes: 89,
+      content: `كتابة مقال ممتاز خطوة أولى ضرورية، لكنها ليست كافية وحدها في عالم رقمي مزدحم بالمحتوى. المقال الذي لا يصل لقراء حقيقيين، مهما بلغت جودته، يبقى بلا تأثير. فهم كيفية عمل خوارزميات منصات التواصل الاجتماعي أصبح مهارة أساسية لأي كاتب يريد أن يرى عمله ينتشر فعلاً.
+
+أول ما يجب فهمه: الخوارزميات لا "تكره" المحتوى الجيد، لكنها تكافئ إشارات تفاعل محددة أكثر من غيرها. المنشور الذي يحصل على تعليقات حقيقية وتفاعل مبكر في أول ساعة من نشره، تدفعه الخوارزمية لجمهور أوسع تلقائياً. هذا يعني أن توقيت النشر ذاته استراتيجية بحد ذاتها.
+
+ثانياً: العنوان هو نصف المعركة. القارئ يقضي أقل من ثانيتين في تقييم ما إذا كان سيضغط على المقال أم يتجاوزه. العنوان الذي يطرح سؤالاً ملحاً، أو يعد بحل مشكلة حقيقية، يحقق نسبة نقر أعلى بكثير من العنوان الوصفي العام.
+
+ثالثاً: الفقرة الأولى تحدد مصير القارئ. حتى لو نجحت في جذب النقرة، فإن القارئ يقرر خلال الأسطر الأولى ما إذا كان سيكمل القراءة. ابدأ مقالك بجملة قوية أو حقيقة مثيرة، لا بمقدمة عامة طويلة.
+
+رابعاً: التوزيع المتعدد لا الاعتماد على منصة واحدة. المقال الناجح يُشارك على عدة قنوات: مجموعات متخصصة، واتساب، تويتر، ولينكدإن إن كان الموضوع مهنياً. كل منصة تصل لشريحة مختلفة من الجمهور المحتمل.
+
+خامساً: التفاعل الحقيقي يفوق الأرقام الوهمية. محاولات تضخيم المشاهدات صناعياً عبر أساليب ملتوية غالباً ما تُكتشف من قبل المنصات وتُعاقَب بتقليل الوصول لاحقاً. التفاعل العضوي، ولو كان بطيئاً في البداية، يبني سمعة أقوى وأكثر استدامة على المدى الطويل.
+
+سادساً: الاستمرارية تبني الخوارزمية لصالحك. الحسابات والكتّاب الذين ينشرون بانتظام يحصلون تدريجياً على ثقة أكبر من الخوارزميات، لأن المنصات تفضل تدفق محتوى يحافظ على تفاعل المستخدمين بشكل دائم.
+
+في النهاية، الانتشار الحقيقي ليس صدفة أو حظاً، بل نتيجة فهم دقيق لكيفية تفكير الخوارزمية، ممزوجاً بمحتوى يستحق فعلاً أن يُقرأ ويُشارَك. الكاتب الذي يتقن الجانبين معاً هو من يبني جمهوراً حقيقياً ومستمراً.`,
+    },
+  ];
+
+  for (const a of extraArticles) {
+    const userId = userIdByUsername[a.username];
+    const articleId = insertArticle.run(userId, a.category, a.title, a.slug, a.description, a.metaKeywords, a.content, a.image, a.minutes, a.views, a.likes).lastInsertRowid;
+    db.prepare('UPDATE writer_profiles SET article_count = article_count + 1, total_views = total_views + ? WHERE user_id = ?').run(a.views, userId);
+    const earning = Math.round((a.views / 1000) * defaultRpm * 100) / 100;
+    db.prepare(`
+      UPDATE user_earnings SET total_earnings = total_earnings + ?, available_balance = available_balance + ?, total_views = total_views + ? WHERE user_id = ?
+    `).run(earning, earning, a.views, userId);
     db.prepare(`
       INSERT INTO view_events (article_id, author_id, country_code, rpm_usd, earning_usd, created_at)
       VALUES (?, ?, 'DEFAULT', ?, ?, datetime('now'))

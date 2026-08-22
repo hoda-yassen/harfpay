@@ -7,8 +7,10 @@ server/harf.db
 server/harf.db-shm
 server/harf.db-wal
 
-# Uploads (يُنشأ تلقائياً)
+# Uploads (تُنشأ تلقائياً عند أول رفع صورة)
 uploads/
+images/articles/
+images/covers/
 
 # OS
 .DS_Store

@@ -86,20 +86,6 @@
     });
   }
 
-  function initShareCounts() {
-    document.querySelectorAll('.share-stat[data-article-id]').forEach(async (stat) => {
-      try {
-        const response = await fetch(`/api/articles/${stat.dataset.articleId}/share-count`);
-        if (!response.ok) return;
-        const data = await response.json();
-        const el = stat.querySelector('.share-count');
-        if (el) el.textContent = data.shares_count;
-      } catch (error) {
-        // الصفحة الثابتة تستخدم القيمة الافتراضية عند غياب Backend.
-      }
-    });
-  }
-
   async function initAuthorProfilePage(username) {
     try {
       const res = await fetch(`/api/authors/${username}`);
@@ -130,6 +116,5 @@
   window.harfInitFollowButtons = initFollowButtons;
   document.addEventListener('DOMContentLoaded', () => {
     initFollowButtons();
-    initShareCounts();
   });
 })();

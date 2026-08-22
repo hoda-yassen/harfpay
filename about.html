@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>من نحن | حرف</title>
+<meta name="description" content="تعرّف على منصة حرف — منصة الكتّاب العرب للنشر والربح من المحتوى.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green:#1B4D3E; --green-dark:#122E25; --gold:#C9A84C; --gold-light:#E2C97E; --gold-pale:#F5EDD3;
+    --white:#FFFFFF; --cream:#F8F6F1; --ink:#1A1A1A; --ink-soft:#444; --ink-muted:#888;
+    --shadow:0 8px 30px rgba(27,77,62,0.08); --radius:12px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Cairo','Tajawal',sans-serif;background:var(--cream);color:var(--ink);line-height:1.8}
+  a{text-decoration:none;color:inherit}
+  .site-header{background:var(--green);position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.2)}
+  .header-inner{max-width:1100px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo-text{color:var(--white);font-size:1.25rem;font-weight:800}
+  .btn-write{background:var(--gold);color:var(--green-dark);font-size:.85rem;font-weight:700;padding:9px 18px;border-radius:8px}
+
+  .hero-about{background:var(--green-dark);padding:80px 24px;text-align:center}
+  .hero-about h1{font-size:2.4rem;font-weight:900;color:var(--white);margin-bottom:16px}
+  .hero-about p{color:rgba(255,255,255,.65);font-size:1rem;max-width:600px;margin:0 auto}
+
+  .container{max-width:900px;margin:0 auto;padding:60px 24px}
+  .section-title{font-size:1.4rem;font-weight:800;margin-bottom:20px;color:var(--green)}
+  .section-title::after{content:'';display:block;width:40px;height:3px;background:var(--gold);border-radius:2px;margin-top:6px}
+  p{color:var(--ink-soft);line-height:2;margin-bottom:16px}
+
+  .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:40px}
+  .team-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;text-align:center}
+  .team-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto 14px;border:3px solid var(--gold-pale)}
+  .team-name{font-weight:800;font-size:.95rem;margin-bottom:4px}
+  .team-role{font-size:.78rem;color:var(--ink-muted)}
+
+  .values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:24px}
+  .value-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px}
+  .value-icon{font-size:2rem;margin-bottom:12px}
+  .value-title{font-weight:800;margin-bottom:8px}
+  .value-desc{font-size:.85rem;color:var(--ink-muted);line-height:1.7}
+
+  .footer{background:var(--green-dark);color:rgba(255,255,255,.6);text-align:center;padding:24px;font-size:.82rem}
+  .footer span{color:var(--gold)}
+
+  @media(max-width:768px){.team-grid{grid-template-columns:repeat(2,1fr)}.values-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
+  <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2C97E"/><stop offset="1" stop-color="#C9A84C"/></linearGradient>
+  <symbol id="icon-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21Z"/><path d="M4 5.5v15M8 7h8M8 11h8"/></symbol>
+  <symbol id="logo-badge" viewBox="0 0 44 44">
+    <rect x="1" y="1" width="42" height="42" rx="13" fill="url(#logoGrad)"/>
+    <g transform="translate(10,10)" fill="none" stroke="#122E25" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-book"></use></g>
+  </symbol>
+</defs></svg>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="harf-website.html">
+      <svg style="width:38px;height:38px;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.18);flex-shrink:0" viewBox="0 0 44 44" aria-hidden="true"><use href="#logo-badge"></use></svg>
+      <span class="logo-text">حرف</span>
+    </a>
+    <a class="btn-write" href="write-article.html">اكتب مقالاً</a>
+  </div>
+</header>
+
+<div class="hero-about">
+  <h1>من نحن</h1>
+  <p>حرف منصة عربية مستقلة تؤمن بأن الكلمة تستحق أن تُقرأ، وأن الكاتب يستحق أن يُكافَأ.</p>
+</div>
+
+<div class="container">
+
+  <div style="margin-bottom:60px;">
+    <div class="section-title">قصتنا</div>
+    <p>وُلدت حرف من سؤال بسيط: لماذا يكتب ملايين الكتّاب العرب كل يوم دون أن ينالوا عائداً عادلاً مقابل وقتهم وجهدهم وإبداعهم؟</p>
+    <p>في عام ٢٠٢٦، قرر فريق صغير من الكتّاب والمطورين العرب بناء منصة تجمع الجودة والمجتمع والعائد المالي في مكان واحد — منصة تحترم عقل الكاتب وتكافئ تعبه بأرباح حقيقية محسوبة بشفافية كاملة.</p>
+    <p>اليوم، حرف تضم كتّاباً من مصر والإمارات والسعودية والمغرب وعشرات الدول العربية، يكتبون ويربحون ويبنون جمهورهم الخاص.</p>
+  </div>
+
+  <div style="margin-bottom:60px;">
+    <div class="section-title">فريق العمل</div>
+    <div class="team-grid">
+      <div class="team-card">
+        <img class="team-avatar" src="/images/authors/hoda-yassin.jpg" alt="هدى ياسين" onerror="this.style.display='none'">
+        <div class="team-name">هدى ياسين</div>
+        <div class="team-role">رئيسة التحرير</div>
+      </div>
+      <div class="team-card">
+        <img class="team-avatar" src="/images/authors/siham-sayed.jpg" alt="سهام سيد" onerror="this.style.display='none'">
+        <div class="team-name">سهام سيد</div>
+        <div class="team-role">مديرة التسويق</div>
+      </div>
+      <div class="team-card">
+        <img class="team-avatar" src="/images/authors/ahmed-awadallah.jpg" alt="أحمد عوض الله" onerror="this.style.display='none'">
+        <div class="team-name">أحمد عوض الله</div>
+        <div class="team-role">مدير المحتوى</div>
+      </div>
+      <div class="team-card">
+        <img class="team-avatar" src="/images/authors/wanas-ahmed.jpg" alt="ونس أحمد" onerror="this.style.display='none'">
+        <div class="team-name">ونس أحمد</div>
+        <div class="team-role">مديرة المجتمع</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:60px;">
+    <div class="section-title">قيمنا</div>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">✍️</div>
+        <div class="value-title">الجودة أولاً</div>
+        <div class="value-desc">كل مقال يمر بمراجعة تحريرية قبل النشر لضمان محتوى يستحق وقت القارئ.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">💰</div>
+        <div class="value-title">شفافية الأرباح</div>
+        <div class="value-desc">نظام RPM واضح ومعلن — تعرف بالضبط كيف تُحسب أرباحك لكل ١٠٠٠ مشاهدة.</div>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🤝</div>
+        <div class="value-title">مجتمع حقيقي</div>
+        <div class="value-desc">لسنا مجرد منصة نشر — نحن مجتمع يدعم الكتّاب العرب ويحتفي بإبداعهم.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:40px;background:var(--green);border-radius:20px;color:var(--white);">
+    <div style="font-size:1.4rem;font-weight:800;margin-bottom:12px;">هل أنت كاتب؟</div>
+    <div style="color:rgba(255,255,255,.7);margin-bottom:24px;">انضم لحرف اليوم وابدأ رحلتك نحو الكتابة المدفوعة.</div>
+    <a href="harf-website.html" style="background:var(--gold);color:var(--green-dark);font-weight:700;padding:12px 28px;border-radius:10px;font-size:.95rem;">ابدأ الآن ←</a>
+  </div>
+
+</div>
+
+<footer class="footer">
+  جميع الحقوق محفوظة © <span>حرف</span> ٢٠٢٦
+</footer>
+
+</body>
+</html>

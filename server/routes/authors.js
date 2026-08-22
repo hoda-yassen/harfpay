@@ -4,6 +4,20 @@ const { requireAuth } = require('../lib/session');
 
 const router = express.Router();
 
+router.get('/top/writers', (req, res) => {
+  const limit = Math.min(Number(req.query.limit) || 5, 10);
+  const rows = db.prepare(`
+    SELECT u.username, u.first_name, u.last_name, u.profile_image_url AS avatar,
+           wp.follower_count, wp.article_count, wp.total_views
+    FROM writer_profiles wp
+    JOIN users u ON u.id = wp.user_id
+    WHERE wp.article_count > 0
+    ORDER BY wp.total_views DESC, wp.article_count DESC
+    LIMIT ?
+  `).all(limit);
+  res.json({ writers: rows });
+});
+
 router.get('/:username', (req, res) => {
   const user = db.prepare('SELECT * FROM users WHERE username = ?').get(req.params.username);
   if (!user) return res.status(404).json({ error: 'الكاتب غير موجود' });

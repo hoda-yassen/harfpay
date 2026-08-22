@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اكتب مقالاً جديداً | حرف</title>
+<title id="pageTitle">اكتب مقالاً جديداً | حرف</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
@@ -50,6 +50,23 @@
   .gate a { color: var(--green); font-weight: 700; }
 
   .hint-box { font-size: 0.78rem; color: var(--ink-muted); background: var(--gold-pale); padding: 12px 14px; border-radius: 8px; margin-bottom: 20px; }
+  /* SEO Score Widget */
+  .seo-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 24px; margin-bottom: 20px; }
+  .seo-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .seo-title { font-weight: 800; font-size: 0.95rem; }
+  .seo-badge { font-size: 0.78rem; font-weight: 800; padding: 5px 14px; border-radius: 100px; }
+  .seo-badge.green { background: #e8f5ee; color: var(--green); }
+  .seo-badge.yellow { background: #fdf3d8; color: #8a6d1a; }
+  .seo-badge.red { background: #fdecea; color: #c0392b; }
+  .seo-bar-track { height: 8px; border-radius: 4px; background: var(--cream); overflow: hidden; margin-bottom: 14px; }
+  .seo-bar-fill { height: 100%; border-radius: 4px; transition: width .3s, background .3s; }
+  .seo-bar-fill.green { background: var(--green); }
+  .seo-bar-fill.yellow { background: #d4a017; }
+  .seo-bar-fill.red { background: #c0392b; }
+  .seo-tips { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .seo-tips li { font-size: 0.8rem; display: flex; align-items: center; gap: 8px; color: var(--ink-soft); }
+  .seo-tips li.ok { color: var(--green); }
+  .seo-tips li .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: currentColor; }
 </style>
 </head>
 <body>
@@ -69,22 +86,32 @@
       <svg class="logo-mark" viewBox="0 0 44 44" aria-hidden="true"><use href="#logo-badge"></use></svg>
       <span class="logo-text">حرف</span>
     </a>
-    <a class="header-link" href="my-articles.html">مقالاتي ←</a>
+    <a class="header-link" href="dashboard.html">لوحة التحكم ←</a>
   </div>
 </header>
 
 <main class="container" id="gateView" style="display:none;">
   <div class="gate">
-    <p>لازم تسجّلي الدخول الأول عشان تكتبي مقالاً.</p>
+    <p>لازم تسجّل الدخول الأول عشان تكتب مقالاً.</p>
     <p style="margin-top:10px;"><a href="harf-website.html">الرجوع للرئيسية وتسجيل الدخول</a></p>
   </div>
 </main>
 
 <main class="container" id="writeView" style="display:none;">
-  <h1>اكتب مقالاً جديداً</h1>
-  <p class="subtitle">مقالك هيتراجع من فريق حرف قبل ما ينشر فعليًا على الموقع.</p>
+  <h1 id="pageHeading">اكتب مقالاً جديداً</h1>
+  <p class="subtitle" id="pageSubtitle">مقالك هيتراجع من فريق حرف قبل ما ينشر فعليًا على الموقع.</p>
   <div class="hint-box">شروط النشر: العنوان حتى ١٠٠ حرف، والمحتوى بين ١٥٠٠ و٥٠٠٠٠ حرف لضمان جودة المقالات المنشورة على المنصة.</div>
   <div id="statusMsg" class="status-msg"></div>
+
+  <!-- SEO SCORE WIDGET -->
+  <div class="seo-card" id="seoCard" style="display:none;">
+    <div class="seo-header">
+      <div class="seo-title">مؤشر جودة SEO</div>
+      <div class="seo-badge yellow" id="seoBadge">جيد</div>
+    </div>
+    <div class="seo-bar-track"><div class="seo-bar-fill yellow" id="seoBar" style="width:0%;"></div></div>
+    <ul class="seo-tips" id="seoTips"></ul>
+  </div>
 
   <div class="card">
     <div class="form-group">
@@ -96,16 +123,23 @@
       <select class="form-select" id="categoryInput"></select>
     </div>
     <div class="form-group">
-      <label class="form-label">وصف مختصر (يظهر في نتائج البحث)</label>
-      <input class="form-input" id="descriptionInput" type="text" maxlength="160" placeholder="جملة أو جملتان يلخصان مقالك">
+      <label class="form-label">وصف الميتا (Meta Description) — يظهر في نتائج جوجل</label>
+      <input class="form-input" id="descriptionInput" type="text" maxlength="160" placeholder="جملة أو جملتان يلخصان مقالك لمحركات البحث">
     </div>
     <div class="form-group">
-      <label class="form-label">رابط صورة الغلاف (اختياري)</label>
-      <input class="form-input" id="imageInput" type="url" placeholder="https://...">
+      <label class="form-label">الكلمات المفتاحية (Keywords) — افصل بينها بفاصلة</label>
+      <input class="form-input" id="keywordsInput" type="text" placeholder="مثال: كتابة, ربح من الإنترنت, تدوين">
+    </div>
+    <div class="form-group">
+      <label class="form-label">صورة الغلاف (اختيارية لكنها مهمة لتقييم SEO)</label>
+      <input class="form-input" id="imageFileInput" type="file" accept="image/jpeg,image/png,image/webp">
+      <div id="imageUploadStatus" style="font-size:0.75rem;color:var(--ink-muted);margin-top:6px;"></div>
+      <img id="imagePreview" src="" alt="معاينة الصورة" style="display:none;max-width:220px;border-radius:8px;margin-top:10px;">
+      <input type="hidden" id="imageInput" value="">
     </div>
     <div class="form-group">
       <label class="form-label">محتوى المقال</label>
-      <textarea class="form-textarea" id="contentInput" placeholder="اكتبي مقالك هنا..."></textarea>
+      <textarea class="form-textarea" id="contentInput" placeholder="اكتب مقالك هنا..."></textarea>
       <div class="char-counter" id="charCounter">٠ حرف</div>
     </div>
     <button class="btn-submit" id="submitBtn" onclick="submitArticle()">إرسال المقال للمراجعة</button>
@@ -114,6 +148,7 @@
 
 <script>
   const MIN_LEN = 1500, MAX_LEN = 50000;
+  const editSlug = new URLSearchParams(window.location.search).get('slug');
 
   async function init() {
     const meRes = await fetch('/api/auth/me');
@@ -128,8 +163,131 @@
     const catData = await catRes.json();
     document.getElementById('categoryInput').innerHTML = catData.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
 
-    document.getElementById('contentInput').addEventListener('input', updateCounter);
+    if (editSlug) {
+      document.getElementById('pageTitle').textContent = 'تعديل المقال | حرف';
+      document.getElementById('pageHeading').textContent = 'تعديل المقال';
+      document.getElementById('pageSubtitle').textContent = 'أي تعديل على المقال هيرجّعه لطابور المراجعة قبل ما يظهر تاني.';
+      document.getElementById('submitBtn').textContent = 'حفظ التعديلات';
+
+      const res = await fetch(`/api/articles/${encodeURIComponent(editSlug)}`);
+      if (res.ok) {
+        const data = await res.json();
+        const a = data.article;
+        document.getElementById('titleInput').value = a.title || '';
+        document.getElementById('categoryInput').value = a.category_id || '';
+        document.getElementById('descriptionInput').value = a.description || '';
+        document.getElementById('keywordsInput').value = a.meta_keywords || '';
+        document.getElementById('imageInput').value = a.featured_image_url || '';
+        document.getElementById('contentInput').value = a.content || '';
+        if (a.featured_image_url) {
+          const preview = document.getElementById('imagePreview');
+          preview.src = a.featured_image_url;
+          preview.style.display = 'block';
+        }
+      }
+    }
+
+    ['titleInput', 'descriptionInput', 'keywordsInput', 'contentInput'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => { updateCounter(); updateSeoScore(); });
+    });
+    document.getElementById('imageFileInput').addEventListener('change', uploadCoverImage);
     updateCounter();
+    updateSeoScore();
+  }
+
+  async function uploadCoverImage() {
+    const fileInput = document.getElementById('imageFileInput');
+    const file = fileInput.files[0];
+    if (!file) return;
+    const statusEl = document.getElementById('imageUploadStatus');
+    statusEl.textContent = 'جاري رفع الصورة...';
+
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await fetch('/api/articles/upload-image', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) {
+        statusEl.textContent = data.error || 'تعذّر رفع الصورة';
+        fileInput.value = '';
+        return;
+      }
+      document.getElementById('imageInput').value = data.url;
+      const preview = document.getElementById('imagePreview');
+      preview.src = data.url;
+      preview.style.display = 'block';
+      statusEl.textContent = 'تم رفع الصورة بنجاح';
+      updateSeoScore();
+    } catch (e) {
+      statusEl.textContent = 'تعذّر الاتصال بالسيرفر';
+      fileInput.value = '';
+    }
+  }
+
+  function updateSeoScore() {
+    const title = document.getElementById('titleInput').value.trim();
+    const description = document.getElementById('descriptionInput').value.trim();
+    const keywords = document.getElementById('keywordsInput').value.trim();
+    const image = document.getElementById('imageInput').value.trim();
+    const content = document.getElementById('contentInput').value.trim();
+
+    const seoCard = document.getElementById('seoCard');
+    if (!title && !content) { seoCard.style.display = 'none'; return; }
+    seoCard.style.display = 'block';
+
+    const wordCount = content ? content.split(/\s+/).length : 0;
+    const primaryKeyword = keywords.split(',')[0]?.trim().toLowerCase() || '';
+
+    let score = 0;
+    const tips = [];
+
+    // طول المحتوى (30 نقطة)
+    if (content.length >= 3000) { score += 30; tips.push({ ok: true, text: 'طول المقال ممتاز لمحركات البحث' }); }
+    else if (content.length >= MIN_LEN) { score += 18; tips.push({ ok: false, text: `المقال مقبول لكن الأطول أفضل لجوجل (حالياً ${content.length.toLocaleString('ar-EG')} حرف)` }); }
+    else { tips.push({ ok: false, text: `المحتوى قصير جداً — أقل من الحد الأدنى (${MIN_LEN.toLocaleString('ar-EG')} حرف)` }); }
+
+    // الكلمة المفتاحية (25 نقطة)
+    if (!primaryKeyword) {
+      tips.push({ ok: false, text: 'لم تُضِف أي كلمة مفتاحية بعد' });
+    } else {
+      let kwScore = 0;
+      if (title.toLowerCase().includes(primaryKeyword)) { kwScore += 10; tips.push({ ok: true, text: 'الكلمة المفتاحية موجودة في العنوان' }); }
+      else { tips.push({ ok: false, text: 'أضف الكلمة المفتاحية الرئيسية داخل العنوان' }); }
+      const occurrences = content ? (content.toLowerCase().match(new RegExp(primaryKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length : 0;
+      const density = wordCount ? occurrences / wordCount : 0;
+      if (occurrences >= 2 && density <= 0.03) { kwScore += 15; tips.push({ ok: true, text: 'تكرار الكلمة المفتاحية داخل المحتوى مناسب' }); }
+      else if (occurrences >= 1) { kwScore += 7; tips.push({ ok: false, text: 'كرر الكلمة المفتاحية أكثر قليلاً داخل المحتوى (بدون مبالغة)' }); }
+      else { tips.push({ ok: false, text: 'الكلمة المفتاحية غير موجودة داخل نص المقال' }); }
+      score += kwScore;
+    }
+
+    // وصف الميتا (20 نقطة)
+    if (description.length >= 50 && description.length <= 160) { score += 20; tips.push({ ok: true, text: 'وصف الميتا بطول مثالي' }); }
+    else if (description.length > 0) { score += 10; tips.push({ ok: false, text: 'وصف الميتا موجود لكن الأفضل بين ٥٠ و١٦٠ حرفاً' }); }
+    else { tips.push({ ok: false, text: 'أضف وصف ميتا لمساعدة جوجل على فهم مقالك' }); }
+
+    // الصورة البارزة (15 نقطة)
+    if (image) { score += 15; tips.push({ ok: true, text: 'الصورة البارزة موجودة' }); }
+    else { tips.push({ ok: false, text: 'أضف صورة بارزة — تزيد نسبة النقر من نتائج البحث' }); }
+
+    // طول العنوان (10 نقاط)
+    if (title.length >= 30 && title.length <= 70) { score += 10; tips.push({ ok: true, text: 'طول العنوان مناسب لمحركات البحث' }); }
+    else if (title.length > 0) { score += 5; tips.push({ ok: false, text: 'الأفضل يكون طول العنوان بين ٣٠ و٧٠ حرفاً' }); }
+    else { tips.push({ ok: false, text: 'اكتب عنواناً للمقال' }); }
+
+    const color = score >= 80 ? 'green' : score >= 50 ? 'yellow' : 'red';
+    const label = score >= 80 ? 'ممتاز' : score >= 50 ? 'جيد' : 'يحتاج تعديل';
+
+    const badge = document.getElementById('seoBadge');
+    badge.className = 'seo-badge ' + color;
+    badge.textContent = label;
+    const bar = document.getElementById('seoBar');
+    bar.className = 'seo-bar-fill ' + color;
+    bar.style.width = score + '%';
+
+    document.getElementById('seoTips').innerHTML = tips.map(t =>
+      `<li class="${t.ok ? 'ok' : ''}"><span class="dot"></span>${t.text}</li>`
+    ).join('');
   }
 
   function updateCounter() {
@@ -146,12 +304,15 @@
     btn.disabled = true;
 
     try {
-      const res = await fetch('/api/articles', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+      const url = editSlug ? `/api/articles/${encodeURIComponent(editSlug)}` : '/api/articles';
+      const method = editSlug ? 'PUT' : 'POST';
+      const res = await fetch(url, {
+        method, headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           title: document.getElementById('titleInput').value,
           categoryId: document.getElementById('categoryInput').value,
           description: document.getElementById('descriptionInput').value,
+          metaKeywords: document.getElementById('keywordsInput').value,
           featuredImageUrl: document.getElementById('imageInput').value,
           content: document.getElementById('contentInput').value,
         }),
@@ -163,9 +324,9 @@
         btn.disabled = false;
         return;
       }
-      statusEl.textContent = 'تم إرسال مقالك للمراجعة بنجاح! هيوصلك إشعار لما يتم نشره.';
+      statusEl.textContent = editSlug ? 'تم حفظ التعديلات بنجاح! المقال هيتراجع تاني قبل ما يظهر.' : 'تم إرسال مقالك للمراجعة بنجاح! هيوصلك إشعار لما يتم نشره.';
       statusEl.className = 'status-msg ok';
-      setTimeout(() => window.location.href = 'my-articles.html', 1500);
+      setTimeout(() => window.location.href = 'dashboard.html', 1500);
     } catch (e) {
       statusEl.textContent = 'تعذّر الاتصال بالسيرفر';
       statusEl.className = 'status-msg err';

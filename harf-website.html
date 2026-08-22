@@ -563,62 +563,15 @@
   }
   .footer-bottom span { color: var(--gold); }
 
-  /* ===== CHAT WIDGET ===== */
-  .chat-widget { position: fixed; bottom: 28px; left: 28px; z-index: 999; }
+  /* ===== WHATSAPP SUPPORT BUTTON ===== */
+  .chat-widget { position: fixed; bottom: 28px; left: 28px; z-index: 999; display: block; }
   .chat-toggle {
-    width: 56px; height: 56px; border-radius: 16px;
-    background: var(--green); color: var(--white);
-    font-size: 1.4rem; box-shadow: 0 4px 20px rgba(27,77,62,0.4);
+    width: 56px; height: 56px; border-radius: 50%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     display: flex; align-items: center; justify-content: center;
-    transition: all .25s;
+    transition: all .25s; border: none;
   }
-  .chat-toggle:hover { transform: scale(1.08); background: var(--green-mid); }
-  .chat-bubble {
-    position: absolute; bottom: 68px; left: 0;
-    width: 300px; background: var(--white);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--border);
-    overflow: hidden;
-    display: none;
-  }
-  .chat-bubble.open { display: block; animation: chatIn .25s ease; }
-  @keyframes chatIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-  .chat-head {
-    background: var(--green); padding: 16px 20px;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .chat-head-avatar {
-    width: 36px; height: 36px; border-radius: 50%;
-    background: rgba(255,255,255,0.2);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-  }
-  .chat-head-text .name { color: var(--white); font-weight: 700; font-size: 0.9rem; }
-  .chat-head-text .status { color: rgba(255,255,255,0.6); font-size: 0.75rem; }
-  .chat-online { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; margin-right: 4px; display: inline-block; }
-  .chat-msgs { padding: 16px; min-height: 120px; }
-  .chat-msg {
-    background: var(--cream); border-radius: 10px 10px 10px 0;
-    padding: 10px 14px; font-size: 0.82rem; color: var(--ink-soft);
-    line-height: 1.6; max-width: 85%;
-  }
-  .chat-input-row {
-    display: flex; gap: 8px; padding: 12px 16px;
-    border-top: 1px solid rgba(0,0,0,0.06);
-  }
-  .chat-input {
-    flex: 1; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 8px;
-    padding: 8px 12px; font-family: inherit; font-size: 0.82rem;
-    outline: none; transition: border-color .2s;
-  }
-  .chat-input:focus { border-color: var(--green); }
-  .chat-send {
-    width: 36px; height: 36px; border-radius: 8px;
-    background: var(--green); color: var(--white);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.85rem;
-  }
+  .chat-toggle:hover { transform: scale(1.08); }
 
   /* ===== MODAL (Login) ===== */
   .modal-overlay {
@@ -774,7 +727,6 @@
   <symbol id="icon-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
   <symbol id="icon-phone" viewBox="0 0 24 24"><path d="M6 3h3l2 5-2 1a13 13 0 0 0 6 6l1-2 5 2v3c0 1-1 2-2 2C11 20 4 13 4 5c0-1 1-2 2-2Z"/></symbol>
   <symbol id="icon-pin" viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
-  <symbol id="icon-chat" viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.6 8.6 0 0 1-3-.5L4 20l1.5-4A7.2 7.2 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/></symbol>
   <symbol id="icon-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
   <symbol id="icon-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.3 10.8 7.4-4.5M8.3 13.2l7.4 4.5"/></symbol>
   <symbol id="icon-wallet" viewBox="0 0 24 24"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h12A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-12A2.5 2.5 0 0 1 3 16.5Z"/><path d="M15.5 12.5h3.5v3h-3.5a1.5 1.5 0 0 1 0-3Z"/><path d="M3 9h17"/></symbol>
@@ -792,6 +744,21 @@
     </g>
   </symbol>
 </defs></svg>
+
+<!-- SHARE PANEL -->
+<div id="sharePanel" style="position:absolute;z-index:9000;background:var(--white);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.18);border:1px solid rgba(0,0,0,0.08);padding:14px 16px;min-width:200px;display:none;">
+  <div style="font-size:.8rem;font-weight:700;color:var(--ink-muted);margin-bottom:10px;">مشاركة عبر</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <a class="sp-wa" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:#25D366;color:#fff;font-size:.82rem;font-weight:700;">واتساب</a>
+    <a class="sp-tg" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:#229ED9;color:#fff;font-size:.82rem;font-weight:700;">تليجرام</a>
+    <a class="sp-fb" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:#1877F2;color:#fff;font-size:.82rem;font-weight:700;">فيسبوك</a>
+    <a class="sp-x" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:#000;color:#fff;font-size:.82rem;font-weight:700;">X</a>
+  </div>
+</div>
+<style>
+  #sharePanel { display: none; }
+  #sharePanel.open { display: block; }
+</style>
 
 <!-- TOAST -->
 <div class="toast" id="toast">تم بنجاح!</div>
@@ -869,8 +836,8 @@
         <a class="btn-login auth-guest" href="#" onclick="openModal(); return false;">تسجيل الدخول</a>
         <div class="auth-user" style="display:none;align-items:center;justify-content:space-between;gap:8px;">
           <span style="color:var(--white);font-size:0.85rem;font-weight:700;"><span class="auth-user-name"></span></span>
+          <a class="btn-login" href="dashboard.html">لوحتي</a>
           <a class="btn-login" href="edit-profile.html">ملفي</a>
-          <a class="btn-login" href="wallet.html">محفظتي</a>
           <button class="btn-login" type="button" onclick="submitLogout()">خروج</button>
         </div>
         <button class="language-toggle lang-btn" type="button" onclick="toggleLanguage()" aria-label="تغيير لغة الموقع">EN</button>
@@ -886,9 +853,10 @@
       <a class="btn-login auth-guest" href="#" onclick="openModal(); return false;">تسجيل الدخول</a>
       <div class="auth-user" style="display:none;align-items:center;gap:10px;">
         <span style="color:rgba(255,255,255,0.9);font-size:0.85rem;font-weight:700;">مرحباً، <span class="auth-user-name"></span></span>
-        <a class="btn-login" href="edit-profile.html">ملفي</a>
+        <a class="btn-login" href="dashboard.html">لوحتي</a>
         <button class="btn-login" type="button" onclick="submitLogout()">خروج</button>
       </div>
+      <button onclick="shareSite()" title="شارك الموقع" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:var(--white);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,0.18)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'"><svg class="ui-icon" aria-hidden="true"><use href="#icon-share"></use></svg></button>
       <a class="btn-write" href="write-article.html"><svg class="ui-icon" aria-hidden="true"><use href="#icon-pen"></use></svg> اكتب مقالاً</a>
       <button class="mobile-menu-btn" onclick="toggleMobileNav()" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mainNav">
         <svg class="ui-icon" style="width:22px;height:22px;" aria-hidden="true"><use href="#icon-menu"></use></svg>
@@ -905,19 +873,19 @@
     <div class="hero-slide">
       <div class="hero-content">
         <div class="hero-tag">ثقافة وأدب</div>
-        <h1 class="hero-title"><a href="article-writing-resistance.html" style="color:inherit;">الكتابة فعل مقاومة:<br>لماذا نكتب في زمن السرعة؟</a></h1>
+        <h1 class="hero-title"><a href="article-view.html?slug=article-writing-resistance" style="color:inherit;">الكتابة فعل مقاومة:<br>لماذا نكتب في زمن السرعة؟</a></h1>
         <p class="hero-excerpt">في عصر تتسابق فيه المنشورات وتتراكم المحتويات، يصبح الكتاب الواعي بمثابة الصوت الفردي الذي يقاوم الضجيج، ويؤكد حضوره وعمقه.</p>
         <div class="hero-meta">
-          <a class="hero-avatar" href="author-mariam-alansari.html" style="overflow:hidden;"><img src="/images/authors/mariam-alansari.png" alt="مريم الأنصاري" style="width:100%;height:100%;"></a>
+          <a class="hero-avatar" href="author-mariam-alansari.html" style="overflow:hidden;"><img src="/images/authors/mariam-alansari.jpg" alt="مريم الأنصاري" style="width:100%;height:100%;"></a>
           <div>
             <a class="hero-author-name" href="author-mariam-alansari.html">مريم الأنصاري</a>
             <div class="hero-date">٢٠ أغسطس ٢٠٢٦ · ٧ دقائق قراءة</div>
           </div>
         </div>
-        <a class="hero-read-btn" href="article-writing-resistance.html">اقرأ المقال ←</a>
+        <a class="hero-read-btn" href="article-view.html?slug=article-writing-resistance">اقرأ المقال ←</a>
       </div>
       <div class="hero-image-wrap">
-        <div style="width:100%;height:100%;background:linear-gradient(135deg,#2E7D5E,#1B4D3E);display:flex;align-items:center;justify-content:center;opacity:0.3;"><svg class="hero-icon" aria-hidden="true"><use href="#icon-book"></use></svg></div>
+        <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80" alt="كتابة وأوراق" loading="lazy">
       </div>
     </div>
 
@@ -925,19 +893,19 @@
     <div class="hero-slide">
       <div class="hero-content">
         <div class="hero-tag">علوم وتقنية</div>
-        <h1 class="hero-title"><a href="article-ai-creativity.html" style="color:inherit;">الذكاء الاصطناعي والإبداع:<br>هل يستطيع الآلة أن تكتب رواية؟</a></h1>
+        <h1 class="hero-title"><a href="article-view.html?slug=article-ai-creativity" style="color:inherit;">الذكاء الاصطناعي والإبداع:<br>هل يستطيع الآلة أن تكتب رواية؟</a></h1>
         <p class="hero-excerpt">جدل فلسفي عميق بين الإبداع الإنساني والذكاء الاصطناعي، وما إذا كانت الآلة قادرة على تجاوز حدود المنطق لتصل إلى الشعور الحقيقي.</p>
         <div class="hero-meta">
-          <a class="hero-avatar" href="author-hoda-yassin.html" style="overflow:hidden;"><img src="/images/authors/hoda-yassin.png" alt="هدى ياسين" style="width:100%;height:100%;"></a>
+          <a class="hero-avatar" href="author-hoda-yassin.html" style="overflow:hidden;"><img src="/images/authors/hoda-yassin.jpg" alt="هدى ياسين" style="width:100%;height:100%;"></a>
           <div>
             <a class="hero-author-name" href="author-hoda-yassin.html">هدى ياسين</a>
             <div class="hero-date">١٩ أغسطس ٢٠٢٦ · ١٢ دقيقة قراءة</div>
           </div>
         </div>
-        <a class="hero-read-btn" href="article-ai-creativity.html">اقرأ المقال ←</a>
+        <a class="hero-read-btn" href="article-view.html?slug=article-ai-creativity">اقرأ المقال ←</a>
       </div>
       <div class="hero-image-wrap">
-        <div style="width:100%;height:100%;background:linear-gradient(135deg,#1B4D3E,#122E25);display:flex;align-items:center;justify-content:center;opacity:0.3;"><svg class="hero-icon" aria-hidden="true"><use href="#icon-cpu"></use></svg></div>
+        <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80" alt="ذكاء اصطناعي" loading="lazy">
       </div>
     </div>
 
@@ -945,19 +913,19 @@
     <div class="hero-slide">
       <div class="hero-content">
         <div class="hero-tag">اقتصاد وأعمال</div>
-        <h1 class="hero-title"><a href="article-freelance-income.html" style="color:inherit;">الكاتب المستقل:<br>كيف تحوّل قلمك إلى مصدر دخل ثابت؟</a></h1>
+        <h1 class="hero-title"><a href="article-view.html?slug=article-freelance-income" style="color:inherit;">الكاتب المستقل:<br>كيف تحوّل قلمك إلى مصدر دخل ثابت؟</a></h1>
         <p class="hero-excerpt">دليل عملي شامل للكتّاب الراغبين في تحويل شغفهم بالكتابة إلى مهنة ناجحة ومصدر دخل حقيقي في عالم المحتوى الرقمي.</p>
         <div class="hero-meta">
-          <a class="hero-avatar" href="author-siham-sayed.html" style="overflow:hidden;"><img src="/images/authors/siham-sayed.png" alt="سهام سيد" style="width:100%;height:100%;"></a>
+          <a class="hero-avatar" href="author-siham-sayed.html" style="overflow:hidden;"><img src="/images/authors/siham-sayed.jpg" alt="سهام سيد" style="width:100%;height:100%;"></a>
           <div>
             <a class="hero-author-name" href="author-siham-sayed.html">سهام سيد</a>
             <div class="hero-date">١٨ أغسطس ٢٠٢٦ · ١٠ دقائق قراءة</div>
           </div>
         </div>
-        <a class="hero-read-btn" href="article-freelance-income.html">اقرأ المقال ←</a>
+        <a class="hero-read-btn" href="article-view.html?slug=article-freelance-income">اقرأ المقال ←</a>
       </div>
       <div class="hero-image-wrap">
-        <div style="width:100%;height:100%;background:linear-gradient(135deg,#24664F,#1B4D3E);display:flex;align-items:center;justify-content:center;opacity:0.3;"><svg class="hero-icon" aria-hidden="true"><use href="#icon-chart"></use></svg></div>
+        <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=80" alt="كتابة مستقلة" loading="lazy">
       </div>
     </div>
   </div>
@@ -999,13 +967,8 @@
       </div>
       <a class="view-all" href="browse-articles.html">عرض الكل</a>
     </div>
-    <div class="cats-grid">
-      <div class="cat-card"><div class="cat-card-icon"><svg class="ui-icon"><use href="#icon-book"></use></svg></div><div class="cat-card-name">ثقافة وأدب</div><div class="cat-card-count">١٢٤٠ مقال</div></div>
-      <div class="cat-card"><div class="cat-card-icon"><svg class="ui-icon"><use href="#icon-cpu"></use></svg></div><div class="cat-card-name">علوم وتقنية</div><div class="cat-card-count">٨٩٦ مقال</div></div>
-      <div class="cat-card"><div class="cat-card-icon"><svg class="ui-icon"><use href="#icon-chart"></use></svg></div><div class="cat-card-name">أعمال وريادة</div><div class="cat-card-count">٦٣٤ مقال</div></div>
-      <div class="cat-card"><div class="cat-card-icon"><svg class="ui-icon"><use href="#icon-pen"></use></svg></div><div class="cat-card-name">فن وإبداع</div><div class="cat-card-count">٥١٢ مقال</div></div>
-      <div class="cat-card"><div class="cat-card-icon"><svg class="ui-icon"><use href="#icon-heart"></use></svg></div><div class="cat-card-name">صحة ومجتمع</div><div class="cat-card-count">٧٨٩ مقال</div></div>
-      <div class="cat-card"><div class="cat-card-icon"><svg class="ui-icon"><use href="#icon-users"></use></svg></div><div class="cat-card-name">سياسة وعالم</div><div class="cat-card-count">٤٢١ مقال</div></div>
+    <div class="cats-grid" id="catsGrid">
+      <!-- تُحمَّل من API -->
     </div>
   </div>
 </section>
@@ -1029,50 +992,50 @@
         </div>
         <div class="featured-grid">
           <article class="card card-featured">
-            <a class="article-image-wrap" href="article-arab-writer-identity.html">
+            <a class="article-image-wrap" href="article-view.html?slug=article-arab-writer-identity">
               <img class="card-img" src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="كتب وأوراق للكتابة" loading="lazy" onerror="this.style.display='none'">
               <span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٤.٢ألف مشاهدة</span>
               <span class="card-category">ثقافة وأدب</span>
             </a>
             <div class="card-body">
-              <a class="card-title" style="-webkit-line-clamp:3;font-size:1.2rem;" href="article-arab-writer-identity.html">في رحلة البحث عن الهوية: الكاتب العربي بين الأصالة والحداثة</a>
+              <a class="card-title" style="-webkit-line-clamp:3;font-size:1.2rem;" href="article-view.html?slug=article-arab-writer-identity">في رحلة البحث عن الهوية: الكاتب العربي بين الأصالة والحداثة</a>
               <div class="card-excerpt">يجد الكاتب العربي نفسه في قلب معادلة شديدة التعقيد، تتجاذبه قوى الموروث الثقافي الغني من جهة، ومتطلبات العالم المتغير من جهة أخرى، فأين يقف وكيف يكتب؟</div>
               <div class="card-footer">
                 <div class="card-author">
-                  <a class="author-avatar" href="author-ahmed-awadallah.html" style="overflow:hidden;"><img src="/images/authors/ahmed-awadallah.png" alt="أحمد عوض الله" style="width:100%;height:100%;"></a>
+                  <a class="author-avatar" href="author-ahmed-awadallah.html" style="overflow:hidden;"><img src="/images/authors/ahmed-awadallah.jpg" alt="أحمد عوض الله" style="width:100%;height:100%;"></a>
                   <a class="author-name" href="author-ahmed-awadallah.html">أحمد عوض الله</a>
                 </div>
                 <div class="card-stats">
                   <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٤.٢ألف</span>
                   <span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ٢٣١</span>
-                  <span class="card-stat share-stat" data-article-id="1"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span>
+                  <span class="card-stat share-stat" onclick="openSharePanel(event,'في رحلة البحث عن الهوية')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
                 </div>
               </div>
             </div>
           </article>
           <article class="card card-featured">
-            <div class="article-image-wrap">
+            <a class="article-image-wrap" href="article-view.html?slug=article-ai-creativity">
               <img class="card-img" src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80" alt="روبوت يمثل الذكاء الاصطناعي" loading="lazy" onerror="this.style.display='none'">
               <span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٢.١ألف مشاهدة</span>
               <span class="card-category">تقنية</span>
+            </a>
+            <div class="card-body">
+              <a class="card-title" href="article-view.html?slug=article-ai-creativity">الذكاء الاصطناعي والإبداع: هل يستطيع الآلة أن تكتب رواية؟</a>
+              <div class="card-excerpt">جدل فلسفي عميق بين الإبداع الإنساني والذكاء الاصطناعي، وحدود ما يمكن للآلة أن تكتبه.</div>
+              <div class="card-stats"><span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٢.١ألف</span><span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ٩٨</span><span class="card-stat share-stat" onclick="openSharePanel(event,'الذكاء الاصطناعي والإبداع')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span></div>
             </div>
-              <div class="card-body">
-                <div class="card-title">مستقبل المحتوى في عصر الذكاء الاصطناعي</div>
-                <div class="card-excerpt">كيف يعيد الـ AI رسم خارطة صناعة المحتوى الرقمي؟</div>
-                <div class="card-stats"><span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٢.١ألف</span><span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ٩٨</span><span class="card-stat share-stat" data-article-id="2"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span></div>
-              </div>
-            </article>
+          </article>
           <article class="card card-featured">
-            <div class="article-image-wrap">
+            <a class="article-image-wrap" href="article-view.html?slug=article-freelance-income">
               <img class="card-img" src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=80" alt="تخطيط مالي وأعمال" loading="lazy" onerror="this.style.display='none'">
               <span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٣.٧ألف مشاهدة</span>
               <span class="card-category">أعمال</span>
+            </a>
+            <div class="card-body">
+              <a class="card-title" href="article-view.html?slug=article-freelance-income">٥ نماذج ربحية ناجحة للمدونين العرب في ٢٠٢٦</a>
+              <div class="card-excerpt">قصص نجاح حقيقية لكتّاب عرب حققوا استقلالاً مالياً</div>
+              <div class="card-stats"><span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٣.٧ألف</span><span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ١٧٥</span><span class="card-stat share-stat" onclick="openSharePanel(event,'الكاتب المستقل')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span></div>
             </div>
-              <div class="card-body">
-                <div class="card-title">٥ نماذج ربحية ناجحة للمدونين العرب في ٢٠٢٦</div>
-                <div class="card-excerpt">قصص نجاح حقيقية لكتّاب عرب حققوا استقلالاً مالياً</div>
-                <div class="card-stats"><span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٣.٧ألف</span><span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ١٧٥</span><span class="card-stat share-stat" data-article-id="3"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span></div>
-              </div>
           </article>
         </div>
 
@@ -1085,79 +1048,14 @@
           <a class="view-all" href="browse-articles.html">عرض الكل</a>
         </div>
         <div class="tabs">
-          <button class="tab-btn active" onclick="setTab(this)">الكل</button>
-          <button class="tab-btn" onclick="setTab(this)">ثقافة</button>
-          <button class="tab-btn" onclick="setTab(this)">تقنية</button>
-          <button class="tab-btn" onclick="setTab(this)">أعمال</button>
-          <button class="tab-btn" onclick="setTab(this)">فن</button>
+          <button class="tab-btn active" data-cat="all" onclick="setTab(this)">الكل</button>
+          <button class="tab-btn" data-cat="culture" onclick="setTab(this)">ثقافة</button>
+          <button class="tab-btn" data-cat="tech" onclick="setTab(this)">تقنية</button>
+          <button class="tab-btn" data-cat="business" onclick="setTab(this)">أعمال</button>
+          <button class="tab-btn" data-cat="art" onclick="setTab(this)">فن</button>
         </div>
-        <div class="article-list">
-          <div class="card">
-            <div class="article-image-wrap"><img class="card-img" src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="وردة حمراء ترمز للشعر" loading="lazy"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ١.٢ألف مشاهدة</span><span class="card-category">أدب</span></div>
-            <div class="card-body">
-              <div class="card-title">الشعر العربي الحديث: أصوات جديدة تُعيد تعريف القصيدة</div>
-              <div class="card-excerpt">جيل جديد من الشعراء العرب يكسر القوالب التقليدية ويبتكر لغة شعرية تواكب روح العصر دون أن تتخلى عن عمق اللغة العربية.</div>
-              <div class="card-footer">
-                <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/lamia-alsayed.png" alt="لمياء السيد" style="width:100%;height:100%;"></div><div class="author-name">لمياء السيد</div></div>
-                <div class="card-stats"><span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ١.٢ألف</span><span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ٨٧</span><span class="card-stat share-stat" data-article-id="4"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span></div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="article-image-wrap"><img class="card-img" src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="مختبر للبحث العلمي" loading="lazy"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٩٤٣ مشاهدة</span><span class="card-category">علوم</span></div>
-            <div class="card-body">
-              <div class="card-title">الكيمياء الحيوية للإبداع: ما الذي يحدث في دماغ الكاتب؟</div>
-              <div class="card-excerpt">دراسة علمية رائدة تكشف الآليات العصبية التي تعمل خلال عملية الكتابة الإبداعية وكيف يمكن تحفيزها.</div>
-              <div class="card-footer">
-                <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/kareem-mansour.png" alt="د. كريم منصور" style="width:100%;height:100%;"></div><div class="author-name">د. كريم منصور</div></div>
-                <div class="card-stats"><span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٩٤٣</span><span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ٦٤</span><span class="card-stat share-stat" data-article-id="5"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span></div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="article-image-wrap"><img class="card-img" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="مدينة عربية وحياة المجتمع" loading="lazy"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٧٨٦ مشاهدة</span><span class="card-category">مجتمع</span></div>
-            <div class="card-body">
-              <div class="card-title">المدينة كنص: قراءة في المكان وتأثيره على الكاتب العربي</div>
-              <div class="card-excerpt">كيف تشكّل المدينة العربية بتناقضاتها وتحولاتها السريعة لغة الكاتب ورؤيته للعالم من حوله؟</div>
-              <div class="card-footer">
-                <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/fatima-alali.png" alt="فاطمة العلي" style="width:100%;height:100%;"></div><div class="author-name">فاطمة العلي</div></div>
-                <div class="card-stats"><span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٧٨٦</span><span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ٥٢</span><span class="card-stat share-stat" data-article-id="6"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span></div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="article-image-wrap"><img class="card-img" src="https://images.unsplash.com/photo-1553878891-9d3c3e6b4f1b?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="تحليل بيانات التسويق" loading="lazy"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٢.٥ألف مشاهدة</span><span class="card-category">تسويق</span></div>
-            <div class="card-body">
-              <div class="card-title">SEO للكتّاب العرب: كيف يصل مقالك لملايين القراء؟</div>
-              <div class="card-excerpt">دليل عملي شامل لتحسين ظهور مقالاتك في محركات البحث، بأسلوب مبسط مخصص للكتّاب لا المختصين التقنيين.</div>
-              <div class="card-footer">
-                <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/omar-bakr.png" alt="عمر بكر" style="width:100%;height:100%;"></div><div class="author-name">عمر بكر</div></div>
-                <div class="card-stats"><span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٢.٥ألف</span><span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ١٩٣</span><span class="card-stat share-stat" data-article-id="7"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span></div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="article-image-wrap"><img class="card-img" src="https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="خشبة مسرح وفن" loading="lazy"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ١.١ألف مشاهدة</span><span class="card-category">فن</span></div>
-            <div class="card-body">
-              <div class="card-title">السيناريو العربي بين الواقع والطموح: أزمة أم فرصة؟</div>
-              <div class="card-excerpt">نظرة نقدية على واقع كتابة السيناريو في العالم العربي والتحديات التي تواجه الكتّاب في صناعة الدراما.</div>
-              <div class="card-footer">
-                <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/rana-khalil.png" alt="رنا خليل" style="width:100%;height:100%;"></div><div class="author-name">رنا خليل</div></div>
-                <div class="card-stats"><span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ١.١ألف</span><span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ٧٧</span><span class="card-stat share-stat" data-article-id="8"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span></div>
-              </div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="article-image-wrap"><img class="card-img" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="منظر سفر وطبيعة" loading="lazy"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٣.٤ألف مشاهدة</span><span class="card-category">سفر</span></div>
-            <div class="card-body">
-              <div class="card-title">يوميات كاتبة في المنفى: الكتابة بلغتين وعيش الهامش</div>
-              <div class="card-excerpt">تجربة شخصية ثرية لكاتبة تعيش بين ثقافتين وتكتب باللغتين، وكيف أثّر ذلك على هويتها الأدبية وأسلوبها.</div>
-              <div class="card-footer">
-                <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/yusra-najm.png" alt="يسرا نجم" style="width:100%;height:100%;"></div><div class="author-name">يسرا نجم</div></div>
-                <div class="card-stats"><span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٣.٤ألف</span><span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ٢٦٢</span><span class="card-stat share-stat" data-article-id="9"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span></div>
-              </div>
-            </div>
-          </div>
+        <div class="article-list" id="latestArticlesList">
+          <div style="text-align:center;color:var(--ink-muted);padding:30px 0;">جاري تحميل المقالات...</div>
         </div>
 
       </div><!-- end main -->
@@ -1165,57 +1063,13 @@
       <!-- SIDEBAR -->
       <aside>
         <!-- Top Writers -->
-        <div class="widget">
+        <div class="widget" id="topWriters">
           <div class="widget-header">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             أبرز الكتّاب هذا الأسبوع
           </div>
-          <div class="widget-body">
-            <div class="writer-item">
-              <div class="writer-rank top">١</div>
-              <a class="writer-avatar-lg" href="author-mariam-alansari.html" style="overflow:hidden;"><img src="/images/authors/mariam-alansari.png" alt="مريم الأنصاري" style="width:100%;height:100%;"></a>
-              <div class="writer-info">
-                <a class="writer-name" href="author-mariam-alansari.html" style="color:inherit;">مريم الأنصاري</a>
-                <div class="writer-articles">٤٢ مقال · ١٢.٣ألف متابع</div>
-              </div>
-              <button class="follow-btn" data-author-id="mariam-alansari">متابعة</button>
-            </div>
-            <div class="writer-item">
-              <div class="writer-rank top">٢</div>
-              <a class="writer-avatar-lg" href="author-hoda-yassin.html" style="overflow:hidden;"><img src="/images/authors/hoda-yassin.png" alt="هدى ياسين" style="width:100%;height:100%;"></a>
-              <div class="writer-info">
-                <a class="writer-name" href="author-hoda-yassin.html" style="color:inherit;">هدى ياسين</a>
-                <div class="writer-articles">١ مقال · ٢٣٣ متابع</div>
-              </div>
-              <button class="follow-btn" data-author-id="hoda-yassin">متابعة</button>
-            </div>
-            <div class="writer-item">
-              <div class="writer-rank">٣</div>
-              <a class="writer-avatar-lg" href="author-ahmed-awadallah.html" style="overflow:hidden;"><img src="/images/authors/ahmed-awadallah.png" alt="أحمد عوض الله" style="width:100%;height:100%;"></a>
-              <div class="writer-info">
-                <a class="writer-name" href="author-ahmed-awadallah.html" style="color:inherit;">أحمد عوض الله</a>
-                <div class="writer-articles">١ مقال · ١٧٧ متابع</div>
-              </div>
-              <button class="follow-btn" data-author-id="ahmed-awadallah">متابعة</button>
-            </div>
-            <div class="writer-item">
-              <div class="writer-rank">٤</div>
-              <a class="writer-avatar-lg" href="author-siham-sayed.html" style="overflow:hidden;"><img src="/images/authors/siham-sayed.png" alt="سهام سيد" style="width:100%;height:100%;"></a>
-              <div class="writer-info">
-                <a class="writer-name" href="author-siham-sayed.html" style="color:inherit;">سهام سيد</a>
-                <div class="writer-articles">١ مقال · ١٢٠ متابع</div>
-              </div>
-              <button class="follow-btn" data-author-id="siham-sayed">متابعة</button>
-            </div>
-            <div class="writer-item">
-              <div class="writer-rank">٥</div>
-              <div class="writer-avatar-lg" style="overflow:hidden;"><img src="/images/authors/wanas-ahmed.png" alt="ونس أحمد" style="width:100%;height:100%;"></div>
-              <div class="writer-info">
-                <div class="writer-name">ونس أحمد</div>
-                <div class="writer-articles">٠ مقال على حرف · ٩٣ متابع</div>
-              </div>
-              <button class="follow-btn" data-author-id="wanas-ahmed">متابعة</button>
-            </div>
+          <div class="widget-body" id="topWritersBody">
+            <div style="text-align:center;color:var(--ink-muted);font-size:0.82rem;padding:12px 0;">جاري التحميل...</div>
           </div>
         </div>
 
@@ -1226,20 +1080,7 @@
             التصنيفات
           </div>
           <div class="widget-body">
-            <div class="cat-list">
-              <a class="cat-tag" href="#">ثقافة</a>
-              <a class="cat-tag" href="#">أدب</a>
-              <a class="cat-tag" href="#">شعر</a>
-              <a class="cat-tag" href="#">رواية</a>
-              <a class="cat-tag" href="#">تقنية</a>
-              <a class="cat-tag" href="#">ذكاء اصطناعي</a>
-              <a class="cat-tag" href="#">أعمال</a>
-              <a class="cat-tag" href="#">تسويق</a>
-              <a class="cat-tag" href="#">فن</a>
-              <a class="cat-tag" href="#">مجتمع</a>
-              <a class="cat-tag" href="#">صحة</a>
-              <a class="cat-tag" href="#">سفر</a>
-            </div>
+            <div class="cat-list" id="sidebarCatTags"></div>
           </div>
         </div>
 
@@ -1289,42 +1130,42 @@
     </div>
     <div class="cards-grid cards-grid-4">
       <div class="card">
-        <div class="article-image-wrap" style="height:160px;"><img class="card-img" style="height:160px;" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="كاتب يعمل على مقال جديد" loading="lazy" onerror="this.style.display='none'"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٨.٢ألف مشاهدة</span><span class="card-category">رائج</span></div>
+        <a class="article-image-wrap" href="browse-articles.html" style="height:160px;"><img class="card-img" style="height:160px;" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80" alt="كاتب يعمل على مقال جديد" loading="lazy" onerror="this.style.display='none'"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٨.٢ألف مشاهدة</span><span class="card-category">رائج</span></a>
         <div class="card-body">
-          <div class="card-title">١٠ أخطاء يقع فيها كل كاتب مبتدئ (وكيف تتجنبها)</div>
+          <a class="card-title" href="browse-articles.html">١٠ أخطاء يقع فيها كل كاتب مبتدئ (وكيف تتجنبها)</a>
           <div class="card-footer" style="margin-top:auto;">
-            <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/mariam-alansari.png" alt="مريم الأنصاري" style="width:100%;height:100%;"></div><div class="author-name">مريم الأنصاري</div></div>
-            <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٨.٢ألف</span><span class="card-stat share-stat" data-article-id="10"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span>
+            <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/mariam-alansari.jpg" alt="مريم الأنصاري" style="width:100%;height:100%;"></div><div class="author-name">مريم الأنصاري</div></div>
+            <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٨.٢ألف</span><span class="card-stat share-stat" onclick="openSharePanel(event,'١٠ أخطاء يقع فيها كل كاتب مبتدئ')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
           </div>
         </div>
       </div>
       <div class="card">
-        <div class="article-image-wrap" style="height:160px;"><img class="card-img" style="height:160px;" src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="دليل كتابة المقال الاحترافي" loading="lazy" onerror="this.style.display='none'"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٦.٧ألف مشاهدة</span><span class="card-category">دليل</span></div>
+        <a class="article-image-wrap" href="browse-articles.html" style="height:160px;"><img class="card-img" style="height:160px;" src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80" alt="دليل كتابة المقال الاحترافي" loading="lazy" onerror="this.style.display='none'"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٦.٧ألف مشاهدة</span><span class="card-category">دليل</span></a>
         <div class="card-body">
-          <div class="card-title">الدليل الكامل لكتابة المقال المحترف: من الفكرة إلى النشر</div>
+          <a class="card-title" href="browse-articles.html">الدليل الكامل لكتابة المقال المحترف: من الفكرة إلى النشر</a>
           <div class="card-footer" style="margin-top:auto;">
-            <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/hoda-yassin.png" alt="هدى ياسين" style="width:100%;height:100%;"></div><div class="author-name">هدى ياسين</div></div>
-            <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٦.٧ألف</span><span class="card-stat share-stat" data-article-id="11"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span>
+            <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/hoda-yassin.jpg" alt="هدى ياسين" style="width:100%;height:100%;"></div><div class="author-name">هدى ياسين</div></div>
+            <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٦.٧ألف</span><span class="card-stat share-stat" onclick="openSharePanel(event,'الدليل الكامل لكتابة المقال المحترف')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
           </div>
         </div>
       </div>
       <div class="card">
-        <div class="article-image-wrap" style="height:160px;"><img class="card-img" style="height:160px;" src="https://images.unsplash.com/photo-1455849318743-b2233052fcff?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="إيجاد الصوت الكتابي الخاص" loading="lazy" onerror="this.style.display='none'"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٥.١ألف مشاهدة</span><span class="card-category">إبداع</span></div>
+        <a class="article-image-wrap" href="browse-articles.html" style="height:160px;"><img class="card-img" style="height:160px;" src="https://images.unsplash.com/photo-1455849318743-b2233052fcff?auto=format&fit=crop&w=800&q=80" alt="إيجاد الصوت الكتابي الخاص" loading="lazy" onerror="this.style.display='none'"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٥.١ألف مشاهدة</span><span class="card-category">إبداع</span></a>
         <div class="card-body">
-          <div class="card-title">كيف تجد صوتك الكتابي الخاص في بحر المحتوى الرقمي؟</div>
+          <a class="card-title" href="browse-articles.html">كيف تجد صوتك الكتابي الخاص في بحر المحتوى الرقمي؟</a>
           <div class="card-footer" style="margin-top:auto;">
-            <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/ahmed-awadallah.png" alt="أحمد عوض الله" style="width:100%;height:100%;"></div><div class="author-name">أحمد عوض الله</div></div>
-            <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٥.١ألف</span><span class="card-stat share-stat" data-article-id="12"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span>
+            <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/ahmed-awadallah.jpg" alt="أحمد عوض الله" style="width:100%;height:100%;"></div><div class="author-name">أحمد عوض الله</div></div>
+            <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٥.١ألف</span><span class="card-stat share-stat" onclick="openSharePanel(event,'كيف تجد صوتك الكتابي الخاص')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
           </div>
         </div>
       </div>
       <div class="card">
-        <div class="article-image-wrap" style="height:160px;"><img class="card-img" style="height:160px;" src="https://images.unsplash.com/photo-1455391350506-eb6b2b0e7d19?auto=format&amp;fit=crop&amp;w=800&amp;q=80" alt="قصيدة نثر وشعر عربي" loading="lazy" onerror="this.style.display='none'"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٤.٣ألف مشاهدة</span><span class="card-category">تجربة</span></div>
+        <a class="article-image-wrap" href="browse-articles.html" style="height:160px;"><img class="card-img" style="height:160px;" src="https://images.unsplash.com/photo-1455391350506-eb6b2b0e7d19?auto=format&fit=crop&w=800&q=80" alt="قصيدة نثر وشعر عربي" loading="lazy" onerror="this.style.display='none'"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٤.٣ألف مشاهدة</span><span class="card-category">تجربة</span></a>
         <div class="card-body">
-          <div class="card-title">قصيدة نثر في زمن السيولة: هل لا يزال الشعر ممكناً؟</div>
+          <a class="card-title" href="browse-articles.html">قصيدة نثر في زمن السيولة: هل لا يزال الشعر ممكناً؟</a>
           <div class="card-footer" style="margin-top:auto;">
-            <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/lamia-alsayed.png" alt="لمياء السيد" style="width:100%;height:100%;"></div><div class="author-name">لمياء السيد</div></div>
-            <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٤.٣ألف</span><span class="card-stat share-stat" data-article-id="13"><svg class="ui-icon"><use href="#icon-share"></use></svg> <span class="share-count">٠</span></span>
+            <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/lamia-alsayed.jpg" alt="لمياء السيد" style="width:100%;height:100%;"></div><div class="author-name">لمياء السيد</div></div>
+            <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٤.٣ألف</span><span class="card-stat share-stat" onclick="openSharePanel(event,'قصيدة نثر في زمن السيولة')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
           </div>
         </div>
       </div>
@@ -1379,7 +1220,7 @@
         <div class="stars">تقييم ممتاز</div>
         <p class="testimonial-text">منذ انضمامي لحرف وأنا أشعر أن كتاباتي وصلت لجمهور حقيقي. محلل SEO وفّر عليّ ساعات من البحث وساعدني في تصدر جوجل بشكل لم أتوقعه.</p>
         <div class="testimonial-author">
-          <div class="testimonial-avatar" style="overflow:hidden;"><img src="/images/authors/mariam-alansari.png" alt="مريم الأنصاري" style="width:100%;height:100%;"></div>
+          <div class="testimonial-avatar" style="overflow:hidden;"><img src="/images/authors/mariam-alansari.jpg" alt="مريم الأنصاري" style="width:100%;height:100%;"></div>
           <div><div class="testimonial-name">مريم الأنصاري</div><div class="testimonial-role">كاتبة أدبية · القاهرة</div></div>
         </div>
       </div>
@@ -1387,7 +1228,7 @@
         <div class="stars">تقييم ممتاز</div>
         <p class="testimonial-text">حرف هي المنصة الوحيدة التي شعرت فيها بأن الكاتب محترم. نظام الأرباح شفاف ١٠٠٪ والسحب عبر إنستاباي لحظي بدون تعقيدات.</p>
         <div class="testimonial-author">
-          <div class="testimonial-avatar" style="overflow:hidden;"><img src="/images/authors/hoda-yassin.png" alt="هدى ياسين" style="width:100%;height:100%;"></div>
+          <div class="testimonial-avatar" style="overflow:hidden;"><img src="/images/authors/hoda-yassin.jpg" alt="هدى ياسين" style="width:100%;height:100%;"></div>
           <div><div class="testimonial-name">هدى ياسين</div><div class="testimonial-role">كاتبة مستقلة · مصر</div></div>
         </div>
       </div>
@@ -1395,7 +1236,7 @@
         <div class="stars">تقييم ممتاز</div>
         <p class="testimonial-text">بدأت كهواية وأصبحت دخلاً ثابتاً. ما كنت أتخيل يوماً أن الكتابة ستغطي مصاريفي الشهرية، لكن حرف جعل ذلك حقيقة في أقل من سنة.</p>
         <div class="testimonial-author">
-          <div class="testimonial-avatar" style="overflow:hidden;"><img src="/images/authors/siham-sayed.png" alt="سهام سيد" style="width:100%;height:100%;"></div>
+          <div class="testimonial-avatar" style="overflow:hidden;"><img src="/images/authors/siham-sayed.jpg" alt="سهام سيد" style="width:100%;height:100%;"></div>
           <div><div class="testimonial-name">سهام سيد</div><div class="testimonial-role">كاتبة مستقلة · مصر</div></div>
         </div>
       </div>
@@ -1427,33 +1268,29 @@
         <div>
           <div class="footer-col-title">روابط سريعة</div>
           <div class="footer-links">
-            <a href="#">الصفحة الرئيسية</a>
-            <a href="#">جميع التصنيفات</a>
-            <a href="#">الكتّاب المميزون</a>
-            <a href="#">المسابقات</a>
-            <a href="#">الجامعة الرقمية</a>
+            <a href="harf-website.html">الصفحة الرئيسية</a>
+            <a href="browse-articles.html">جميع التصنيفات</a>
+            <a href="harf-website.html#topWriters">الكتّاب المميزون</a>
+            <a href="about.html">من نحن؟</a>
           </div>
         </div>
         <div>
           <div class="footer-col-title">للكتّاب</div>
           <div class="footer-links">
-            <a href="#">أسعار النشر</a>
-            <a href="#">نظام النقاط</a>
-            <a href="#">محفظتي</a>
-            <a href="#">محلل SEO</a>
-            <a href="#">أدوات الكتابة</a>
+            <a href="withdrawal-policy.html">كيف تُحسب الأرباح؟</a>
+            <a href="dashboard.html">محفظتي</a>
+            <a href="write-article.html">محلل SEO وأدوات الكتابة</a>
           </div>
         </div>
         <div>
           <div class="footer-col-title">تواصل معنا</div>
           <div class="footer-contact-item"><span><svg class="ui-icon"><use href="#icon-mail"></use></svg></span> support@harf.com</div>
-          <div class="footer-contact-item"><span><svg class="ui-icon"><use href="#icon-phone"></use></svg></span> +20 100 000 0000</div>
           <div class="footer-contact-item"><span><svg class="ui-icon"><use href="#icon-pin"></use></svg></span> القاهرة، مصر</div>
           <div class="footer-links" style="margin-top:12px;">
             <a href="privacy-policy.html">سياسة الخصوصية</a>
             <a href="withdrawal-policy.html">سياسة سحب الأرباح</a>
-            <a href="#">شروط الاستخدام</a>
-            <a href="#">من نحن؟</a>
+            <a href="terms-of-use.html">شروط الاستخدام</a>
+            <a href="about.html">من نحن؟</a>
           </div>
         </div>
       </div>
@@ -1469,26 +1306,12 @@
 <!-- Google Translate stays hidden; the language button controls it. -->
 <div id="google_translate_element" aria-hidden="true"></div>
 
-<!-- CHAT WIDGET -->
-<div class="chat-widget">
-  <button class="chat-toggle" onclick="toggleChat()" aria-label="فتح الدعم"><svg class="ui-icon" style="width:24px;height:24px;"><use href="#icon-chat"></use></svg></button>
-  <div class="chat-bubble" id="chatBubble">
-    <div class="chat-head">
-      <div class="chat-head-avatar"><svg class="ui-icon"><use href="#icon-chat"></use></svg></div>
-      <div class="chat-head-text">
-        <div class="name">فريق الدعم</div>
-        <div class="status"><span class="chat-online"></span>متاح الآن</div>
-      </div>
-    </div>
-    <div class="chat-msgs">
-      <div class="chat-msg">أهلاً بك في حرف<br>كيف يمكنني مساعدتك اليوم؟</div>
-    </div>
-    <div class="chat-input-row">
-      <input class="chat-input" type="text" placeholder="اكتب رسالتك...">
-      <button class="chat-send" onclick="sendChat()">→</button>
-    </div>
-  </div>
-</div>
+<!-- WHATSAPP SUPPORT -->
+<a class="chat-widget" href="https://wa.me/201032823340" target="_blank" rel="noopener" aria-label="تواصل معنا عبر واتساب" style="text-decoration:none;">
+  <button class="chat-toggle" style="background:var(--green);border:2.5px solid var(--gold);" type="button" tabindex="-1">
+    <svg viewBox="0 0 24 24" style="width:26px;height:26px;fill:var(--gold);"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.2h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.86 9.86 0 0 0 12.04 2Zm0 1.67c2.14 0 4.15.83 5.66 2.35a7.95 7.95 0 0 1 2.34 5.68c0 4.42-3.6 8.02-8.02 8.02a8 8 0 0 1-4.08-1.11l-.29-.17-3.12.82.83-3.04-.19-.31a7.93 7.93 0 0 1-1.22-4.24c0-4.42 3.6-8 8.09-8Zm-4.38 4.6c-.15 0-.4.06-.61.3-.21.24-.8.78-.8 1.9s.82 2.2.94 2.36c.11.15 1.6 2.55 3.95 3.48 1.95.77 2.35.62 2.77.58.43-.04 1.38-.56 1.58-1.11.19-.54.19-1 .13-1.1-.06-.1-.21-.16-.43-.28-.23-.11-1.38-.68-1.6-.76-.21-.08-.37-.11-.53.11-.15.23-.6.76-.74.91-.13.15-.27.17-.5.06-.23-.12-.98-.36-1.86-1.15-.69-.61-1.15-1.37-1.29-1.6-.13-.23-.01-.35.1-.47.11-.11.23-.27.35-.4.11-.14.15-.23.23-.39.08-.15.04-.29-.02-.4-.06-.12-.53-1.3-.74-1.77-.19-.46-.39-.4-.53-.4h-.45Z"/></svg>
+  </button>
+</a>
 
 <!-- SCROLL TOP -->
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
@@ -1595,7 +1418,71 @@
   function setTab(el) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     el.classList.add('active');
+    renderLatestArticles(el.dataset.cat);
   }
+
+  // LATEST ARTICLES (real data from API)
+  let allArticlesCache = [];
+  async function loadLatestArticles() {
+    const list = document.getElementById('latestArticlesList');
+    try {
+      const res = await fetch('/api/articles');
+      const data = await res.json();
+      allArticlesCache = data.articles;
+      renderLatestArticles('all');
+    } catch (e) {
+      list.innerHTML = '<div style="text-align:center;color:var(--ink-muted);padding:30px 0;">تعذّر تحميل المقالات.</div>';
+    }
+  }
+
+  function renderLatestArticles(catSlug) {
+    const list = document.getElementById('latestArticlesList');
+    const filtered = catSlug === 'all' ? allArticlesCache : allArticlesCache.filter(a => a.category_slug === catSlug);
+    const items = filtered.slice(0, 6);
+
+    if (!items.length) {
+      list.innerHTML = '<div style="text-align:center;color:var(--ink-muted);padding:30px 0;">لا توجد مقالات في هذا التصنيف بعد.</div>';
+      return;
+    }
+
+    list.innerHTML = items.map(a => {
+      const authorName = escapeHtmlLocal(`${a.author_first_name || ''} ${a.author_last_name || ''}`.trim() || a.author_username);
+      const title = escapeHtmlLocal(a.title);
+      const image = escapeHtmlLocal(a.featured_image_url || '');
+      const avatar = escapeHtmlLocal(a.author_avatar || '');
+      const category = escapeHtmlLocal(a.category_name || '');
+      const description = escapeHtmlLocal(a.description || '');
+      const link = `article-view.html?slug=${encodeURIComponent(a.slug)}`;
+      return `
+        <div class="card">
+          <a class="article-image-wrap" href="${link}">
+            ${image ? `<img class="card-img" src="${image}" alt="${title}" loading="lazy">` : '<div class="card-img"></div>'}
+            <span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ${a.view_count.toLocaleString('ar-EG')} مشاهدة</span>
+            ${category ? `<span class="card-category">${category}</span>` : ''}
+          </a>
+          <div class="card-body">
+            <a class="card-title" href="${link}">${title}</a>
+            <div class="card-excerpt">${description}</div>
+            <div class="card-footer">
+              <div class="card-author">
+                <div class="author-avatar" style="overflow:hidden;">${avatar ? `<img src="${avatar}" alt="${authorName}" style="width:100%;height:100%;">` : ''}</div>
+                <div class="author-name">${authorName}</div>
+              </div>
+              <div class="card-stats">
+                <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ${a.view_count.toLocaleString('ar-EG')}</span>
+                <span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ${a.like_count.toLocaleString('ar-EG')}</span>
+                <span class="card-stat share-stat" onclick="openSharePanel(event,'${title.replace(/'/g, '')}')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  function escapeHtmlLocal(str) {
+    return String(str ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+  loadLatestArticles();
 
   // MODAL
   function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
@@ -1652,7 +1539,7 @@
       closeModal();
       showToast('تم تسجيل الدخول بنجاح', 'gold');
     } catch (e) {
-      showFormError('loginError', 'تعذّر الاتصال بالسيرفر. شغّلي السيرفر أولاً (server/README).');
+      showFormError('loginError', 'تعذّر الاتصال بالسيرفر. شغّل السيرفر أولاً (server/README).');
     }
   }
 
@@ -1662,7 +1549,7 @@
     const email = document.getElementById('registerEmail').value.trim();
     const phone = document.getElementById('registerPhone').value.trim();
     const password = document.getElementById('registerPassword').value;
-    if (!fullName || !email || !password) return showFormError('registerError', 'من فضلك أكملي كل الحقول المطلوبة');
+    if (!fullName || !email || !password) return showFormError('registerError', 'من فضلك أكمل كل الحقول المطلوبة');
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -1674,7 +1561,7 @@
       closeModal();
       showToast('تم إنشاء حسابك بنجاح! مرحباً بك', 'gold');
     } catch (e) {
-      showFormError('registerError', 'تعذّر الاتصال بالسيرفر. شغّلي السيرفر أولاً (server/README).');
+      showFormError('registerError', 'تعذّر الاتصال بالسيرفر. شغّل السيرفر أولاً (server/README).');
     }
   }
 
@@ -1701,23 +1588,115 @@
   }
   loadSiteStats();
 
+  // CATEGORIES — load real counts from API
+  const CAT_ICONS = {
+    culture:'#icon-book', tech:'#icon-cpu', business:'#icon-chart', art:'#icon-pen',
+    health:'#icon-heart', politics:'#icon-users', history:'#icon-book', religion:'#icon-shield',
+    environment:'#icon-pin', marketing:'#icon-chart', entrepreneurship:'#icon-chart',
+    education:'#icon-book', travel:'#icon-pin', sports:'#icon-heart', literature:'#icon-pen',
+    poetry:'#icon-pen', ai:'#icon-cpu', programming:'#icon-cpu', language:'#icon-book', family:'#icon-users',
+  };
+  async function loadCategories() {
+    try {
+      const res = await fetch('/api/categories');
+      if (!res.ok) return;
+      const data = await res.json();
+      const grid = document.getElementById('catsGrid');
+      if (grid) {
+        grid.innerHTML = data.categories.slice(0, 20).map(c => {
+          const icon = CAT_ICONS[c.slug] || '#icon-book';
+          const count = c.article_count || 0;
+          return `<a class="cat-card" href="browse-articles.html?cat=${encodeURIComponent(c.slug)}">
+            <div class="cat-card-icon"><svg class="ui-icon"><use href="${icon}"></use></svg></div>
+            <div class="cat-card-name">${c.name}</div>
+            <div class="cat-card-count">${count.toLocaleString('ar-EG')} مقال</div>
+          </a>`;
+        }).join('');
+      }
+      const tags = document.getElementById('sidebarCatTags');
+      if (tags) {
+        tags.innerHTML = data.categories.slice(0, 12).map(c =>
+          `<a class="cat-tag" href="browse-articles.html?cat=${encodeURIComponent(c.slug)}">${c.name}</a>`
+        ).join('');
+      }
+    } catch (e) {
+      // fallback: leave lists empty on no server
+    }
+  }
+  loadCategories();
+
+  // TOP WRITERS (gamification widget)
+  async function loadTopWriters() {
+    const body = document.getElementById('topWritersBody');
+    if (!body) return;
+    try {
+      const res = await fetch('/api/authors/top/writers?limit=5');
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data.writers.length) {
+        body.innerHTML = '<div style="text-align:center;color:var(--ink-muted);font-size:0.82rem;padding:12px 0;">لسه مفيش كتّاب نشروا مقالات.</div>';
+        return;
+      }
+      body.innerHTML = data.writers.map((w, i) => {
+        const name = escapeHtmlLocal(`${w.first_name || ''} ${w.last_name || ''}`.trim() || w.username);
+        const rank = (i + 1).toLocaleString('ar-EG');
+        const rankClass = i < 2 ? 'writer-rank top' : 'writer-rank';
+        return `
+          <div class="writer-item">
+            <div class="${rankClass}">${rank}</div>
+            <a class="writer-avatar-lg" href="author-${encodeURIComponent(w.username)}.html" style="overflow:hidden;"><img src="/images/authors/${encodeURIComponent(w.username)}.jpg" alt="${name}" style="width:100%;height:100%;" onerror="this.style.display='none'"></a>
+            <div class="writer-info">
+              <a class="writer-name" href="author-${encodeURIComponent(w.username)}.html" style="color:inherit;">${name}</a>
+              <div class="writer-articles">${w.article_count.toLocaleString('ar-EG')} مقال · ${w.follower_count.toLocaleString('ar-EG')} متابع</div>
+            </div>
+            <button class="follow-btn" data-author-id="${escapeHtmlLocal(w.username)}">متابعة</button>
+          </div>
+        `;
+      }).join('');
+      window.harfInitFollowButtons && window.harfInitFollowButtons();
+    } catch (e) {
+      body.innerHTML = '';
+    }
+  }
+  loadTopWriters();
+
+  // SHARE PANEL
+  function openSharePanel(e, title) {
+    e.preventDefault(); e.stopPropagation();
+    const url = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(title + ' — منصة حرف');
+    const panel = document.getElementById('sharePanel');
+    panel.querySelector('.sp-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    panel.querySelector('.sp-x').href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+    panel.querySelector('.sp-wa').href = `https://api.whatsapp.com/send?text=${text}%20${url}`;
+    panel.querySelector('.sp-tg').href = `https://t.me/share/url?url=${url}&text=${text}`;
+    const rect = e.currentTarget.getBoundingClientRect();
+    panel.style.top = (rect.bottom + window.scrollY + 8) + 'px';
+    panel.style.right = (document.body.clientWidth - rect.right) + 'px';
+    panel.classList.toggle('open');
+  }
+  function shareSite() {
+    const url = encodeURIComponent(window.location.origin);
+    const text = encodeURIComponent('منصة حرف — اكتب وانشر واربح');
+    const panel = document.getElementById('sharePanel');
+    panel.querySelector('.sp-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    panel.querySelector('.sp-x').href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+    panel.querySelector('.sp-wa').href = `https://api.whatsapp.com/send?text=${text}%20${url}`;
+    panel.querySelector('.sp-tg').href = `https://t.me/share/url?url=${url}&text=${text}`;
+    panel.style.top = '80px'; panel.style.right = '24px';
+    panel.classList.toggle('open');
+  }
+  document.addEventListener('click', e => {
+    const panel = document.getElementById('sharePanel');
+    if (panel && !panel.contains(e.target)) panel.classList.remove('open');
+  });
+
   // TOAST
   function showToast(msg, type='') {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.className = 'toast show' + (type ? ' '+type : '');
     setTimeout(() => t.className = 'toast', 3000);
-  }
-
-  // CHAT
-  function toggleChat() {
-    document.getElementById('chatBubble').classList.toggle('open');
-  }
-  function sendChat() {
-    const inp = document.querySelector('.chat-input');
-    if (!inp.value.trim()) return;
-    showToast('تم إرسال رسالتك، سيرد عليك الفريق قريباً!');
-    inp.value = '';
   }
 
   // SCROLL TOP

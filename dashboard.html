@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم | حرف</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1B4D3E; --green-dark: #122E25; --gold: #C9A84C; --gold-light:#E2C97E; --gold-pale: #F5EDD3;
+    --white: #FFFFFF; --cream: #F8F6F1; --ink: #1A1A1A; --ink-soft: #444444; --ink-muted: #888888;
+    --shadow: 0 8px 30px rgba(27,77,62,0.08); --radius: 12px;
+  }
+  * , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Cairo', 'Tajawal', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.8; }
+  a { text-decoration: none; color: inherit; }
+  button { font-family: inherit; cursor: pointer; }
+
+  .site-header { background: var(--green); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
+  .site-header-inner { max-width: 980px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark { width: 38px; height: 38px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.18); flex-shrink: 0; }
+  .logo-text { color: var(--white); font-size: 1.25rem; font-weight: 800; }
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+  .btn-write { background: var(--gold); color: var(--green-dark); font-size: 0.85rem; font-weight: 700; padding: 9px 18px; border-radius: 8px; }
+  .header-link { color: rgba(255,255,255,0.8); font-size: 0.85rem; font-weight: 600; padding: 8px 4px; }
+
+  .container { max-width: 980px; margin: 0 auto; padding: 32px 24px 60px; }
+  h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
+  .subtitle { color: var(--ink-muted); font-size: 0.9rem; margin-bottom: 28px; }
+  .section-title { font-size: 1.1rem; font-weight: 800; margin: 36px 0 16px; }
+
+  /* Stats Cards */
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .stat-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; display: flex; align-items: center; gap: 16px; }
+  .stat-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--gold-pale); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .stat-icon svg { width: 22px; height: 22px; stroke: var(--green); fill: none; stroke-width: 1.8; }
+  .stat-num { font-size: 1.5rem; font-weight: 900; color: var(--ink); line-height: 1.2; }
+  .stat-label { font-size: 0.78rem; color: var(--ink-muted); margin-top: 2px; }
+
+  /* Articles table */
+  .table-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th { text-align: right; font-size: 0.78rem; color: var(--ink-muted); font-weight: 700; padding: 14px 18px; border-bottom: 1px solid rgba(0,0,0,0.06); background: var(--cream); }
+  tbody td { padding: 14px 18px; font-size: 0.85rem; border-bottom: 1px solid rgba(0,0,0,0.05); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  .art-title { font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+  .art-meta { font-size: 0.75rem; color: var(--ink-muted); }
+  .status-badge { font-size: 0.72rem; font-weight: 700; padding: 4px 12px; border-radius: 100px; white-space: nowrap; }
+  .status-pending_review { background: var(--gold-pale); color: #8a6d1a; }
+  .status-published { background: #e8f5ee; color: var(--green); }
+  .status-rejected { background: #fdecea; color: #c0392b; }
+  .status-draft { background: #f0f0f0; color: var(--ink-muted); }
+  .row-actions { display: flex; gap: 8px; white-space: nowrap; }
+  .btn-icon { padding: 6px 12px; border-radius: 7px; font-size: 0.78rem; font-weight: 700; border: 1.5px solid transparent; }
+  .btn-edit { background: var(--gold-pale); color: #8a6d1a; }
+  .btn-edit:hover { background: var(--gold); color: var(--green-dark); }
+  .btn-delete { background: #fdecea; color: #c0392b; }
+  .btn-delete:hover { background: #c0392b; color: var(--white); }
+  .empty-note { text-align: center; color: var(--ink-muted); font-size: 0.88rem; padding: 40px 20px; }
+
+  /* Wallet section */
+  .wallet-card { background: linear-gradient(120deg, var(--green), var(--green-dark)); border-radius: var(--radius); padding: 28px 24px; color: var(--white); margin-bottom: 0; }
+  .wallet-row { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+  .wallet-label { font-size: 0.85rem; opacity: 0.75; margin-bottom: 6px; }
+  .wallet-amount { font-size: 2.2rem; font-weight: 900; }
+  .btn-withdraw { background: var(--gold); color: var(--green-dark); padding: 11px 22px; border-radius: 9px; font-weight: 700; font-size: 0.88rem; border: none; }
+  .withdraw-card { margin-top: 16px; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 24px; display: none; }
+  .withdraw-card.open { display: block; }
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-size: 0.85rem; font-weight: 700; color: var(--ink-soft); margin-bottom: 6px; display: block; }
+  .form-input, .form-select { width: 100%; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 9px; padding: 10px 14px; font-family: inherit; font-size: 0.9rem; outline: none; background: var(--cream); }
+  .form-input:focus, .form-select:focus { border-color: var(--green); background: var(--white); }
+  .btn-submit-withdraw { background: var(--green); color: var(--white); padding: 11px 24px; border-radius: 9px; font-size: 0.88rem; font-weight: 700; border: none; }
+  .btn-submit-withdraw:hover { background: #24664F; }
+  .btn-submit-withdraw:disabled { opacity: .5; cursor: not-allowed; }
+  .status-msg { font-size: 0.85rem; padding: 10px 14px; border-radius: 8px; margin: 12px 0; display: none; }
+  .status-msg.ok { background: #e8f5ee; color: var(--green); display: block; }
+  .status-msg.err { background: #fdecea; color: #c0392b; display: block; }
+  .withdraw-history-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 0.85rem; }
+  .withdraw-history-row:last-child { border-bottom: none; }
+  .req-status { font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 100px; background: var(--gold-pale); color: var(--green); }
+
+  /* Saved payment methods */
+  .methods-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 24px; margin-top: 16px; }
+  .methods-title { font-weight: 800; font-size: 0.95rem; margin-bottom: 6px; }
+  .methods-subtitle { font-size: 0.78rem; color: var(--ink-muted); margin-bottom: 18px; }
+  .method-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .method-row:last-child { margin-bottom: 0; }
+  .method-label { width: 120px; flex-shrink: 0; font-size: 0.85rem; font-weight: 700; color: var(--ink-soft); }
+  .method-input { flex: 1; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 8px 12px; font-family: inherit; font-size: 0.85rem; outline: none; background: var(--cream); }
+  .method-input:focus { border-color: var(--green); background: var(--white); }
+  .method-save-btn { background: var(--green); color: var(--white); padding: 8px 16px; border-radius: 7px; font-size: 0.78rem; font-weight: 700; border: none; flex-shrink: 0; }
+  .method-save-btn:hover { background: #24664F; }
+  .method-saved-tag { font-size: 0.68rem; font-weight: 700; color: var(--green); background: #e8f5ee; padding: 3px 10px; border-radius: 100px; flex-shrink: 0; white-space: nowrap; }
+
+  .gate { text-align: center; padding: 60px 20px; }
+  .gate a { color: var(--green); font-weight: 700; }
+
+  /* Notifications */
+  .notif-bell { position: relative; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--white); border-radius: 8px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; }
+  .notif-dot { position: absolute; top: -4px; left: -4px; background: #c0392b; color: #fff; font-size: 0.65rem; font-weight: 800; border-radius: 100px; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
+  .notif-panel { position: absolute; left: 24px; top: 60px; width: 320px; max-height: 400px; overflow-y: auto; background: var(--white); border-radius: 12px; box-shadow: 0 12px 32px rgba(0,0,0,0.18); border: 1px solid rgba(0,0,0,0.06); z-index: 500; display: none; }
+  .notif-panel.open { display: block; }
+  .notif-item { padding: 14px 16px; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 0.8rem; color: var(--ink-soft); line-height: 1.6; }
+  .notif-item:last-child { border-bottom: none; }
+  .notif-item.unread { background: var(--gold-pale); }
+  .notif-time { font-size: 0.7rem; color: var(--ink-muted); margin-top: 6px; }
+
+  @media (max-width: 700px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    thead { display: none; }
+    tbody tr { display: block; padding: 14px 18px; }
+    tbody td { display: block; padding: 3px 0; border-bottom: none; }
+    tbody tr:not(:last-child) { border-bottom: 1px solid rgba(0,0,0,0.06); }
+  }
+</style>
+</head>
+<body>
+
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
+  <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2C97E"/><stop offset="1" stop-color="#C9A84C"/></linearGradient>
+  <symbol id="icon-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21Z"/><path d="M4 5.5v15M8 7h8M8 11h8"/></symbol>
+  <symbol id="logo-badge" viewBox="0 0 44 44">
+    <rect x="1" y="1" width="42" height="42" rx="13" fill="url(#logoGrad)"/>
+    <g transform="translate(10,10)" fill="none" stroke="#122E25" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-book"></use></g>
+  </symbol>
+  <symbol id="icon-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+  <symbol id="icon-doc" viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6Z"/><path d="M14 2v6h6"/></symbol>
+  <symbol id="icon-wallet" viewBox="0 0 24 24"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h12A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-12A2.5 2.5 0 0 1 3 16.5Z"/><path d="M15.5 12.5h3.5v3h-3.5a1.5 1.5 0 0 1 0-3Z"/><path d="M3 9h17"/></symbol>
+</defs></svg>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="logo" href="harf-website.html">
+      <svg class="logo-mark" viewBox="0 0 44 44" aria-hidden="true"><use href="#logo-badge"></use></svg>
+      <span class="logo-text">حرف</span>
+    </a>
+    <div class="header-actions" style="position:relative;">
+      <button class="notif-bell" onclick="toggleNotifPanel()" title="الإشعارات">
+        <svg style="width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+        <span class="notif-dot" id="notifDot" style="display:none;">0</span>
+      </button>
+      <div class="notif-panel" id="notifPanel"></div>
+      <a class="header-link" href="edit-profile.html">ملفي الشخصي</a>
+      <a class="btn-write" href="write-article.html">اكتب مقالاً</a>
+    </div>
+  </div>
+</header>
+
+<main class="container" id="gateView" style="display:none;">
+  <div class="gate">
+    <p>لازم تسجّل الدخول الأول عشان تشوف لوحة تحكمك.</p>
+    <p style="margin-top:10px;"><a href="harf-website.html">الرجوع للرئيسية وتسجيل الدخول</a></p>
+  </div>
+</main>
+
+<main class="container" id="dashView" style="display:none;">
+  <h1>لوحة التحكم</h1>
+  <p class="subtitle">نظرة شاملة على مقالاتك وأرباحك على منصة حرف.</p>
+
+  <!-- QUICK STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon"><svg><use href="#icon-doc"></use></svg></div>
+      <div>
+        <div class="stat-num" id="statPublished">٠</div>
+        <div class="stat-label">مقال منشور</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><svg><use href="#icon-eye"></use></svg></div>
+      <div>
+        <div class="stat-num" id="statViews">٠</div>
+        <div class="stat-label">إجمالي المشاهدات</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><svg><use href="#icon-wallet"></use></svg></div>
+      <div>
+        <div class="stat-num" id="statEarnings">$٠</div>
+        <div class="stat-label">الأرباح المقدّرة</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARTICLES TABLE -->
+  <div class="section-title">مقالاتي</div>
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>المقال</th>
+          <th>الحالة</th>
+          <th>المشاهدات</th>
+          <th>إجراءات</th>
+        </tr>
+      </thead>
+      <tbody id="articlesBody">
+        <tr><td colspan="4" class="empty-note">جاري التحميل...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- WALLET -->
+  <div class="section-title">الرصيد والسحب</div>
+  <div class="wallet-card">
+    <div class="wallet-row">
+      <div>
+        <div class="wallet-label">الرصيد المتاح للسحب</div>
+        <div class="wallet-amount" id="availableBalance">$0.00</div>
+      </div>
+      <button class="btn-withdraw" onclick="toggleWithdrawForm()">طلب سحب أرباح ←</button>
+    </div>
+  </div>
+
+  <div class="withdraw-card" id="withdrawForm">
+    <div style="font-weight:800;margin-bottom:14px;">طلب سحب جديد</div>
+    <div id="withdrawStatus" class="status-msg"></div>
+    <div class="form-group">
+      <label class="form-label">المبلغ (بالدولار) — الحد الأدنى ١٠$</label>
+      <input class="form-input" id="withdrawAmount" type="number" min="10" step="0.01" placeholder="10.00">
+    </div>
+    <div class="form-group">
+      <label class="form-label">طريقة السحب المفضلة</label>
+      <select class="form-select" id="withdrawMethod"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">رقم المحفظة / الحساب</label>
+      <input class="form-input" id="withdrawDetails" type="text" placeholder="مثال: 010XXXXXXXX">
+    </div>
+    <button class="btn-submit-withdraw" onclick="submitWithdrawal()">تأكيد طلب السحب</button>
+
+    <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,0,0,0.06);">
+      <div style="font-weight:700;font-size:0.9rem;margin-bottom:10px;">سجل طلبات السحب</div>
+      <div id="withdrawHistory"><div class="empty-note">لا توجد طلبات سحب بعد.</div></div>
+    </div>
+  </div>
+
+  <!-- SAVED PAYMENT METHODS -->
+  <div class="methods-card">
+    <div class="methods-title">وسائل السحب المحفوظة</div>
+    <div class="methods-subtitle">احفظ بيانات محفظتك لكل وسيلة مرة واحدة، وهتظهر جاهزة تلقائيًا عند طلب السحب.</div>
+    <div id="methodsBody"></div>
+  </div>
+
+</main>
+
+<script>
+  const STATUS_LABELS = { draft: 'مسودة', pending_review: 'قيد المراجعة', published: 'منشور', rejected: 'مرفوض' };
+  const WITHDRAW_STATUS_LABELS = { pending: 'قيد المراجعة', approved: 'مقبول', processing: 'جاري التحويل', completed: 'تم التحويل', rejected: 'مرفوض' };
+
+  function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+
+  async function init() {
+    const meRes = await fetch('/api/auth/me');
+    const meData = await meRes.json();
+    if (!meData.user) {
+      document.getElementById('gateView').style.display = 'block';
+      return;
+    }
+    document.getElementById('dashView').style.display = 'block';
+
+    loadArticlesAndStats();
+    loadWallet();
+    loadWithdrawMethods();
+    loadWithdrawHistory();
+    loadNotifications();
+    loadSavedMethods();
+  }
+
+  const METHOD_LABELS = { vodafone_cash: 'فودافون كاش', etisalat_cash: 'اتصالات كاش', instapay: 'إنستا باي', tilda: 'تيلدا', airtm: 'AirTM' };
+  let savedAccounts = {};
+
+  async function loadSavedMethods() {
+    try {
+      const res = await fetch('/api/payment-accounts');
+      if (!res.ok) return;
+      const data = await res.json();
+      savedAccounts = {};
+      data.accounts.forEach(a => savedAccounts[a.method] = a.account_value);
+
+      const body = document.getElementById('methodsBody');
+      body.innerHTML = Object.entries(METHOD_LABELS).map(([method, label]) => {
+        const saved = savedAccounts[method];
+        return `
+          <div class="method-row">
+            <div class="method-label">${label}</div>
+            <input class="method-input" id="methodInput-${method}" type="text" placeholder="رقم المحفظة / الحساب" value="${escapeHtml(saved || '')}">
+            ${saved ? '<span class="method-saved-tag">محفوظة ✓</span>' : ''}
+            <button class="method-save-btn" onclick="saveMethod('${method}')">حفظ</button>
+          </div>
+        `;
+      }).join('');
+
+      // لو النموذج ظاهر، حدّثي الاختيار التلقائي لآخر بيانات محفوظة
+      autoFillWithdrawDetails();
+    } catch (e) {
+      // فشل تحميل الوسائل المحفوظة لا يمنع باقي اللوحة
+    }
+  }
+
+  async function saveMethod(method) {
+    const input = document.getElementById(`methodInput-${method}`);
+    const accountValue = input.value.trim();
+    if (!accountValue) { alert('من فضلك أدخل بيانات المحفظة أولاً'); return; }
+    try {
+      const res = await fetch(`/api/payment-accounts/${method}`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accountValue }),
+      });
+      if (!res.ok) { const d = await res.json(); alert(d.error || 'تعذّر الحفظ'); return; }
+      loadSavedMethods();
+    } catch (e) {
+      alert('تعذّر الاتصال بالسيرفر');
+    }
+  }
+
+  function autoFillWithdrawDetails() {
+    const methodSelect = document.getElementById('withdrawMethod');
+    const detailsInput = document.getElementById('withdrawDetails');
+    if (!methodSelect || !detailsInput) return;
+    if (savedAccounts[methodSelect.value]) detailsInput.value = savedAccounts[methodSelect.value];
+  }
+
+  async function loadNotifications() {
+    try {
+      const res = await fetch('/api/notifications');
+      if (!res.ok) return;
+      const data = await res.json();
+      const dot = document.getElementById('notifDot');
+      if (data.unreadCount > 0) {
+        dot.style.display = 'flex';
+        dot.textContent = data.unreadCount > 9 ? '9+' : data.unreadCount;
+      } else {
+        dot.style.display = 'none';
+      }
+      const panel = document.getElementById('notifPanel');
+      if (!data.notifications.length) {
+        panel.innerHTML = '<div class="notif-item">لا توجد إشعارات حالياً.</div>';
+        return;
+      }
+      panel.innerHTML = data.notifications.map(n => `
+        <div class="notif-item ${n.is_read ? '' : 'unread'}">
+          ${escapeHtml(n.message)}
+          <div class="notif-time">${new Date(n.created_at).toLocaleString('ar-EG')}</div>
+        </div>
+      `).join('');
+    } catch (e) {
+      // تجاهل فشل تحميل الإشعارات، ماينفعش يمنع باقي اللوحة
+    }
+  }
+
+  function toggleNotifPanel() {
+    const panel = document.getElementById('notifPanel');
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) {
+      fetch('/api/notifications/read-all', { method: 'POST' }).then(() => {
+        document.getElementById('notifDot').style.display = 'none';
+        document.querySelectorAll('.notif-item.unread').forEach(el => el.classList.remove('unread'));
+      });
+    }
+  }
+  document.addEventListener('click', (e) => {
+    const panel = document.getElementById('notifPanel');
+    const bell = e.target.closest('.notif-bell');
+    if (panel && !panel.contains(e.target) && !bell) panel.classList.remove('open');
+  });
+
+  async function loadArticlesAndStats() {
+    const res = await fetch('/api/articles/mine');
+    const data = await res.json();
+    const articles = data.articles || [];
+
+    const published = articles.filter(a => a.status === 'published');
+    const totalViews = articles.reduce((sum, a) => sum + (a.view_count || 0), 0);
+    document.getElementById('statPublished').textContent = published.length.toLocaleString('ar-EG');
+    document.getElementById('statViews').textContent = totalViews.toLocaleString('ar-EG');
+
+    const tbody = document.getElementById('articlesBody');
+    if (!articles.length) {
+      tbody.innerHTML = `<tr><td colspan="4" class="empty-note">لسه مكتبتش أي مقال. <a href="write-article.html" style="color:var(--green);font-weight:700;">ابدأ أول مقال ←</a></td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = articles.map(a => {
+      const title = escapeHtml(a.title);
+      const link = a.status === 'published' ? `article-view.html?slug=${encodeURIComponent(a.slug)}` : null;
+      const titleHtml = link ? `<a href="${link}" style="color:inherit;">${title}</a>` : title;
+      const rejectHtml = a.status === 'rejected' && a.rejection_reason ? `<div class="art-meta" style="color:#c0392b;">سبب الرفض: ${escapeHtml(a.rejection_reason)}</div>` : '';
+      return `
+        <tr>
+          <td>
+            <div class="art-title">${titleHtml}</div>
+            <div class="art-meta">${escapeHtml(a.category_name || 'بدون تصنيف')} · ${new Date(a.created_at).toLocaleDateString('ar-EG')}</div>
+            ${rejectHtml}
+          </td>
+          <td><span class="status-badge status-${a.status}">${STATUS_LABELS[a.status] || a.status}</span></td>
+          <td>${(a.view_count || 0).toLocaleString('ar-EG')}</td>
+          <td>
+            <div class="row-actions">
+              <a class="btn-icon btn-edit" href="write-article.html?slug=${encodeURIComponent(a.slug)}">تعديل</a>
+              <button class="btn-icon btn-delete" onclick="deleteArticle('${encodeURIComponent(a.slug)}', this)">حذف</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async function deleteArticle(slug, btn) {
+    if (!confirm('متأكدة إنك عايزة تحذفي المقال ده؟ الحذف نهائي ومش هترجعي فيه.')) return;
+    btn.disabled = true;
+    try {
+      const res = await fetch(`/api/articles/${slug}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = await res.json();
+        alert(data.error || 'تعذّر حذف المقال');
+        btn.disabled = false;
+        return;
+      }
+      loadArticlesAndStats();
+    } catch (e) {
+      alert('تعذّر الاتصال بالسيرفر');
+      btn.disabled = false;
+    }
+  }
+
+  async function loadWallet() {
+    const res = await fetch('/api/wallet');
+    if (!res.ok) return;
+    const data = await res.json();
+    document.getElementById('availableBalance').textContent = '$' + data.wallet.availableBalance.toFixed(2);
+    document.getElementById('statEarnings').textContent = '$' + data.wallet.totalEarnings.toFixed(2);
+  }
+
+  async function loadWithdrawMethods() {
+    const res = await fetch('/api/withdrawals/methods');
+    const data = await res.json();
+    const select = document.getElementById('withdrawMethod');
+    select.innerHTML = data.methods.map(m => `<option value="${m.value}">${m.label}</option>`).join('');
+    select.addEventListener('change', autoFillWithdrawDetails);
+    autoFillWithdrawDetails();
+  }
+
+  async function loadWithdrawHistory() {
+    const res = await fetch('/api/withdrawals');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.requests.length) return;
+    document.getElementById('withdrawHistory').innerHTML = data.requests.map(r => `
+      <div class="withdraw-history-row">
+        <div>
+          <div style="font-weight:700;">$${r.amount.toFixed(2)} · ${escapeHtml(r.methodLabel)}</div>
+          <div class="art-meta">${new Date(r.created_at).toLocaleString('ar-EG')}</div>
+        </div>
+        <span class="req-status">${WITHDRAW_STATUS_LABELS[r.status] || r.status}</span>
+      </div>
+    `).join('');
+  }
+
+  function toggleWithdrawForm() {
+    document.getElementById('withdrawForm').classList.toggle('open');
+  }
+
+  async function submitWithdrawal() {
+    const statusEl = document.getElementById('withdrawStatus');
+    statusEl.className = 'status-msg';
+    const amount = document.getElementById('withdrawAmount').value;
+    const method = document.getElementById('withdrawMethod').value;
+    const paymentDetails = document.getElementById('withdrawDetails').value.trim();
+    try {
+      const res = await fetch('/api/withdrawals', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount, method, paymentDetails }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        statusEl.textContent = data.error || 'تعذّر إرسال طلب السحب';
+        statusEl.className = 'status-msg err';
+        return;
+      }
+      statusEl.textContent = 'تم إرسال طلب السحب بنجاح، هيتراجع خلال ٧ أيام عمل.';
+      statusEl.className = 'status-msg ok';
+      document.getElementById('withdrawAmount').value = '';
+      document.getElementById('withdrawDetails').value = '';
+      loadWallet();
+      loadWithdrawHistory();
+    } catch (e) {
+      statusEl.textContent = 'تعذّر الاتصال بالسيرفر';
+      statusEl.className = 'status-msg err';
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>

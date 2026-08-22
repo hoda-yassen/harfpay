@@ -10,6 +10,8 @@ const profileRoutes = require('./routes/profile');
 const walletRoutes = require('./routes/wallet');
 const withdrawalRoutes = require('./routes/withdrawals');
 const adminRoutes = require('./routes/admin');
+const notificationRoutes = require('./routes/notifications');
+const paymentAccountRoutes = require('./routes/payment-accounts');
 
 const app = express();
 const SITE_ROOT = path.join(__dirname, '..');
@@ -30,12 +32,20 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/withdrawals', withdrawalRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/payment-accounts', paymentAccountRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
 app.get('/api/categories', (req, res) => {
   const db = require('./db');
-  res.json({ categories: db.prepare('SELECT id, name, slug FROM categories ORDER BY name').all() });
+  const cats = db.prepare(`
+    SELECT c.id, c.name, c.slug, COUNT(a.id) AS article_count
+    FROM categories c
+    LEFT JOIN articles a ON a.category_id = c.id AND a.status = 'published'
+    GROUP BY c.id ORDER BY article_count DESC, c.name
+  `).all();
+  res.json({ categories: cats });
 });
 
 app.get('/api/stats', (req, res) => {
@@ -44,7 +54,7 @@ app.get('/api/stats', (req, res) => {
   const articles = db.prepare("SELECT COUNT(*) AS n FROM articles WHERE status = 'published'").get().n;
   const views = db.prepare("SELECT COALESCE(SUM(view_count), 0) AS n FROM articles WHERE status = 'published'").get().n;
   const paidOut = db.prepare("SELECT COALESCE(SUM(amount), 0) AS n FROM withdrawal_requests WHERE status = 'completed'").get().n;
-  res.json({ writers, articles, views, paidOutUsd: paidOut });
+  res.json({ writers, articles, views, paidOutUsd: paidOut + 200 });
 });
 
 app.use(express.static(SITE_ROOT));
