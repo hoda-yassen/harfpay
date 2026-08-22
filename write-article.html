@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اكتب مقالاً جديداً | حرف</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1B4D3E; --green-dark: #122E25; --gold: #C9A84C; --gold-light:#E2C97E; --gold-pale: #F5EDD3;
+    --white: #FFFFFF; --cream: #F8F6F1; --ink: #1A1A1A; --ink-soft: #444444; --ink-muted: #888888;
+    --shadow: 0 8px 30px rgba(27,77,62,0.08); --radius: 12px;
+  }
+  * , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Cairo', 'Tajawal', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.8; }
+  a { text-decoration: none; color: inherit; }
+
+  .site-header { background: var(--green); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
+  .site-header-inner { max-width: 780px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark { width: 38px; height: 38px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.18); flex-shrink: 0; }
+  .logo-text { color: var(--white); font-size: 1.25rem; font-weight: 800; }
+  .header-link { color: rgba(255,255,255,0.85); font-size: 0.85rem; font-weight: 600; }
+
+  .container { max-width: 700px; margin: 0 auto; padding: 32px 24px 60px; }
+  h1 { font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
+  .subtitle { color: var(--ink-muted); font-size: 0.88rem; margin-bottom: 24px; }
+
+  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
+  .form-group { margin-bottom: 18px; }
+  .form-label { font-size: 0.85rem; font-weight: 700; color: var(--ink-soft); margin-bottom: 6px; display: block; }
+  .form-input, .form-select, .form-textarea { width: 100%; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 9px; padding: 10px 14px; font-family: inherit; font-size: 0.9rem; outline: none; background: var(--cream); }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--green); background: var(--white); }
+  .form-textarea { min-height: 340px; resize: vertical; line-height: 1.9; }
+  .char-counter { font-size: 0.75rem; margin-top: 6px; color: var(--ink-muted); }
+  .char-counter.ok { color: var(--green); }
+  .char-counter.warn { color: #c0392b; }
+
+  .btn-submit { background: var(--green); color: var(--white); padding: 12px 28px; border-radius: 9px; font-size: 0.9rem; font-weight: 700; border: none; cursor: pointer; }
+  .btn-submit:hover { background: #24664F; }
+  .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
+
+  .status-msg { font-size: 0.85rem; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; display: none; }
+  .status-msg.ok { background: #e8f5ee; color: var(--green); display: block; }
+  .status-msg.err { background: #fdecea; color: #c0392b; display: block; }
+
+  .gate { text-align: center; padding: 60px 20px; }
+  .gate a { color: var(--green); font-weight: 700; }
+
+  .hint-box { font-size: 0.78rem; color: var(--ink-muted); background: var(--gold-pale); padding: 12px 14px; border-radius: 8px; margin-bottom: 20px; }
+</style>
+</head>
+<body>
+
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
+  <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2C97E"/><stop offset="1" stop-color="#C9A84C"/></linearGradient>
+  <symbol id="icon-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21Z"/><path d="M4 5.5v15M8 7h8M8 11h8"/></symbol>
+  <symbol id="logo-badge" viewBox="0 0 44 44">
+    <rect x="1" y="1" width="42" height="42" rx="13" fill="url(#logoGrad)"/>
+    <g transform="translate(10,10)" fill="none" stroke="#122E25" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-book"></use></g>
+  </symbol>
+</defs></svg>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="logo" href="harf-website.html">
+      <svg class="logo-mark" viewBox="0 0 44 44" aria-hidden="true"><use href="#logo-badge"></use></svg>
+      <span class="logo-text">حرف</span>
+    </a>
+    <a class="header-link" href="my-articles.html">مقالاتي ←</a>
+  </div>
+</header>
+
+<main class="container" id="gateView" style="display:none;">
+  <div class="gate">
+    <p>لازم تسجّلي الدخول الأول عشان تكتبي مقالاً.</p>
+    <p style="margin-top:10px;"><a href="harf-website.html">الرجوع للرئيسية وتسجيل الدخول</a></p>
+  </div>
+</main>
+
+<main class="container" id="writeView" style="display:none;">
+  <h1>اكتب مقالاً جديداً</h1>
+  <p class="subtitle">مقالك هيتراجع من فريق حرف قبل ما ينشر فعليًا على الموقع.</p>
+  <div class="hint-box">شروط النشر: العنوان حتى ١٠٠ حرف، والمحتوى بين ١٥٠٠ و٥٠٠٠٠ حرف لضمان جودة المقالات المنشورة على المنصة.</div>
+  <div id="statusMsg" class="status-msg"></div>
+
+  <div class="card">
+    <div class="form-group">
+      <label class="form-label">عنوان المقال</label>
+      <input class="form-input" id="titleInput" type="text" maxlength="100" placeholder="عنوان جذاب وواضح لمقالك">
+    </div>
+    <div class="form-group">
+      <label class="form-label">التصنيف</label>
+      <select class="form-select" id="categoryInput"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">وصف مختصر (يظهر في نتائج البحث)</label>
+      <input class="form-input" id="descriptionInput" type="text" maxlength="160" placeholder="جملة أو جملتان يلخصان مقالك">
+    </div>
+    <div class="form-group">
+      <label class="form-label">رابط صورة الغلاف (اختياري)</label>
+      <input class="form-input" id="imageInput" type="url" placeholder="https://...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">محتوى المقال</label>
+      <textarea class="form-textarea" id="contentInput" placeholder="اكتبي مقالك هنا..."></textarea>
+      <div class="char-counter" id="charCounter">٠ حرف</div>
+    </div>
+    <button class="btn-submit" id="submitBtn" onclick="submitArticle()">إرسال المقال للمراجعة</button>
+  </div>
+</main>
+
+<script>
+  const MIN_LEN = 1500, MAX_LEN = 50000;
+
+  async function init() {
+    const meRes = await fetch('/api/auth/me');
+    const meData = await meRes.json();
+    if (!meData.user) {
+      document.getElementById('gateView').style.display = 'block';
+      return;
+    }
+    document.getElementById('writeView').style.display = 'block';
+
+    const catRes = await fetch('/api/categories');
+    const catData = await catRes.json();
+    document.getElementById('categoryInput').innerHTML = catData.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
+    document.getElementById('contentInput').addEventListener('input', updateCounter);
+    updateCounter();
+  }
+
+  function updateCounter() {
+    const len = document.getElementById('contentInput').value.trim().length;
+    const el = document.getElementById('charCounter');
+    el.textContent = `${len.toLocaleString('ar-EG')} حرف (الحد الأدنى ${MIN_LEN.toLocaleString('ar-EG')})`;
+    el.className = 'char-counter ' + (len >= MIN_LEN && len <= MAX_LEN ? 'ok' : 'warn');
+  }
+
+  async function submitArticle() {
+    const statusEl = document.getElementById('statusMsg');
+    statusEl.className = 'status-msg';
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('/api/articles', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: document.getElementById('titleInput').value,
+          categoryId: document.getElementById('categoryInput').value,
+          description: document.getElementById('descriptionInput').value,
+          featuredImageUrl: document.getElementById('imageInput').value,
+          content: document.getElementById('contentInput').value,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        statusEl.textContent = data.error || 'تعذّر إرسال المقال';
+        statusEl.className = 'status-msg err';
+        btn.disabled = false;
+        return;
+      }
+      statusEl.textContent = 'تم إرسال مقالك للمراجعة بنجاح! هيوصلك إشعار لما يتم نشره.';
+      statusEl.className = 'status-msg ok';
+      setTimeout(() => window.location.href = 'my-articles.html', 1500);
+    } catch (e) {
+      statusEl.textContent = 'تعذّر الاتصال بالسيرفر';
+      statusEl.className = 'status-msg err';
+      btn.disabled = false;
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+# Node
+server/node_modules/
+node_modules/
+
+# Database (يُنشأ تلقائياً عند أول تشغيل)
+server/harf.db
+server/harf.db-shm
+server/harf.db-wal
+
+# Uploads (يُنشأ تلقائياً)
+uploads/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env

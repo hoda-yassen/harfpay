@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>محفظتي | حرف</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1B4D3E; --green-dark: #122E25; --gold: #C9A84C; --gold-light:#E2C97E; --gold-pale: #F5EDD3;
+    --white: #FFFFFF; --cream: #F8F6F1; --ink: #1A1A1A; --ink-soft: #444444; --ink-muted: #888888;
+    --shadow: 0 8px 30px rgba(27,77,62,0.08); --radius: 12px;
+  }
+  * , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Cairo', 'Tajawal', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.8; }
+  a { text-decoration: none; color: inherit; }
+
+  .site-header { background: var(--green); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
+  .site-header-inner { max-width: 780px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark { width: 38px; height: 38px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.18); flex-shrink: 0; }
+  .logo-text { color: var(--white); font-size: 1.25rem; font-weight: 800; }
+
+  .container { max-width: 700px; margin: 0 auto; padding: 32px 24px 60px; }
+  h1 { font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
+  .subtitle { color: var(--ink-muted); font-size: 0.88rem; margin-bottom: 24px; }
+
+  .balance-card { background: linear-gradient(120deg, var(--green), var(--green-dark)); border-radius: var(--radius); padding: 28px 24px; color: var(--white); margin-bottom: 20px; }
+  .balance-label { font-size: 0.85rem; opacity: 0.75; margin-bottom: 6px; }
+  .balance-amount { font-size: 2.4rem; font-weight: 900; }
+  .balance-row { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; }
+  .btn-withdraw { background: var(--gold); color: var(--green-dark); padding: 11px 22px; border-radius: 9px; font-weight: 700; font-size: 0.88rem; border: none; cursor: pointer; font-family: inherit; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 24px; }
+  .stat-box { background: var(--white); border-radius: var(--radius); padding: 16px; text-align: center; box-shadow: var(--shadow); }
+  .stat-num { font-size: 1.3rem; font-weight: 800; color: var(--green); }
+  .stat-label { font-size: 0.75rem; color: var(--ink-muted); margin-top: 4px; }
+
+  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 24px; }
+  .card-title { font-weight: 800; font-size: 1rem; margin-bottom: 14px; }
+  .view-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06); font-size: 0.85rem; }
+  .view-row:last-child { border-bottom: none; }
+  .view-article { color: var(--ink-soft); font-weight: 600; }
+  .view-meta { color: var(--ink-muted); font-size: 0.75rem; }
+  .view-earning { color: var(--green); font-weight: 700; }
+  .empty-note { text-align: center; color: var(--ink-muted); font-size: 0.85rem; padding: 20px 0; }
+  .rpm-note { font-size: 0.75rem; color: var(--ink-muted); margin-top: 16px; padding: 12px 14px; background: var(--gold-pale); border-radius: 8px; }
+
+  .gate { text-align: center; padding: 60px 20px; }
+  .gate a { color: var(--green); font-weight: 700; }
+
+  .withdraw-card { margin-top: 20px; }
+  .form-group { margin-bottom: 14px; }
+  .form-label { font-size: 0.85rem; font-weight: 700; color: var(--ink-soft); margin-bottom: 6px; display: block; }
+  .form-input, .form-select { width: 100%; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 9px; padding: 10px 14px; font-family: inherit; font-size: 0.9rem; outline: none; background: var(--cream); }
+  .form-input:focus, .form-select:focus { border-color: var(--green); background: var(--white); }
+  .btn-submit-withdraw { background: var(--green); color: var(--white); padding: 11px 24px; border-radius: 9px; font-size: 0.88rem; font-weight: 700; border: none; cursor: pointer; }
+  .btn-submit-withdraw:hover { background: #24664F; }
+  .btn-submit-withdraw:disabled { opacity: .5; cursor: not-allowed; }
+  .status-msg { font-size: 0.85rem; padding: 10px 14px; border-radius: 8px; margin: 12px 0; display: none; }
+  .status-msg.ok { background: #e8f5ee; color: var(--green); display: block; }
+  .status-msg.err { background: #fdecea; color: #c0392b; display: block; }
+  .req-status { font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 100px; background: var(--gold-pale); color: var(--green); }
+</style>
+</head>
+<body>
+
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
+  <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2C97E"/><stop offset="1" stop-color="#C9A84C"/></linearGradient>
+  <symbol id="icon-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21Z"/><path d="M4 5.5v15M8 7h8M8 11h8"/></symbol>
+  <symbol id="logo-badge" viewBox="0 0 44 44">
+    <rect x="1" y="1" width="42" height="42" rx="13" fill="url(#logoGrad)"/>
+    <g transform="translate(10,10)" fill="none" stroke="#122E25" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-book"></use></g>
+  </symbol>
+</defs></svg>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="logo" href="harf-website.html">
+      <svg class="logo-mark" viewBox="0 0 44 44" aria-hidden="true"><use href="#logo-badge"></use></svg>
+      <span class="logo-text">حرف</span>
+    </a>
+  </div>
+</header>
+
+<main class="container" id="gateView" style="display:none;">
+  <div class="gate">
+    <p>لازم تسجّلي الدخول الأول عشان تشوفي محفظتك.</p>
+    <p style="margin-top:10px;"><a href="harf-website.html">الرجوع للرئيسية وتسجيل الدخول</a></p>
+  </div>
+</main>
+
+<main class="container" id="walletView" style="display:none;">
+  <h1>محفظتي</h1>
+  <p class="subtitle">أرباحك الحقيقية المحسوبة من مشاهدات مقالاتك على حرف.</p>
+
+  <div class="balance-card">
+    <div class="balance-row">
+      <div>
+        <div class="balance-label">الرصيد المتاح</div>
+        <div class="balance-amount" id="availableBalance">$0.00</div>
+      </div>
+      <button class="btn-withdraw" onclick="toggleWithdrawForm()">طلب سحب ←</button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-box"><div class="stat-num" id="totalEarnings">$0.00</div><div class="stat-label">إجمالي الأرباح</div></div>
+    <div class="stat-box"><div class="stat-num" id="totalViews">0</div><div class="stat-label">مشاهدات محتسبة</div></div>
+    <div class="stat-box"><div class="stat-num" id="currentRpm">$0.50</div><div class="stat-label">لكل ١٠٠٠ مشاهدة</div></div>
+  </div>
+
+  <div class="card withdraw-card" id="withdrawForm" style="display:none;">
+    <div class="card-title">طلب سحب جديد</div>
+    <div id="withdrawStatus" class="status-msg"></div>
+    <div class="form-group">
+      <label class="form-label">المبلغ (بالدولار) — الحد الأدنى ١٠$</label>
+      <input class="form-input" id="withdrawAmount" type="number" min="10" step="0.01" placeholder="10.00">
+    </div>
+    <div class="form-group">
+      <label class="form-label">طريقة السحب</label>
+      <select class="form-select" id="withdrawMethod"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">رقم المحفظة / الحساب</label>
+      <input class="form-input" id="withdrawDetails" type="text" placeholder="مثال: 010XXXXXXXX">
+    </div>
+    <button class="btn-submit-withdraw" onclick="submitWithdrawal()">تأكيد طلب السحب</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">سجل طلبات السحب</div>
+    <div id="withdrawHistory"><div class="empty-note">لا توجد طلبات سحب بعد.</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">آخر المشاهدات المُربحة</div>
+    <div id="viewsList"><div class="empty-note">لا توجد مشاهدات محتسبة بعد.</div></div>
+    <div class="rpm-note">السعر يُحتسب فعليًا حسب بلد كل قارئ. طالما الموقع شغّال على جهازك محليًا فكل الزيارات هتُحسب بالسعر الافتراضي لأن جهازك مالوش بلد حقيقي على الإنترنت — الأسعار الحقيقية لكل بلد هتبان صح بمجرد ما الموقع يتنشر فعليًا.</div>
+  </div>
+</main>
+
+<script>
+  function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+
+  async function loadWallet() {
+    const meRes = await fetch('/api/auth/me');
+    const meData = await meRes.json();
+    if (!meData.user) {
+      document.getElementById('gateView').style.display = 'block';
+      return;
+    }
+    document.getElementById('walletView').style.display = 'block';
+
+    const res = await fetch('/api/wallet');
+    if (!res.ok) return;
+    const data = await res.json();
+    document.getElementById('availableBalance').textContent = '$' + data.wallet.availableBalance.toFixed(4);
+    document.getElementById('totalEarnings').textContent = '$' + data.wallet.totalEarnings.toFixed(4);
+    document.getElementById('totalViews').textContent = data.wallet.totalViews.toLocaleString('ar-EG');
+    document.getElementById('currentRpm').textContent = '$' + data.wallet.currentRpmUsd.toFixed(2);
+
+    if (data.recentViews.length) {
+      document.getElementById('viewsList').innerHTML = data.recentViews.map(v => `
+        <div class="view-row">
+          <div>
+            <div class="view-article">${escapeHtml(v.article_title)}</div>
+            <div class="view-meta">${new Date(v.created_at).toLocaleString('ar-EG')}</div>
+          </div>
+          <div class="view-earning">+$${v.earning_usd.toFixed(4)}</div>
+        </div>
+      `).join('');
+    }
+
+    loadWithdrawMethods();
+    loadWithdrawHistory();
+  }
+
+  const STATUS_LABELS = { pending: 'قيد المراجعة', approved: 'مقبول', processing: 'جاري التحويل', completed: 'تم التحويل', rejected: 'مرفوض' };
+
+  async function loadWithdrawMethods() {
+    const res = await fetch('/api/withdrawals/methods');
+    const data = await res.json();
+    document.getElementById('withdrawMethod').innerHTML = data.methods.map(m => `<option value="${m.value}">${m.label}</option>`).join('');
+  }
+
+  async function loadWithdrawHistory() {
+    const res = await fetch('/api/withdrawals');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.requests.length) return;
+    document.getElementById('withdrawHistory').innerHTML = data.requests.map(r => `
+      <div class="view-row">
+        <div>
+          <div class="view-article">$${r.amount.toFixed(2)} · ${r.methodLabel}</div>
+          <div class="view-meta">${new Date(r.created_at).toLocaleString('ar-EG')}</div>
+        </div>
+        <span class="req-status">${STATUS_LABELS[r.status] || r.status}</span>
+      </div>
+    `).join('');
+  }
+
+  function toggleWithdrawForm() {
+    const form = document.getElementById('withdrawForm');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  }
+
+  async function submitWithdrawal() {
+    const statusEl = document.getElementById('withdrawStatus');
+    statusEl.className = 'status-msg';
+    const amount = document.getElementById('withdrawAmount').value;
+    const method = document.getElementById('withdrawMethod').value;
+    const paymentDetails = document.getElementById('withdrawDetails').value.trim();
+    try {
+      const res = await fetch('/api/withdrawals', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount, method, paymentDetails }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        statusEl.textContent = data.error || 'تعذّر إرسال طلب السحب';
+        statusEl.className = 'status-msg err';
+        return;
+      }
+      statusEl.textContent = 'تم إرسال طلب السحب بنجاح، هيتراجع خلال ٧ أيام عمل.';
+      statusEl.className = 'status-msg ok';
+      document.getElementById('withdrawAmount').value = '';
+      document.getElementById('withdrawDetails').value = '';
+      loadWallet();
+    } catch (e) {
+      statusEl.textContent = 'تعذّر الاتصال بالسيرفر';
+      statusEl.className = 'status-msg err';
+    }
+  }
+
+  loadWallet();
+</script>
+</body>
+</html>

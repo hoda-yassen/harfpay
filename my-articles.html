@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مقالاتي | حرف</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1B4D3E; --green-dark: #122E25; --gold: #C9A84C; --gold-pale: #F5EDD3;
+    --white: #FFFFFF; --cream: #F8F6F1; --ink: #1A1A1A; --ink-soft: #444444; --ink-muted: #888888;
+    --shadow: 0 8px 30px rgba(27,77,62,0.08); --radius: 12px;
+  }
+  * , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Cairo', 'Tajawal', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.8; }
+  a { text-decoration: none; color: inherit; }
+
+  .site-header { background: var(--green); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
+  .site-header-inner { max-width: 780px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark { width: 38px; height: 38px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.18); flex-shrink: 0; }
+  .logo-text { color: var(--white); font-size: 1.25rem; font-weight: 800; }
+  .btn-write { background: var(--gold); color: var(--green-dark); font-size: 0.85rem; font-weight: 700; padding: 9px 18px; border-radius: 8px; }
+
+  .container { max-width: 700px; margin: 0 auto; padding: 32px 24px 60px; }
+  h1 { font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
+  .subtitle { color: var(--ink-muted); font-size: 0.88rem; margin-bottom: 24px; }
+
+  .article-row { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px 20px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .article-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+  .article-meta { font-size: 0.78rem; color: var(--ink-muted); }
+  .reject-reason { font-size: 0.78rem; color: #c0392b; margin-top: 4px; }
+  .status-badge { font-size: 0.72rem; font-weight: 700; padding: 4px 12px; border-radius: 100px; flex-shrink: 0; }
+  .status-pending_review { background: var(--gold-pale); color: #8a6d1a; }
+  .status-published { background: #e8f5ee; color: var(--green); }
+  .status-rejected { background: #fdecea; color: #c0392b; }
+  .status-draft { background: #f0f0f0; color: var(--ink-muted); }
+  .empty-note { text-align: center; color: var(--ink-muted); font-size: 0.9rem; padding: 40px 20px; }
+
+  .gate { text-align: center; padding: 60px 20px; }
+  .gate a { color: var(--green); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
+  <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2C97E"/><stop offset="1" stop-color="#C9A84C"/></linearGradient>
+  <symbol id="icon-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21Z"/><path d="M4 5.5v15M8 7h8M8 11h8"/></symbol>
+  <symbol id="logo-badge" viewBox="0 0 44 44">
+    <rect x="1" y="1" width="42" height="42" rx="13" fill="url(#logoGrad)"/>
+    <g transform="translate(10,10)" fill="none" stroke="#122E25" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-book"></use></g>
+  </symbol>
+</defs></svg>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="logo" href="harf-website.html">
+      <svg class="logo-mark" viewBox="0 0 44 44" aria-hidden="true"><use href="#logo-badge"></use></svg>
+      <span class="logo-text">حرف</span>
+    </a>
+    <a class="btn-write" href="write-article.html">اكتب مقالاً</a>
+  </div>
+</header>
+
+<main class="container" id="gateView" style="display:none;">
+  <div class="gate">
+    <p>لازم تسجّلي الدخول الأول عشان تشوفي مقالاتك.</p>
+    <p style="margin-top:10px;"><a href="harf-website.html">الرجوع للرئيسية وتسجيل الدخول</a></p>
+  </div>
+</main>
+
+<main class="container" id="listView" style="display:none;">
+  <h1>مقالاتي</h1>
+  <p class="subtitle">كل المقالات اللي كتبتيها وحالة كل واحد منهم.</p>
+  <div id="articlesList"></div>
+</main>
+
+<script>
+  const STATUS_LABELS = { draft: 'مسودة', pending_review: 'قيد المراجعة', published: 'منشور', rejected: 'مرفوض' };
+
+  function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  }
+
+  async function loadArticles() {
+    const meRes = await fetch('/api/auth/me');
+    const meData = await meRes.json();
+    if (!meData.user) {
+      document.getElementById('gateView').style.display = 'block';
+      return;
+    }
+    document.getElementById('listView').style.display = 'block';
+
+    const res = await fetch('/api/articles/mine');
+    const data = await res.json();
+    const list = document.getElementById('articlesList');
+
+    if (!data.articles.length) {
+      list.innerHTML = '<div class="empty-note">لسه مكتبتيش أي مقال. <a href="write-article.html" style="color:var(--green);font-weight:700;">ابدئي أول مقال ←</a></div>';
+      return;
+    }
+
+    list.innerHTML = data.articles.map(a => {
+      const title = escapeHtml(a.title);
+      const link = a.status === 'published' ? `article-view.html?slug=${encodeURIComponent(a.slug)}` : null;
+      const titleHtml = link ? `<a href="${link}" style="color:inherit;">${title}</a>` : title;
+      return `
+        <div class="article-row">
+          <div>
+            <div class="article-title">${titleHtml}</div>
+            <div class="article-meta">${escapeHtml(a.category_name || 'بدون تصنيف')} · ${new Date(a.created_at).toLocaleDateString('ar-EG')}${a.status === 'published' ? ' · ' + a.view_count.toLocaleString('ar-EG') + ' مشاهدة' : ''}</div>
+            ${a.status === 'rejected' && a.rejection_reason ? `<div class="reject-reason">سبب الرفض: ${escapeHtml(a.rejection_reason)}</div>` : ''}
+          </div>
+          <span class="status-badge status-${a.status}">${STATUS_LABELS[a.status] || a.status}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  loadArticles();
+</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تعديل الملف الشخصي | حرف</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1B4D3E; --green-dark: #122E25; --gold: #C9A84C; --gold-light:#E2C97E; --gold-pale: #F5EDD3;
+    --white: #FFFFFF; --cream: #F8F6F1; --ink: #1A1A1A; --ink-soft: #444444; --ink-muted: #888888;
+    --shadow: 0 8px 30px rgba(27,77,62,0.08); --radius: 12px;
+  }
+  * , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Cairo', 'Tajawal', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.8; }
+  a { text-decoration: none; color: inherit; }
+  img { max-width: 100%; display: block; }
+
+  .site-header { background: var(--green); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
+  .site-header-inner { max-width: 780px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark { width: 38px; height: 38px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.18); flex-shrink: 0; }
+  .logo-text { color: var(--white); font-size: 1.25rem; font-weight: 800; }
+
+  .container { max-width: 620px; margin: 0 auto; padding: 32px 24px 60px; }
+  h1 { font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
+  .subtitle { color: var(--ink-muted); font-size: 0.88rem; margin-bottom: 28px; }
+
+  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; margin-bottom: 20px; }
+  .card-title { font-weight: 800; font-size: 1rem; margin-bottom: 16px; }
+
+  .cover-preview { width: 100%; height: 140px; border-radius: 10px; background: linear-gradient(120deg, var(--green), var(--green-dark)); background-size: cover; background-position: center; margin-bottom: 12px; }
+  .avatar-row { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; }
+  .avatar-preview { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 3px solid var(--gold-pale); background: var(--gold-pale); }
+  .file-btn { display: inline-block; padding: 9px 18px; border-radius: 8px; background: var(--gold-pale); color: var(--green); font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+  .file-btn input { display: none; }
+  .hint { font-size: 0.75rem; color: var(--ink-muted); margin-top: 6px; }
+
+  .form-group { margin-bottom: 16px; }
+  .form-label { font-size: 0.85rem; font-weight: 700; color: var(--ink-soft); margin-bottom: 6px; display: block; }
+  .form-input, .form-textarea { width: 100%; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 9px; padding: 10px 14px; font-family: inherit; font-size: 0.9rem; outline: none; transition: border-color .2s; background: var(--cream); }
+  .form-input:focus, .form-textarea:focus { border-color: var(--green); background: var(--white); }
+  .form-textarea { min-height: 110px; resize: vertical; }
+
+  .btn-save { background: var(--green); color: var(--white); padding: 12px 28px; border-radius: 9px; font-size: 0.9rem; font-weight: 700; border: none; cursor: pointer; }
+  .btn-save:hover { background: #24664F; }
+
+  .gate { text-align: center; padding: 60px 20px; }
+  .gate a { color: var(--green); font-weight: 700; }
+
+  .status-msg { font-size: 0.85rem; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; display: none; }
+  .status-msg.ok { background: #e8f5ee; color: var(--green); display: block; }
+  .status-msg.err { background: #fdecea; color: #c0392b; display: block; }
+</style>
+</head>
+<body>
+
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
+  <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2C97E"/><stop offset="1" stop-color="#C9A84C"/></linearGradient>
+  <symbol id="icon-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21Z"/><path d="M4 5.5v15M8 7h8M8 11h8"/></symbol>
+  <symbol id="logo-badge" viewBox="0 0 44 44">
+    <rect x="1" y="1" width="42" height="42" rx="13" fill="url(#logoGrad)"/>
+    <g transform="translate(10,10)" fill="none" stroke="#122E25" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-book"></use></g>
+  </symbol>
+</defs></svg>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="logo" href="harf-website.html">
+      <svg class="logo-mark" viewBox="0 0 44 44" aria-hidden="true"><use href="#logo-badge"></use></svg>
+      <span class="logo-text">حرف</span>
+    </a>
+  </div>
+</header>
+
+<main class="container" id="gateView" style="display:none;">
+  <div class="gate">
+    <p>لازم تسجّلي الدخول الأول عشان تعدّلي ملفك الشخصي.</p>
+    <p style="margin-top:10px;"><a href="harf-website.html">الرجوع للرئيسية وتسجيل الدخول</a></p>
+  </div>
+</main>
+
+<main class="container" id="editView" style="display:none;">
+  <h1>تعديل الملف الشخصي</h1>
+  <p class="subtitle">هنا تقدري تحدّثي صورتك، صورة الغلاف، ووصفك على منصة حرف.</p>
+  <div id="statusMsg" class="status-msg"></div>
+
+  <div class="card">
+    <div class="card-title">صورة الغلاف والصورة الشخصية</div>
+    <div class="cover-preview" id="coverPreview"></div>
+    <label class="file-btn">رفع صورة غلاف جديدة<input type="file" id="coverInput" accept="image/png,image/jpeg,image/webp"></label>
+    <div class="avatar-row" style="margin-top:18px;">
+      <img class="avatar-preview" id="avatarPreview" src="" alt="صورتك الشخصية">
+      <label class="file-btn">رفع صورة شخصية جديدة<input type="file" id="avatarInput" accept="image/png,image/jpeg,image/webp"></label>
+    </div>
+    <div class="hint">الصيغ المدعومة: JPG, PNG, WEBP — بحد أقصى ٥ ميجابايت.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">بيانات الملف الشخصي</div>
+    <div class="form-group">
+      <label class="form-label">المجال / التخصص</label>
+      <input class="form-input" id="specializationInput" type="text" placeholder="مثال: الذكاء الاصطناعي، التسويق الرقمي...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">البلد</label>
+      <input class="form-input" id="countryInput" type="text" placeholder="مثال: مصر">
+    </div>
+    <div class="form-group">
+      <label class="form-label">نبذة عنك</label>
+      <textarea class="form-textarea" id="bioInput" placeholder="اكتبي نبذة قصيرة عن نفسك ومجال كتابتك..."></textarea>
+    </div>
+    <button class="btn-save" onclick="saveProfile()">حفظ التعديلات</button>
+  </div>
+</main>
+
+<script>
+  let currentUsername = null;
+
+  function showStatus(msg, ok) {
+    const el = document.getElementById('statusMsg');
+    el.textContent = msg;
+    el.className = 'status-msg ' + (ok ? 'ok' : 'err');
+  }
+
+  async function loadProfile() {
+    const meRes = await fetch('/api/auth/me');
+    const meData = await meRes.json();
+    if (!meData.user) {
+      document.getElementById('gateView').style.display = 'block';
+      return;
+    }
+    currentUsername = meData.user.username;
+    document.getElementById('editView').style.display = 'block';
+
+    const res = await fetch(`/api/authors/${currentUsername}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    document.getElementById('avatarPreview').src = data.author.avatar || '';
+    if (data.author.cover) {
+      document.getElementById('coverPreview').style.backgroundImage = `url('${data.author.cover}')`;
+    }
+    document.getElementById('specializationInput').value = data.author.specialization || '';
+    document.getElementById('countryInput').value = data.author.country || '';
+    document.getElementById('bioInput').value = data.author.bio || '';
+  }
+
+  async function uploadFile(inputId, endpoint, fieldName) {
+    const input = document.getElementById(inputId);
+    if (!input.files || !input.files[0]) return null;
+    const formData = new FormData();
+    formData.append(fieldName, input.files[0]);
+    const res = await fetch(endpoint, { method: 'POST', body: formData });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'تعذّر رفع الصورة');
+    return data;
+  }
+
+  async function saveProfile() {
+    try {
+      const avatarResult = await uploadFile('avatarInput', '/api/profile/avatar', 'avatar');
+      if (avatarResult) document.getElementById('avatarPreview').src = avatarResult.avatar + '?t=' + Date.now();
+
+      const coverResult = await uploadFile('coverInput', '/api/profile/cover', 'cover');
+      if (coverResult) document.getElementById('coverPreview').style.backgroundImage = `url('${coverResult.cover}?t=${Date.now()}')`;
+
+      const res = await fetch('/api/profile', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          bio: document.getElementById('bioInput').value.trim(),
+          specialization: document.getElementById('specializationInput').value.trim(),
+          country: document.getElementById('countryInput').value.trim(),
+        }),
+      });
+      if (!res.ok) throw new Error('تعذّر حفظ البيانات');
+      showStatus('تم حفظ التعديلات بنجاح ✔', true);
+    } catch (e) {
+      showStatus(e.message || 'حدث خطأ غير متوقع', false);
+    }
+  }
+
+  loadProfile();
+</script>
+</body>
+</html>
