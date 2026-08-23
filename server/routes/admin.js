@@ -41,7 +41,7 @@ router.post('/articles/:id/reject', requireAdmin, (req, res) => {
   res.json({ ok: true });
 });
 
-const MAX_PINNED_ARTICLES = 2;
+const MAX_PINNED_ARTICLES = 3;
 
 router.get('/published-articles', requireAdmin, (req, res) => {
   const rows = db.prepare(`
