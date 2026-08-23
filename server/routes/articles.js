@@ -6,6 +6,7 @@ const multer = require('multer');
 const geoip = require('geoip-lite');
 const db = require('../db');
 const { requireAuth } = require('../lib/session');
+const { DATA_DIR } = require('../lib/paths');
 
 const router = express.Router();
 
@@ -18,8 +19,9 @@ function hasReachedDailyLimit(userId) {
   return count >= DAILY_ARTICLE_LIMIT;
 }
 
-const SITE_ROOT = path.join(__dirname, '..', '..');
-const ARTICLE_IMAGES_DIR = path.join(SITE_ROOT, 'images', 'articles');
+// صور المقالات المرفوعة تُخزَّن في DATA_DIR (اللي المفروض يكون Volume دائم على Railway)، مش في فولدر الكود،
+// عشان ما تُمسح لما الموقع يتحدّث. server.js بيوصّل رابط /images/articles/ للمكان ده فعليًا.
+const ARTICLE_IMAGES_DIR = path.join(DATA_DIR, 'uploads', 'articles');
 fs.mkdirSync(ARTICLE_IMAGES_DIR, { recursive: true });
 const ALLOWED_IMAGE_TYPES = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp' };
 const uploadArticleImage = multer({

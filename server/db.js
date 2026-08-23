@@ -1,6 +1,8 @@
 const { DatabaseSync } = require('node:sqlite');
 const path = require('node:path');
+const fs = require('node:fs');
 const { hashPassword, verifyPassword } = require('./lib/password');
+const { DATA_DIR } = require('./lib/paths');
 
 // باسورد الأدمن الافتراضي لأول تشغيل (زراعة قاعدة بيانات فاضية) — يُقرأ من متغيّر بيئة على Railway وليس من الكود،
 // عشان مفيش باسورد حقيقي يتخزن نصًّا صريحًا في مستودع GitHub (اللي ممكن يكون عام/مقروء لأي حد).
@@ -9,7 +11,8 @@ const ADMIN_DEFAULT_PASSWORD = process.env.ADMIN_SEED_PASSWORD || 'demo12345';
 // ده مفيد لحظة ما الباسورد القديم يتكشف أو تنساه المالكة. لازم يتشال من Railway بعد ما تسجّل دخول بنجاح.
 const ADMIN_RESET_PASSWORD = process.env.ADMIN_RESET_PASSWORD || null;
 
-const DB_PATH = path.join(__dirname, 'harf.db');
+fs.mkdirSync(DATA_DIR, { recursive: true });
+const DB_PATH = path.join(DATA_DIR, 'harf.db');
 const db = new DatabaseSync(DB_PATH);
 
 db.exec('PRAGMA foreign_keys = ON;');

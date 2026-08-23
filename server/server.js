@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const path = require('node:path');
 
 const { attachSession } = require('./lib/session');
+const { DATA_DIR } = require('./lib/paths');
 const authRoutes = require('./routes/auth');
 const authorRoutes = require('./routes/authors');
 const articleRoutes = require('./routes/articles');
@@ -69,6 +70,10 @@ app.use((req, res, next) => {
   if (req.path.toLowerCase().startsWith('/server')) return res.status(404).json({ error: 'غير موجود' });
   next();
 });
+
+// صور المقالات المرفوعة تعيش في DATA_DIR (فولدر دائم، منفصل عن كود الموقع) — نوصّل رابطها المعروف
+// /images/articles/ للمكان الحقيقي ده، قبل الملفات الثابتة العادية.
+app.use('/images/articles', express.static(path.join(DATA_DIR, 'uploads', 'articles')));
 
 app.use(express.static(SITE_ROOT));
 
