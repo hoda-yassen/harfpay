@@ -164,6 +164,9 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
   if (!hasColumn('articles', 'is_pinned')) {
     db.exec('ALTER TABLE articles ADD COLUMN is_pinned INTEGER NOT NULL DEFAULT 0');
   }
+  if (!hasColumn('articles', 'is_hero_pinned')) {
+    db.exec('ALTER TABLE articles ADD COLUMN is_hero_pinned INTEGER NOT NULL DEFAULT 0');
+  }
   if (!hasColumn('view_events', 'ip_address')) {
     db.exec('ALTER TABLE view_events ADD COLUMN ip_address TEXT');
   }
@@ -187,6 +190,14 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
   if (!admin) return;
   if (verifyPassword('demo12345', admin.password_hash)) {
     db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(hashPassword(ADMIN_DEFAULT_PASSWORD), admin.id);
+  }
+})();
+
+// حساب المالكة الشخصي (dodoh69h@gmail.com) بيترقّى لصلاحية أدمن تلقائيًا — من غير أي تغيير في باسوردها الحالي.
+(function grantAdminToOwnerAccount() {
+  const owner = db.prepare("SELECT id, user_type FROM users WHERE email = 'dodoh69h@gmail.com'").get();
+  if (owner && owner.user_type !== 'admin') {
+    db.prepare("UPDATE users SET user_type = 'admin' WHERE id = ?").run(owner.id);
   }
 })();
 

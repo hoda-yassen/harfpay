@@ -69,6 +69,8 @@
         btn.classList.add('following');
         btn.textContent = 'متابَع';
       }
+      if (btn.dataset.harfBound) return;
+      btn.dataset.harfBound = '1';
       btn.addEventListener('click', () => toggleFollow(btn, authorId));
     });
     authorIds.forEach(async (authorId) => {

@@ -94,7 +94,7 @@ function slugify(title) {
 router.get('/', (req, res) => {
   const rows = db.prepare(`
     SELECT a.id, a.title, a.slug, a.description, a.featured_image_url, a.reading_time_minutes,
-           a.view_count, a.like_count, a.published_at, a.is_pinned,
+           a.view_count, a.like_count, a.published_at, a.is_pinned, a.is_hero_pinned,
            u.username AS author_username, u.first_name AS author_first_name, u.last_name AS author_last_name,
            u.profile_image_url AS author_avatar,
            c.name AS category_name, c.slug AS category_slug

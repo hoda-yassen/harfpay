@@ -42,15 +42,16 @@ router.post('/articles/:id/reject', requireAdmin, (req, res) => {
 });
 
 const MAX_PINNED_ARTICLES = 3;
+const MAX_HERO_PINNED_ARTICLES = 3;
 
 router.get('/published-articles', requireAdmin, (req, res) => {
   const rows = db.prepare(`
-    SELECT a.id, a.title, a.slug, a.is_pinned, a.published_at,
+    SELECT a.id, a.title, a.slug, a.is_pinned, a.is_hero_pinned, a.published_at,
            u.username AS author_username, u.first_name AS author_first_name, u.last_name AS author_last_name
     FROM articles a
     JOIN users u ON u.id = a.user_id
     WHERE a.status = 'published'
-    ORDER BY a.is_pinned DESC, a.published_at DESC
+    ORDER BY a.is_hero_pinned DESC, a.is_pinned DESC, a.published_at DESC
   `).all();
   res.json({ articles: rows });
 });
@@ -74,6 +75,28 @@ router.post('/articles/:id/unpin', requireAdmin, (req, res) => {
   if (!article) return res.status(404).json({ error: 'المقال غير موجود' });
 
   db.prepare('UPDATE articles SET is_pinned = 0 WHERE id = ?').run(article.id);
+  res.json({ ok: true });
+});
+
+router.post('/articles/:id/hero-pin', requireAdmin, (req, res) => {
+  const article = db.prepare('SELECT id, status FROM articles WHERE id = ?').get(req.params.id);
+  if (!article) return res.status(404).json({ error: 'المقال غير موجود' });
+  if (article.status !== 'published') return res.status(400).json({ error: 'لا يمكن تثبيت مقال غير منشور' });
+
+  const { count } = db.prepare('SELECT COUNT(*) AS count FROM articles WHERE is_hero_pinned = 1').get();
+  if (count >= MAX_HERO_PINNED_ARTICLES) {
+    return res.status(400).json({ error: `يمكن تثبيت ${MAX_HERO_PINNED_ARTICLES} مقالات فقط في أعلى الصفحة. ألغِ تثبيت مقال آخر أولاً.` });
+  }
+
+  db.prepare('UPDATE articles SET is_hero_pinned = 1 WHERE id = ?').run(article.id);
+  res.json({ ok: true });
+});
+
+router.post('/articles/:id/hero-unpin', requireAdmin, (req, res) => {
+  const article = db.prepare('SELECT id FROM articles WHERE id = ?').get(req.params.id);
+  if (!article) return res.status(404).json({ error: 'المقال غير موجود' });
+
+  db.prepare('UPDATE articles SET is_hero_pinned = 0 WHERE id = ?').run(article.id);
   res.json({ ok: true });
 });
 
