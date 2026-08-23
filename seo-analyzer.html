@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>محلل SEO المجاني | حرف</title>
+<meta name="description" content="أداة مجانية لتحليل جودة مقالك لمحركات البحث فورياً — بدون تسجيل. اكتب عنوانك ومحتواك واحصل على تقييم SEO فوري ونصائح احترافية.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1B4D3E; --green-dark: #122E25; --gold: #C9A84C; --gold-light:#E2C97E; --gold-pale: #F5EDD3;
+    --white: #FFFFFF; --cream: #F8F6F1; --ink: #1A1A1A; --ink-soft: #444444; --ink-muted: #888888;
+    --shadow: 0 8px 30px rgba(27,77,62,0.08); --radius: 12px;
+  }
+  * , *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Cairo', 'Tajawal', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.8; }
+  a { text-decoration: none; color: inherit; }
+
+  .site-header { background: var(--green); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.2); }
+  .site-header-inner { max-width: 780px; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-mark { width: 38px; height: 38px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.18); flex-shrink: 0; }
+  .logo-text { color: var(--white); font-size: 1.25rem; font-weight: 800; }
+  .header-link { color: rgba(255,255,255,0.85); font-size: 0.85rem; font-weight: 600; }
+
+  .container { max-width: 780px; margin: 0 auto; padding: 32px 24px 60px; }
+  h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; }
+  .subtitle { color: var(--ink-muted); font-size: 0.9rem; margin-bottom: 24px; }
+
+  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; margin-bottom: 20px; }
+  .form-group { margin-bottom: 18px; }
+  .form-label { font-size: 0.85rem; font-weight: 700; color: var(--ink-soft); margin-bottom: 6px; display: block; }
+  .form-input, .form-textarea { width: 100%; border: 1.5px solid rgba(0,0,0,0.1); border-radius: 9px; padding: 10px 14px; font-family: inherit; font-size: 0.9rem; outline: none; background: var(--cream); }
+  .form-input:focus, .form-textarea:focus { border-color: var(--green); background: var(--white); }
+  .form-textarea { min-height: 280px; resize: vertical; line-height: 1.9; }
+  .char-counter { font-size: 0.75rem; margin-top: 6px; color: var(--ink-muted); }
+  .checkbox-row { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--ink-soft); cursor: pointer; }
+
+  /* SEO Score Widget */
+  .seo-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 24px; margin-bottom: 20px; position: sticky; top: 78px; }
+  .seo-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .seo-title { font-weight: 800; font-size: 0.95rem; }
+  .seo-badge { font-size: 0.78rem; font-weight: 800; padding: 5px 14px; border-radius: 100px; }
+  .seo-badge.green { background: #e8f5ee; color: var(--green); }
+  .seo-badge.yellow { background: #fdf3d8; color: #8a6d1a; }
+  .seo-badge.red { background: #fdecea; color: #c0392b; }
+  .seo-bar-track { height: 8px; border-radius: 4px; background: var(--cream); overflow: hidden; margin-bottom: 14px; }
+  .seo-bar-fill { height: 100%; border-radius: 4px; transition: width .3s, background .3s; }
+  .seo-bar-fill.green { background: var(--green); }
+  .seo-bar-fill.yellow { background: #d4a017; }
+  .seo-bar-fill.red { background: #c0392b; }
+  .seo-score-num { font-size: 2rem; font-weight: 900; text-align: center; margin-bottom: 4px; }
+  .seo-tips { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .seo-tips li { font-size: 0.8rem; display: flex; align-items: center; gap: 8px; color: var(--ink-soft); }
+  .seo-tips li.ok { color: var(--green); }
+  .seo-tips li .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: currentColor; }
+
+  .cta-card { background: linear-gradient(120deg, var(--green), var(--green-dark)); border-radius: var(--radius); padding: 28px; text-align: center; color: var(--white); margin-top: 30px; }
+  .cta-card h2 { font-size: 1.15rem; margin-bottom: 8px; }
+  .cta-card p { color: rgba(255,255,255,0.7); font-size: 0.88rem; margin-bottom: 18px; }
+  .cta-btn { display: inline-block; background: var(--gold); color: var(--green-dark); font-weight: 700; padding: 11px 26px; border-radius: 9px; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
+  <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2C97E"/><stop offset="1" stop-color="#C9A84C"/></linearGradient>
+  <symbol id="icon-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21Z"/><path d="M4 5.5v15M8 7h8M8 11h8"/></symbol>
+  <symbol id="logo-badge" viewBox="0 0 44 44">
+    <rect x="1" y="1" width="42" height="42" rx="13" fill="url(#logoGrad)"/>
+    <g transform="translate(10,10)" fill="none" stroke="#122E25" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-book"></use></g>
+  </symbol>
+</defs></svg>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="logo" href="harf-website.html">
+      <svg class="logo-mark" viewBox="0 0 44 44" aria-hidden="true"><use href="#logo-badge"></use></svg>
+      <span class="logo-text">حرف</span>
+    </a>
+    <a class="header-link" href="harf-website.html">الرجوع للرئيسية ←</a>
+  </div>
+</header>
+
+<main class="container">
+  <h1>محلل SEO المجاني</h1>
+  <p class="subtitle">حللي جودة مقالك لمحركات البحث فوراً — الأداة متاحة للجميع بدون تسجيل دخول.</p>
+
+  <!-- SEO SCORE WIDGET -->
+  <div class="seo-card">
+    <div class="seo-score-num" id="seoScoreNum">٠<span style="font-size:1rem;color:var(--ink-muted);">/١٠٠</span></div>
+    <div class="seo-header">
+      <div class="seo-title">تقييم جودة السيو</div>
+      <div class="seo-badge yellow" id="seoBadge">ابدأ الكتابة</div>
+    </div>
+    <div class="seo-bar-track"><div class="seo-bar-fill yellow" id="seoBar" style="width:0%;"></div></div>
+    <ul class="seo-tips" id="seoTips"></ul>
+  </div>
+
+  <div class="card">
+    <div class="form-group">
+      <label class="form-label">عنوان المقال</label>
+      <input class="form-input" id="titleInput" type="text" maxlength="100" placeholder="عنوان جذاب وواضح لمقالك">
+    </div>
+    <div class="form-group">
+      <label class="form-label">وصف الميتا (Meta Description) — يظهر في نتائج جوجل</label>
+      <input class="form-input" id="descriptionInput" type="text" maxlength="160" placeholder="جملة أو جملتان يلخصان مقالك لمحركات البحث">
+    </div>
+    <div class="form-group">
+      <label class="form-label">الكلمات المفتاحية (Keywords) — افصل بينها بفاصلة</label>
+      <input class="form-input" id="keywordsInput" type="text" placeholder="مثال: كتابة, ربح من الإنترنت, تدوين">
+    </div>
+    <div class="form-group">
+      <label class="checkbox-row"><input type="checkbox" id="hasImageInput"> يحتوي المقال على صورة بارزة</label>
+    </div>
+    <div class="form-group">
+      <label class="form-label">محتوى المقال</label>
+      <textarea class="form-textarea" id="contentInput" placeholder="الصقي أو اكتبي مقالك هنا لتحليله..."></textarea>
+      <div class="char-counter" id="charCounter">٠ حرف</div>
+    </div>
+  </div>
+
+  <div class="cta-card">
+    <h2>جاهز تنشر مقالك وتبدأ تربح منه؟</h2>
+    <p>سجّل مجاناً على حرف وانشر مقالاتك لآلاف القراء العرب، مع نظام أرباح شفاف لكل مشاهدة حقيقية.</p>
+    <a class="cta-btn" href="harf-website.html">سجّل الآن مجاناً ←</a>
+  </div>
+</main>
+
+<script>
+  const MIN_LEN = 1500;
+
+  function updateCounter() {
+    const len = document.getElementById('contentInput').value.trim().length;
+    document.getElementById('charCounter').textContent = `${len.toLocaleString('ar-EG')} حرف`;
+  }
+
+  function updateSeoScore() {
+    const title = document.getElementById('titleInput').value.trim();
+    const description = document.getElementById('descriptionInput').value.trim();
+    const keywords = document.getElementById('keywordsInput').value.trim();
+    const hasImage = document.getElementById('hasImageInput').checked;
+    const content = document.getElementById('contentInput').value.trim();
+    const wordCount = content ? content.split(/\s+/).length : 0;
+    const primaryKeyword = keywords.split(',')[0]?.trim().toLowerCase() || '';
+
+    let score = 0;
+    const tips = [];
+
+    if (content.length >= 3000) { score += 30; tips.push({ ok: true, text: 'طول المقال ممتاز لمحركات البحث' }); }
+    else if (content.length >= MIN_LEN) { score += 18; tips.push({ ok: false, text: `المقال مقبول لكن الأطول أفضل لجوجل (حالياً ${content.length.toLocaleString('ar-EG')} حرف)` }); }
+    else if (content.length > 0) { tips.push({ ok: false, text: `المحتوى قصير جداً — يُفضّل ألا يقل عن ${MIN_LEN.toLocaleString('ar-EG')} حرف` }); }
+    else { tips.push({ ok: false, text: 'أضف محتوى المقال لتحليله' }); }
+
+    if (!primaryKeyword) {
+      tips.push({ ok: false, text: 'لم تُضِف أي كلمة مفتاحية بعد' });
+    } else {
+      let kwScore = 0;
+      if (title.toLowerCase().includes(primaryKeyword)) { kwScore += 10; tips.push({ ok: true, text: 'الكلمة المفتاحية موجودة في العنوان' }); }
+      else { tips.push({ ok: false, text: 'أضف الكلمة المفتاحية الرئيسية داخل العنوان' }); }
+      const occurrences = content ? (content.toLowerCase().match(new RegExp(primaryKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length : 0;
+      const density = wordCount ? occurrences / wordCount : 0;
+      if (occurrences >= 2 && density <= 0.03) { kwScore += 15; tips.push({ ok: true, text: 'تكرار الكلمة المفتاحية داخل المحتوى مناسب' }); }
+      else if (occurrences >= 1) { kwScore += 7; tips.push({ ok: false, text: 'كرر الكلمة المفتاحية أكثر قليلاً داخل المحتوى (بدون مبالغة)' }); }
+      else { tips.push({ ok: false, text: 'الكلمة المفتاحية غير موجودة داخل نص المقال' }); }
+      score += kwScore;
+    }
+
+    if (description.length >= 50 && description.length <= 160) { score += 20; tips.push({ ok: true, text: 'وصف الميتا بطول مثالي' }); }
+    else if (description.length > 0) { score += 10; tips.push({ ok: false, text: 'وصف الميتا موجود لكن الأفضل بين ٥٠ و١٦٠ حرفاً' }); }
+    else { tips.push({ ok: false, text: 'أضف وصف ميتا لمساعدة جوجل على فهم مقالك' }); }
+
+    if (hasImage) { score += 15; tips.push({ ok: true, text: 'الصورة البارزة موجودة' }); }
+    else { tips.push({ ok: false, text: 'أضف صورة بارزة — تزيد نسبة النقر من نتائج البحث' }); }
+
+    if (title.length >= 30 && title.length <= 70) { score += 10; tips.push({ ok: true, text: 'طول العنوان مناسب لمحركات البحث' }); }
+    else if (title.length > 0) { score += 5; tips.push({ ok: false, text: 'الأفضل يكون طول العنوان بين ٣٠ و٧٠ حرفاً' }); }
+    else { tips.push({ ok: false, text: 'اكتب عنواناً للمقال' }); }
+
+    const color = score >= 80 ? 'green' : score >= 50 ? 'yellow' : 'red';
+    const label = !title && !content ? 'ابدأ الكتابة' : score >= 80 ? 'ممتاز' : score >= 50 ? 'جيد' : 'يحتاج تعديل';
+
+    document.getElementById('seoScoreNum').innerHTML = `${score.toLocaleString('ar-EG')}<span style="font-size:1rem;color:var(--ink-muted);">/١٠٠</span>`;
+    const badge = document.getElementById('seoBadge');
+    badge.className = 'seo-badge ' + color;
+    badge.textContent = label;
+    const bar = document.getElementById('seoBar');
+    bar.className = 'seo-bar-fill ' + color;
+    bar.style.width = score + '%';
+
+    document.getElementById('seoTips').innerHTML = tips.map(t =>
+      `<li class="${t.ok ? 'ok' : ''}"><span class="dot"></span>${t.text}</li>`
+    ).join('');
+  }
+
+  ['titleInput', 'descriptionInput', 'keywordsInput', 'contentInput'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => { updateCounter(); updateSeoScore(); });
+  });
+  document.getElementById('hasImageInput').addEventListener('change', updateSeoScore);
+  updateCounter();
+  updateSeoScore();
+</script>
+</body>
+</html>

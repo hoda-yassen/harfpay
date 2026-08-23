@@ -17,9 +17,16 @@ const app = express();
 const SITE_ROOT = path.join(__dirname, '..');
 const PORT = process.env.PORT || 3000;
 
-// عند النشر خلف بروكسي (Railway/Render/Nginx) هذا يضمن قراءة IP الزائر الحقيقي من X-Forwarded-For
-// بدل IP البروكسي نفسه — مهم لتحديد بلد الزائر بشكل صحيح لاحتساب الأرباح.
-app.set('trust proxy', true);
+// عند النشر خلف بروكسي واحد فقط (Railway/Render) هذا يضمن قراءة IP الزائر الحقيقي من X-Forwarded-For.
+// "true" بدل رقم محدد كانت ثغرة: بتخلي أي زائر يزوّر IP نفسه بحرية عبر هذا الهيدر (لتضخيم مشاهداته
+// أو انتحال بلد بسعر ربح أعلى)، لأن Express كان بيثق في أول قيمة بالهيدر وهي قابلة للتزييف بالكامل من المتصفح.
+app.set('trust proxy', 1);
+
+// حماية أساسية من تخمين نوع الملف (MIME sniffing) للصور المرفوعة من المستخدمين.
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  next();
+});
 
 app.use(express.json());
 app.use(cookieParser());
@@ -55,6 +62,12 @@ app.get('/api/stats', (req, res) => {
   const views = db.prepare("SELECT COALESCE(SUM(view_count), 0) AS n FROM articles WHERE status = 'published'").get().n;
   const paidOut = db.prepare("SELECT COALESCE(SUM(amount), 0) AS n FROM withdrawal_requests WHERE status = 'completed'").get().n;
   res.json({ writers, articles, views, paidOutUsd: paidOut + 200 });
+});
+
+// يمنع الوصول المباشر لفولدر السيرفر (قاعدة البيانات، الكود، الأسرار) عبر رابط — كان مكشوفاً بالكامل قبل هذا السطر.
+app.use((req, res, next) => {
+  if (req.path.toLowerCase().startsWith('/server')) return res.status(404).json({ error: 'غير موجود' });
+  next();
 });
 
 app.use(express.static(SITE_ROOT));

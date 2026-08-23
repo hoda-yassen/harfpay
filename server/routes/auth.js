@@ -31,10 +31,11 @@ function publicUser(row) {
   };
 }
 
-function setSessionCookie(res, userId) {
+function setSessionCookie(req, res, userId) {
   res.cookie('harf_session', createSessionToken(userId), {
     httpOnly: true,
     sameSite: 'lax',
+    secure: req.secure, // يعتمد على X-Forwarded-Proto عبر trust proxy — يفعّل تلقائياً بمجرد النشر على HTTPS
     maxAge: MAX_AGE_MS,
   });
 }
@@ -74,7 +75,7 @@ router.post('/register', authLimiter, (req, res) => {
   db.prepare('INSERT INTO writer_profiles (user_id) VALUES (?)').run(info.lastInsertRowid);
   db.prepare('INSERT INTO user_earnings (user_id) VALUES (?)').run(info.lastInsertRowid);
 
-  setSessionCookie(res, info.lastInsertRowid);
+  setSessionCookie(req, res, info.lastInsertRowid);
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(info.lastInsertRowid);
   res.status(201).json({ user: publicUser(user) });
 });
@@ -88,7 +89,7 @@ router.post('/login', authLimiter, (req, res) => {
   if (!user || !verifyPassword(password, user.password_hash)) {
     return res.status(401).json({ error: 'البريد الإلكتروني أو كلمة المرور غير صحيحة' });
   }
-  setSessionCookie(res, user.id);
+  setSessionCookie(req, res, user.id);
   res.json({ user: publicUser(user) });
 });
 

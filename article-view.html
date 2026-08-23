@@ -198,7 +198,7 @@
       window.harfInitFollowButtons && window.harfInitFollowButtons();
       loadRelatedArticles(slug);
       renderShareBar(title);
-      if (data.viewEventId) trackReadDuration(data.viewEventId);
+      if (data.reportToken) trackReadDuration(data.reportToken);
     } catch (e) {
       main.innerHTML = '<div class="error-note">تعذّر تحميل المقال. تأكد أن السيرفر شغّال.</div>';
     }
@@ -230,7 +230,7 @@
 
   // يقيس المدة الفعلية اللي القارئ قضاها في الصفحة، ويبلّغ السيرفر بيها لحظة ما يسيبها.
   // زيارة بمدة قريبة من الصفر (ارتداد فوري / بوت) بيسحبها السيرفر من العداد والأرباح تلقائياً.
-  function trackReadDuration(viewEventId) {
+  function trackReadDuration(reportToken) {
     const startTime = Date.now();
     let sent = false;
     function reportDuration() {
@@ -238,7 +238,7 @@
       sent = true;
       const seconds = Math.round((Date.now() - startTime) / 1000);
       const payload = JSON.stringify({ duration: seconds });
-      const url = `/api/articles/view-events/${viewEventId}/duration`;
+      const url = `/api/articles/view-events/${reportToken}/duration`;
       if (navigator.sendBeacon) {
         navigator.sendBeacon(url, new Blob([payload], { type: 'application/json' }));
       } else {

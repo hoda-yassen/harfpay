@@ -167,7 +167,7 @@ router.get('/:slug', (req, res) => {
 
   const isSelfView = req.userId === article.user_id;
   const userAgent = req.get('User-Agent') || '';
-  let viewEventId = null;
+  let reportToken = null;
 
   // زيارات البوتات (سكربتات، محركات فحص) تُرفض قبل احتسابها أصلاً — مش هتوصل حتى لمرحلة الخصم لاحقًا.
   if (article.status === 'published' && !isSelfView && !isBotUserAgent(userAgent) && shouldCountView(req.ip, article.id)) {
@@ -177,30 +177,33 @@ router.get('/:slug', (req, res) => {
     const countryCode = resolveCountryCode(req.ip);
     const rate = db.prepare('SELECT rpm_usd FROM rpm_rates WHERE country_code = ?').get(countryCode).rpm_usd;
     const earning = rate / 1000;
-    const info = db.prepare(`
-      INSERT INTO view_events (article_id, author_id, country_code, rpm_usd, earning_usd, ip_address, user_agent)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `).run(article.id, article.user_id, countryCode, rate, earning, req.ip, userAgent);
-    viewEventId = info.lastInsertRowid;
+    // توكن عشوائي غير قابل للتخمين لتأكيد مدة القراءة لاحقًا — يمنع أي زائر من التلاعب بزيارات مقالات غيره
+    // عن طريق تخمين أرقام تسلسلية والإبلاغ عن مدد وهمية لتزوير أو إسقاط أرباح كاتب آخر.
+    reportToken = crypto.randomBytes(16).toString('hex');
+    db.prepare(`
+      INSERT INTO view_events (article_id, author_id, country_code, rpm_usd, earning_usd, ip_address, user_agent, report_token)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(article.id, article.user_id, countryCode, rate, earning, req.ip, userAgent, reportToken);
     db.prepare(`
       UPDATE user_earnings SET total_earnings = total_earnings + ?, available_balance = available_balance + ?,
         total_views = total_views + 1, updated_at = datetime('now') WHERE user_id = ?
     `).run(earning, earning, article.user_id);
   }
 
-  res.json({ article, viewEventId });
+  res.json({ article, reportToken });
 });
 
-// الصفحة بترسل هنا مدة بقاء القارئ الفعلية بعد ما يسيب الصفحة (عبر sendBeacon).
+// الصفحة بترسل هنا مدة بقاء القارئ الفعلية بعد ما يسيب الصفحة (عبر sendBeacon)، معرَّفة بتوكن الزيارة
+// العشوائي (مش رقمها التسلسلي) عشان محدش يقدر يخمّن زيارات غيره ويتلاعب بيها.
 // لو المدة قليلة جداً (زيارة وهمية/ارتداد فوري) بنسحب المشاهدة والأرباح المرتبطة بيها ونبلّغ الكاتب.
-router.post('/view-events/:id/duration', (req, res) => {
+router.post('/view-events/:token/duration', (req, res) => {
   const { duration } = req.body || {};
   const seconds = Number(duration);
   if (!Number.isFinite(seconds) || seconds < 0) {
     return res.status(400).json({ error: 'مدة غير صحيحة' });
   }
 
-  const event = db.prepare('SELECT * FROM view_events WHERE id = ?').get(req.params.id);
+  const event = db.prepare('SELECT * FROM view_events WHERE report_token = ?').get(req.params.token);
   if (!event) return res.status(404).json({ error: 'الزيارة غير موجودة' });
   if (event.duration_seconds !== null) return res.json({ ok: true }); // مُعالَجة بالفعل، تجاهل أي تكرار
 

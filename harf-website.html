@@ -990,53 +990,8 @@
             </div>
           </div>
         </div>
-        <div class="featured-grid">
-          <article class="card card-featured">
-            <a class="article-image-wrap" href="article-view.html?slug=article-arab-writer-identity">
-              <img class="card-img" src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&amp;fit=crop&amp;w=1200&amp;q=80" alt="كتب وأوراق للكتابة" loading="lazy" onerror="this.style.display='none'">
-              <span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٤.٢ألف مشاهدة</span>
-              <span class="card-category">ثقافة وأدب</span>
-            </a>
-            <div class="card-body">
-              <a class="card-title" style="-webkit-line-clamp:3;font-size:1.2rem;" href="article-view.html?slug=article-arab-writer-identity">في رحلة البحث عن الهوية: الكاتب العربي بين الأصالة والحداثة</a>
-              <div class="card-excerpt">يجد الكاتب العربي نفسه في قلب معادلة شديدة التعقيد، تتجاذبه قوى الموروث الثقافي الغني من جهة، ومتطلبات العالم المتغير من جهة أخرى، فأين يقف وكيف يكتب؟</div>
-              <div class="card-footer">
-                <div class="card-author">
-                  <a class="author-avatar" href="author-ahmed-awadallah.html" style="overflow:hidden;"><img src="/images/authors/ahmed-awadallah.jpg" alt="أحمد عوض الله" style="width:100%;height:100%;"></a>
-                  <a class="author-name" href="author-ahmed-awadallah.html">أحمد عوض الله</a>
-                </div>
-                <div class="card-stats">
-                  <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٤.٢ألف</span>
-                  <span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ٢٣١</span>
-                  <span class="card-stat share-stat" onclick="openSharePanel(event,'في رحلة البحث عن الهوية')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
-                </div>
-              </div>
-            </div>
-          </article>
-          <article class="card card-featured">
-            <a class="article-image-wrap" href="article-view.html?slug=article-ai-creativity">
-              <img class="card-img" src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80" alt="روبوت يمثل الذكاء الاصطناعي" loading="lazy" onerror="this.style.display='none'">
-              <span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٢.١ألف مشاهدة</span>
-              <span class="card-category">تقنية</span>
-            </a>
-            <div class="card-body">
-              <a class="card-title" href="article-view.html?slug=article-ai-creativity">الذكاء الاصطناعي والإبداع: هل يستطيع الآلة أن تكتب رواية؟</a>
-              <div class="card-excerpt">جدل فلسفي عميق بين الإبداع الإنساني والذكاء الاصطناعي، وحدود ما يمكن للآلة أن تكتبه.</div>
-              <div class="card-stats"><span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٢.١ألف</span><span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ٩٨</span><span class="card-stat share-stat" onclick="openSharePanel(event,'الذكاء الاصطناعي والإبداع')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span></div>
-            </div>
-          </article>
-          <article class="card card-featured">
-            <a class="article-image-wrap" href="article-view.html?slug=article-freelance-income">
-              <img class="card-img" src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1200&q=80" alt="تخطيط مالي وأعمال" loading="lazy" onerror="this.style.display='none'">
-              <span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٣.٧ألف مشاهدة</span>
-              <span class="card-category">أعمال</span>
-            </a>
-            <div class="card-body">
-              <a class="card-title" href="article-view.html?slug=article-freelance-income">٥ نماذج ربحية ناجحة للمدونين العرب في ٢٠٢٦</a>
-              <div class="card-excerpt">قصص نجاح حقيقية لكتّاب عرب حققوا استقلالاً مالياً</div>
-              <div class="card-stats"><span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٣.٧ألف</span><span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ١٧٥</span><span class="card-stat share-stat" onclick="openSharePanel(event,'الكاتب المستقل')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span></div>
-            </div>
-          </article>
+        <div class="featured-grid" id="featuredGrid">
+          <div style="text-align:center;color:var(--ink-muted);padding:30px 0;grid-column:1/-1;">جاري تحميل المقالات المميزة...</div>
         </div>
 
         <!-- Latest with Tabs -->
@@ -1095,20 +1050,20 @@
         </div>
 
         <!-- SEO Tool Promo -->
-        <div class="widget" style="border:1.5px solid var(--border);">
+        <a class="widget" href="seo-analyzer.html" style="display:block;border:1.5px solid var(--border);transition:box-shadow .2s;">
           <div style="padding:20px;">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
               <div style="width:40px;height:40px;background:var(--gold-pale);border-radius:10px;display:flex;align-items:center;justify-content:center;"><svg class="ui-icon"><use href="#icon-chart"></use></svg></div>
               <div>
-                <div style="font-weight:700;font-size:0.9rem;">محلل SEO المدمج</div>
-                <div style="font-size:0.75rem;color:var(--ink-muted);">متاح لكل الكتّاب</div>
+                <div style="font-weight:700;font-size:0.9rem;color:var(--ink);">محلل SEO المجاني</div>
+                <div style="font-size:0.75rem;color:var(--ink-muted);">متاح للجميع بدون تسجيل</div>
               </div>
             </div>
             <div style="font-size:0.82rem;color:var(--ink-soft);line-height:1.7;">
-              اكتب مقالك واحصل على تقرير فوري يحسّن ظهورك في جوجل بدرجة من ١٠٠.
+              الصق مقالك واحصل على تقرير فوري يحسّن ظهورك في جوجل بدرجة من ١٠٠.
             </div>
           </div>
-        </div>
+        </a>
 
       </aside>
     </div>
@@ -1128,47 +1083,8 @@
       </div>
       <a class="view-all" href="browse-articles.html">عرض الكل</a>
     </div>
-    <div class="cards-grid cards-grid-4">
-      <div class="card">
-        <a class="article-image-wrap" href="browse-articles.html" style="height:160px;"><img class="card-img" style="height:160px;" src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80" alt="كاتب يعمل على مقال جديد" loading="lazy" onerror="this.style.display='none'"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٨.٢ألف مشاهدة</span><span class="card-category">رائج</span></a>
-        <div class="card-body">
-          <a class="card-title" href="browse-articles.html">١٠ أخطاء يقع فيها كل كاتب مبتدئ (وكيف تتجنبها)</a>
-          <div class="card-footer" style="margin-top:auto;">
-            <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/mariam-alansari.jpg" alt="مريم الأنصاري" style="width:100%;height:100%;"></div><div class="author-name">مريم الأنصاري</div></div>
-            <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٨.٢ألف</span><span class="card-stat share-stat" onclick="openSharePanel(event,'١٠ أخطاء يقع فيها كل كاتب مبتدئ')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <a class="article-image-wrap" href="browse-articles.html" style="height:160px;"><img class="card-img" style="height:160px;" src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80" alt="دليل كتابة المقال الاحترافي" loading="lazy" onerror="this.style.display='none'"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٦.٧ألف مشاهدة</span><span class="card-category">دليل</span></a>
-        <div class="card-body">
-          <a class="card-title" href="browse-articles.html">الدليل الكامل لكتابة المقال المحترف: من الفكرة إلى النشر</a>
-          <div class="card-footer" style="margin-top:auto;">
-            <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/hoda-yassin.jpg" alt="هدى ياسين" style="width:100%;height:100%;"></div><div class="author-name">هدى ياسين</div></div>
-            <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٦.٧ألف</span><span class="card-stat share-stat" onclick="openSharePanel(event,'الدليل الكامل لكتابة المقال المحترف')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <a class="article-image-wrap" href="browse-articles.html" style="height:160px;"><img class="card-img" style="height:160px;" src="https://images.unsplash.com/photo-1455849318743-b2233052fcff?auto=format&fit=crop&w=800&q=80" alt="إيجاد الصوت الكتابي الخاص" loading="lazy" onerror="this.style.display='none'"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٥.١ألف مشاهدة</span><span class="card-category">إبداع</span></a>
-        <div class="card-body">
-          <a class="card-title" href="browse-articles.html">كيف تجد صوتك الكتابي الخاص في بحر المحتوى الرقمي؟</a>
-          <div class="card-footer" style="margin-top:auto;">
-            <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/ahmed-awadallah.jpg" alt="أحمد عوض الله" style="width:100%;height:100%;"></div><div class="author-name">أحمد عوض الله</div></div>
-            <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٥.١ألف</span><span class="card-stat share-stat" onclick="openSharePanel(event,'كيف تجد صوتك الكتابي الخاص')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <a class="article-image-wrap" href="browse-articles.html" style="height:160px;"><img class="card-img" style="height:160px;" src="https://images.unsplash.com/photo-1455391350506-eb6b2b0e7d19?auto=format&fit=crop&w=800&q=80" alt="قصيدة نثر وشعر عربي" loading="lazy" onerror="this.style.display='none'"><span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٤.٣ألف مشاهدة</span><span class="card-category">تجربة</span></a>
-        <div class="card-body">
-          <a class="card-title" href="browse-articles.html">قصيدة نثر في زمن السيولة: هل لا يزال الشعر ممكناً؟</a>
-          <div class="card-footer" style="margin-top:auto;">
-            <div class="card-author"><div class="author-avatar" style="overflow:hidden;"><img src="/images/authors/lamia-alsayed.jpg" alt="لمياء السيد" style="width:100%;height:100%;"></div><div class="author-name">لمياء السيد</div></div>
-            <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ٤.٣ألف</span><span class="card-stat share-stat" onclick="openSharePanel(event,'قصيدة نثر في زمن السيولة')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
-          </div>
-        </div>
-      </div>
+    <div class="cards-grid cards-grid-4" id="mostViewedGrid">
+      <div style="text-align:center;color:var(--ink-muted);padding:30px 0;grid-column:1/-1;">جاري التحميل...</div>
     </div>
   </div>
 </section>
@@ -1271,7 +1187,6 @@
             <a href="harf-website.html">الصفحة الرئيسية</a>
             <a href="browse-articles.html">جميع التصنيفات</a>
             <a href="harf-website.html#topWriters">الكتّاب المميزون</a>
-            <a href="about.html">من نحن؟</a>
           </div>
         </div>
         <div>
@@ -1279,7 +1194,8 @@
           <div class="footer-links">
             <a href="withdrawal-policy.html">كيف تُحسب الأرباح؟</a>
             <a href="dashboard.html">محفظتي</a>
-            <a href="write-article.html">محلل SEO وأدوات الكتابة</a>
+            <a href="seo-analyzer.html">محلل SEO المجاني</a>
+            <a href="write-article.html">أدوات الكتابة</a>
           </div>
         </div>
         <div>
@@ -1421,7 +1337,7 @@
     renderLatestArticles(el.dataset.cat);
   }
 
-  // LATEST ARTICLES (real data from API)
+  // LATEST + FEATURED ARTICLES (real data from API, most recent first)
   let allArticlesCache = [];
   async function loadLatestArticles() {
     const list = document.getElementById('latestArticlesList');
@@ -1429,15 +1345,58 @@
       const res = await fetch('/api/articles');
       const data = await res.json();
       allArticlesCache = data.articles;
+      renderFeaturedGrid();
       renderLatestArticles('all');
+      renderMostViewed();
     } catch (e) {
       list.innerHTML = '<div style="text-align:center;color:var(--ink-muted);padding:30px 0;">تعذّر تحميل المقالات.</div>';
     }
   }
 
+  function renderFeaturedGrid() {
+    const grid = document.getElementById('featuredGrid');
+    if (!grid) return;
+    const items = allArticlesCache.slice(0, 3);
+    if (!items.length) { grid.innerHTML = ''; return; }
+
+    grid.innerHTML = items.map(a => {
+      const authorName = escapeHtmlLocal(`${a.author_first_name || ''} ${a.author_last_name || ''}`.trim() || a.author_username);
+      const title = escapeHtmlLocal(a.title);
+      const image = escapeHtmlLocal(a.featured_image_url || '');
+      const avatar = escapeHtmlLocal(a.author_avatar || '');
+      const category = escapeHtmlLocal(a.category_name || '');
+      const description = escapeHtmlLocal(a.description || '');
+      const link = `article-view.html?slug=${encodeURIComponent(a.slug)}`;
+      return `
+        <article class="card card-featured">
+          <a class="article-image-wrap" href="${link}">
+            ${image ? `<img class="card-img" src="${image}" alt="${title}" loading="lazy">` : '<div class="card-img"></div>'}
+            <span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ${a.view_count.toLocaleString('ar-EG')} مشاهدة</span>
+            ${category ? `<span class="card-category">${category}</span>` : ''}
+          </a>
+          <div class="card-body">
+            <a class="card-title" href="${link}">${title}</a>
+            <div class="card-excerpt">${description}</div>
+            <div class="card-footer">
+              <div class="card-author">
+                <div class="author-avatar" style="overflow:hidden;">${avatar ? `<img src="${avatar}" alt="${authorName}" style="width:100%;height:100%;">` : ''}</div>
+                <div class="author-name">${authorName}</div>
+              </div>
+              <div class="card-stats">
+                <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ${a.view_count.toLocaleString('ar-EG')}</span>
+                <span class="card-stat"><svg class="ui-icon"><use href="#icon-heart"></use></svg> ${a.like_count.toLocaleString('ar-EG')}</span>
+                <span class="card-stat share-stat" onclick="openSharePanel(event,'${title.replace(/'/g, '')}')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
+  }
+
   function renderLatestArticles(catSlug) {
     const list = document.getElementById('latestArticlesList');
-    const filtered = catSlug === 'all' ? allArticlesCache : allArticlesCache.filter(a => a.category_slug === catSlug);
+    const filtered = catSlug === 'all' ? allArticlesCache.slice(3) : allArticlesCache.filter(a => a.category_slug === catSlug);
     const items = filtered.slice(0, 6);
 
     if (!items.length) {
@@ -1630,7 +1589,7 @@
     const body = document.getElementById('topWritersBody');
     if (!body) return;
     try {
-      const res = await fetch('/api/authors/top/writers?limit=5');
+      const res = await fetch('/api/authors/top/writers?limit=6');
       if (!res.ok) return;
       const data = await res.json();
       if (!data.writers.length) {
@@ -1658,6 +1617,43 @@
       body.innerHTML = '';
     }
   }
+
+  function renderMostViewed() {
+    const grid = document.getElementById('mostViewedGrid');
+    if (!grid) return;
+    const items = [...allArticlesCache].sort((a, b) => b.view_count - a.view_count).slice(0, 4);
+    if (!items.length) { grid.innerHTML = ''; return; }
+
+    grid.innerHTML = items.map(a => {
+      const authorName = escapeHtmlLocal(`${a.author_first_name || ''} ${a.author_last_name || ''}`.trim() || a.author_username);
+      const title = escapeHtmlLocal(a.title);
+      const image = escapeHtmlLocal(a.featured_image_url || '');
+      const avatar = escapeHtmlLocal(a.author_avatar || '');
+      const category = escapeHtmlLocal(a.category_name || '');
+      const link = `article-view.html?slug=${encodeURIComponent(a.slug)}`;
+      return `
+        <div class="card">
+          <a class="article-image-wrap" href="${link}" style="height:160px;">
+            ${image ? `<img class="card-img" style="height:160px;" src="${image}" alt="${title}" loading="lazy">` : '<div class="card-img" style="height:160px;"></div>'}
+            <span class="views-badge"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ${a.view_count.toLocaleString('ar-EG')} مشاهدة</span>
+            ${category ? `<span class="card-category">${category}</span>` : ''}
+          </a>
+          <div class="card-body">
+            <a class="card-title" href="${link}">${title}</a>
+            <div class="card-footer" style="margin-top:auto;">
+              <div class="card-author">
+                <div class="author-avatar" style="overflow:hidden;">${avatar ? `<img src="${avatar}" alt="${authorName}" style="width:100%;height:100%;">` : ''}</div>
+                <div class="author-name">${authorName}</div>
+              </div>
+              <span class="card-stat"><svg class="ui-icon"><use href="#icon-eye"></use></svg> ${a.view_count.toLocaleString('ar-EG')}</span>
+              <span class="card-stat share-stat" onclick="openSharePanel(event,'${title.replace(/'/g, '')}')"><svg class="ui-icon"><use href="#icon-share"></use></svg></span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
   loadTopWriters();
 
   // SHARE PANEL
