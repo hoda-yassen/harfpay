@@ -677,7 +677,9 @@
     .testimonials-grid { grid-template-columns: 1fr 1fr; }
     .featured-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-  @media (max-width: 768px) {
+  /* شاشات الكمبيوتر العادية (حتى ١٩٢٠ بكسل شاشة كاملة) مش كافية لعرض كل روابط التصنيفات + أزرار الدخول/الأدمن في سطر واحد —
+     كانت بتدفع أزرار الهيدر برة الشاشة تمامًا بدون أي تنبيه. الحل: قائمة همبرجر من عرض ٢٠٠٠ بكسل فأقل، بدل ٧٦٨ فقط. */
+  @media (max-width: 2000px) {
     .mobile-menu-btn { display: flex; }
     .nav {
       display: none; position: absolute; top: 100%; right: 0; left: 0;
@@ -701,6 +703,8 @@
     .nav-mobile-extra .btn-login { text-align: right; background: rgba(255,255,255,0.06); }
     .nav-mobile-extra .language-toggle { width: fit-content; }
     .header-actions .btn-login, .header-actions .language-toggle, .header-actions .auth-user { display: none !important; }
+  }
+  @media (max-width: 768px) {
     .hero-slide { grid-template-columns: 1fr; }
     .hero-image-wrap { display: none; }
     .hero-content { padding: 40px 24px; }
