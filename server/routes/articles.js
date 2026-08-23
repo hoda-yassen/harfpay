@@ -94,7 +94,7 @@ function slugify(title) {
 router.get('/', (req, res) => {
   const rows = db.prepare(`
     SELECT a.id, a.title, a.slug, a.description, a.featured_image_url, a.reading_time_minutes,
-           a.view_count, a.like_count, a.published_at,
+           a.view_count, a.like_count, a.published_at, a.is_pinned,
            u.username AS author_username, u.first_name AS author_first_name, u.last_name AS author_last_name,
            u.profile_image_url AS author_avatar,
            c.name AS category_name, c.slug AS category_slug
@@ -102,7 +102,7 @@ router.get('/', (req, res) => {
     JOIN users u ON u.id = a.user_id
     LEFT JOIN categories c ON c.id = a.category_id
     WHERE a.status = 'published'
-    ORDER BY a.published_at DESC
+    ORDER BY a.is_pinned DESC, a.published_at DESC
   `).all();
   res.json({ articles: rows });
 });

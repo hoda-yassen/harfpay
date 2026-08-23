@@ -41,6 +41,42 @@ router.post('/articles/:id/reject', requireAdmin, (req, res) => {
   res.json({ ok: true });
 });
 
+const MAX_PINNED_ARTICLES = 2;
+
+router.get('/published-articles', requireAdmin, (req, res) => {
+  const rows = db.prepare(`
+    SELECT a.id, a.title, a.slug, a.is_pinned, a.published_at,
+           u.username AS author_username, u.first_name AS author_first_name, u.last_name AS author_last_name
+    FROM articles a
+    JOIN users u ON u.id = a.user_id
+    WHERE a.status = 'published'
+    ORDER BY a.is_pinned DESC, a.published_at DESC
+  `).all();
+  res.json({ articles: rows });
+});
+
+router.post('/articles/:id/pin', requireAdmin, (req, res) => {
+  const article = db.prepare('SELECT id, status FROM articles WHERE id = ?').get(req.params.id);
+  if (!article) return res.status(404).json({ error: 'المقال غير موجود' });
+  if (article.status !== 'published') return res.status(400).json({ error: 'لا يمكن تثبيت مقال غير منشور' });
+
+  const { count } = db.prepare('SELECT COUNT(*) AS count FROM articles WHERE is_pinned = 1').get();
+  if (count >= MAX_PINNED_ARTICLES) {
+    return res.status(400).json({ error: `يمكن تثبيت ${MAX_PINNED_ARTICLES} مقالات فقط في نفس الوقت. ألغِ تثبيت مقال آخر أولاً.` });
+  }
+
+  db.prepare('UPDATE articles SET is_pinned = 1 WHERE id = ?').run(article.id);
+  res.json({ ok: true });
+});
+
+router.post('/articles/:id/unpin', requireAdmin, (req, res) => {
+  const article = db.prepare('SELECT id FROM articles WHERE id = ?').get(req.params.id);
+  if (!article) return res.status(404).json({ error: 'المقال غير موجود' });
+
+  db.prepare('UPDATE articles SET is_pinned = 0 WHERE id = ?').run(article.id);
+  res.json({ ok: true });
+});
+
 const WITHDRAWAL_STATUSES = ['pending', 'approved', 'processing', 'completed', 'rejected'];
 
 router.get('/withdrawals', requireAdmin, (req, res) => {

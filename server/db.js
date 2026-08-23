@@ -1,6 +1,9 @@
 const { DatabaseSync } = require('node:sqlite');
 const path = require('node:path');
-const { hashPassword } = require('./lib/password');
+const { hashPassword, verifyPassword } = require('./lib/password');
+
+// باسورد قوي وعشوائي لحساب الأدمن — يستبدل الباسورد الضعيف القديم (demo12345) الذي كان مستخدَمًا لحساب المشرف أيضًا.
+const ADMIN_DEFAULT_PASSWORD = '3niglgHtOyfIXQ1260@';
 
 const DB_PATH = path.join(__dirname, 'harf.db');
 const db = new DatabaseSync(DB_PATH);
@@ -158,6 +161,9 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
   if (!hasColumn('articles', 'meta_keywords')) {
     db.exec('ALTER TABLE articles ADD COLUMN meta_keywords TEXT');
   }
+  if (!hasColumn('articles', 'is_pinned')) {
+    db.exec('ALTER TABLE articles ADD COLUMN is_pinned INTEGER NOT NULL DEFAULT 0');
+  }
   if (!hasColumn('view_events', 'ip_address')) {
     db.exec('ALTER TABLE view_events ADD COLUMN ip_address TEXT');
   }
@@ -172,6 +178,15 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
   }
   if (!hasColumn('view_events', 'report_token')) {
     db.exec('ALTER TABLE view_events ADD COLUMN report_token TEXT');
+  }
+})();
+
+// لو حساب الأدمن اتعمل قبل كده بالباسورد الضعيف القديم (demo12345)، بنرفّعه للباسورد القوي الجديد تلقائيًا.
+(function upgradeWeakAdminPassword() {
+  const admin = db.prepare("SELECT id, password_hash FROM users WHERE email = 'admin@harf.demo'").get();
+  if (!admin) return;
+  if (verifyPassword('demo12345', admin.password_hash)) {
+    db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(hashPassword(ADMIN_DEFAULT_PASSWORD), admin.id);
   }
 })();
 
@@ -231,6 +246,7 @@ function seedIfEmpty() {
   `);
 
   const demoPasswordHash = hashPassword('demo12345');
+  const adminPasswordHash = hashPassword(ADMIN_DEFAULT_PASSWORD);
 
   const authors = [
     {
@@ -507,7 +523,7 @@ function seedIfEmpty() {
   const adminId = db.prepare(`
     INSERT INTO users (username, email, phone, password_hash, first_name, last_name, user_type)
     VALUES ('admin', 'admin@harf.demo', NULL, ?, 'مشرف', 'حرف', 'admin')
-  `).run(demoPasswordHash).lastInsertRowid;
+  `).run(adminPasswordHash).lastInsertRowid;
   db.prepare('INSERT INTO writer_profiles (user_id) VALUES (?)').run(adminId);
   db.prepare('INSERT INTO user_earnings (user_id) VALUES (?)').run(adminId);
 }

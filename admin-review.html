@@ -39,6 +39,15 @@
   .empty-note { text-align: center; color: var(--ink-muted); padding: 60px 20px; }
   .gate { text-align: center; padding: 60px 20px; }
   .gate a { color: var(--green); font-weight: 700; }
+
+  .section-block { margin-top: 40px; }
+  .section-block h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 6px; }
+  .published-row { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 18px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  .published-info { min-width: 0; }
+  .published-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; }
+  .pin-badge { display: inline-block; background: var(--gold-pale); color: #8a6d1f; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-right: 8px; }
+  .btn-pin { background: var(--gold-pale); color: #8a6d1f; padding: 8px 18px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; border: none; cursor: pointer; white-space: nowrap; }
+  .btn-unpin { background: #f0f0f0; color: var(--ink-soft); padding: 8px 18px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; border: none; cursor: pointer; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -73,6 +82,12 @@
   <h1>مراجعة المقالات</h1>
   <p class="subtitle">المقالات المرسلة من الكتّاب وفي انتظار المراجعة قبل النشر.</p>
   <div id="pendingList"></div>
+
+  <div class="section-block">
+    <h2>تثبيت المقالات في الصفحة الرئيسية</h2>
+    <p class="subtitle">ثبّتي حتى مقالين ليظلوا دائمًا في أول قسم "المقالات المميزة" بالصفحة الرئيسية، بغض النظر عن تاريخ النشر.</p>
+    <div id="publishedList"></div>
+  </div>
 </main>
 
 <script>
@@ -133,7 +148,47 @@
     document.getElementById(`card-${id}`).remove();
   }
 
+  async function loadPublished() {
+    const res = await fetch('/api/admin/published-articles');
+    if (!res.ok) return;
+    const data = await res.json();
+    renderPublished(data.articles);
+  }
+
+  function renderPublished(articles) {
+    const list = document.getElementById('publishedList');
+    if (!articles.length) {
+      list.innerHTML = '<div class="empty-note">لا توجد مقالات منشورة حالياً</div>';
+      return;
+    }
+    list.innerHTML = articles.map(a => `
+      <div class="published-row" id="pub-${a.id}">
+        <div class="published-info">
+          ${a.is_pinned ? '<span class="pin-badge">مثبت</span>' : ''}
+          <div class="published-title">${escapeHtml(a.title)}</div>
+          <div class="review-meta">بقلم: ${escapeHtml(a.author_first_name || '')} ${escapeHtml(a.author_last_name || '')} (${escapeHtml(a.author_username)})</div>
+        </div>
+        ${a.is_pinned
+          ? `<button class="btn-unpin" onclick="unpin(${a.id})">إلغاء التثبيت</button>`
+          : `<button class="btn-pin" onclick="pin(${a.id})">تثبيت في الأعلى</button>`}
+      </div>
+    `).join('');
+  }
+
+  async function pin(id) {
+    const res = await fetch(`/api/admin/articles/${id}/pin`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok) { alert(data.error || 'حصل خطأ'); return; }
+    loadPublished();
+  }
+
+  async function unpin(id) {
+    await fetch(`/api/admin/articles/${id}/unpin`, { method: 'POST' });
+    loadPublished();
+  }
+
   loadPending();
+  loadPublished();
 </script>
 </body>
 </html>
