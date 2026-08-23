@@ -2,8 +2,12 @@ const { DatabaseSync } = require('node:sqlite');
 const path = require('node:path');
 const { hashPassword, verifyPassword } = require('./lib/password');
 
-// باسورد قوي وعشوائي لحساب الأدمن — يستبدل الباسورد الضعيف القديم (demo12345) الذي كان مستخدَمًا لحساب المشرف أيضًا.
-const ADMIN_DEFAULT_PASSWORD = '3niglgHtOyfIXQ1260@';
+// باسورد الأدمن الافتراضي لأول تشغيل (زراعة قاعدة بيانات فاضية) — يُقرأ من متغيّر بيئة على Railway وليس من الكود،
+// عشان مفيش باسورد حقيقي يتخزن نصًّا صريحًا في مستودع GitHub (اللي ممكن يكون عام/مقروء لأي حد).
+const ADMIN_DEFAULT_PASSWORD = process.env.ADMIN_SEED_PASSWORD || 'demo12345';
+// باسورد استرجاع مؤقت — لو محدد، بيرفع حساب الأدمن التجريبي وحساب المالكة الشخصي لنفس الباسورد ده تلقائيًا،
+// ده مفيد لحظة ما الباسورد القديم يتكشف أو تنساه المالكة. لازم يتشال من Railway بعد ما تسجّل دخول بنجاح.
+const ADMIN_RESET_PASSWORD = process.env.ADMIN_RESET_PASSWORD || null;
 
 const DB_PATH = path.join(__dirname, 'harf.db');
 const db = new DatabaseSync(DB_PATH);
@@ -167,6 +171,12 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
   if (!hasColumn('articles', 'is_hero_pinned')) {
     db.exec('ALTER TABLE articles ADD COLUMN is_hero_pinned INTEGER NOT NULL DEFAULT 0');
   }
+  if (!hasColumn('users', 'reset_token_hash')) {
+    db.exec('ALTER TABLE users ADD COLUMN reset_token_hash TEXT');
+  }
+  if (!hasColumn('users', 'reset_token_expires')) {
+    db.exec('ALTER TABLE users ADD COLUMN reset_token_expires TEXT');
+  }
   if (!hasColumn('view_events', 'ip_address')) {
     db.exec('ALTER TABLE view_events ADD COLUMN ip_address TEXT');
   }
@@ -184,12 +194,26 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
   }
 })();
 
-// لو حساب الأدمن اتعمل قبل كده بالباسورد الضعيف القديم (demo12345)، بنرفّعه للباسورد القوي الجديد تلقائيًا.
+// لو حساب الأدمن لسه على باسورد ضعيف/مكشوف قديم (demo12345 أو الباسورد اللي كان مكتوبًا غلط في الكود العلني قبل كده)،
+// بيترفّع تلقائيًا للباسورد الجديد المقروء من متغيّر بيئة (ADMIN_SEED_PASSWORD)، مش من الكود نفسه.
 (function upgradeWeakAdminPassword() {
   const admin = db.prepare("SELECT id, password_hash FROM users WHERE email = 'admin@harf.demo'").get();
   if (!admin) return;
-  if (verifyPassword('demo12345', admin.password_hash)) {
+  const isKnownWeak = verifyPassword('demo12345', admin.password_hash)
+    || verifyPassword('3niglgHtOyfIXQ1260@', admin.password_hash); // كان مكشوفًا في مستودع GitHub العام — لازم يتغيّر.
+  if (isKnownWeak) {
     db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(hashPassword(ADMIN_DEFAULT_PASSWORD), admin.id);
+  }
+})();
+
+// باسورد استرجاع مؤقت (لو حددته المالكة في Railway): يرفع باسورد حساب الأدمن التجريبي وحسابها الشخصي لنفس القيمة،
+// عشان تقدر تدخل تاني لو نسيت الباسورد أو انكشف. لازم تشيل المتغيّر ده من Railway بعد ما تسجّل دخول بنجاح.
+(function applyOwnerPasswordReset() {
+  if (!ADMIN_RESET_PASSWORD) return;
+  const targets = db.prepare("SELECT id FROM users WHERE email IN ('admin@harf.demo', 'dodoh69h@gmail.com')").all();
+  const newHash = hashPassword(ADMIN_RESET_PASSWORD);
+  for (const t of targets) {
+    db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(newHash, t.id);
   }
 })();
 

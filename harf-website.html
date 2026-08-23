@@ -1204,7 +1204,19 @@
           </div>
         </div>
         <button class="btn-submit" id="loginSubmit" onclick="submitLogin()">دخول</button>
-        <div style="text-align:center;margin-top:14px;font-size:0.82rem;color:var(--ink-muted);">نسيت كلمة المرور؟ <a href="#" style="color:var(--green);font-weight:600;">استعادة</a></div>
+        <div style="text-align:center;margin-top:14px;font-size:0.82rem;color:var(--ink-muted);">نسيت كلمة المرور؟ <a href="#" onclick="showForgotForm(); return false;" style="color:var(--green);font-weight:600;">استعادة</a></div>
+      </div>
+
+      <!-- Forgot Password Form -->
+      <div id="forgotForm" style="display:none;">
+        <div id="forgotMsg" style="display:none;border-radius:8px;padding:10px 14px;font-size:0.82rem;margin-bottom:14px;"></div>
+        <p style="font-size:0.85rem;color:var(--ink-soft);margin-bottom:16px;">اكتبي البريد الإلكتروني المسجّل به حسابك، وهنبعتلك رابط لاستعادة كلمة المرور.</p>
+        <div class="form-group">
+          <label class="form-label">البريد الإلكتروني</label>
+          <input class="form-input" id="forgotEmail" type="email" placeholder="example@email.com">
+        </div>
+        <button class="btn-submit" id="forgotSubmit" onclick="submitForgotPassword()">إرسال رابط الاستعادة</button>
+        <div style="text-align:center;margin-top:14px;font-size:0.82rem;color:var(--ink-muted);"><a href="#" onclick="backToLoginForm(); return false;" style="color:var(--green);font-weight:600;">الرجوع لتسجيل الدخول</a></div>
       </div>
 
       <!-- Register Form -->
@@ -1461,6 +1473,7 @@
     el.classList.add('active');
     document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
     document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+    document.getElementById('forgotForm').style.display = 'none';
   }
 
   // AUTH
@@ -1490,6 +1503,40 @@
     } catch (e) {
       // لا يوجد سيرفر متاح (تصفح الملف مباشرة) — الواجهة تبقى في وضع الزائر.
     }
+  }
+
+  function showForgotForm() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('forgotForm').style.display = 'block';
+  }
+  function backToLoginForm() {
+    document.getElementById('forgotForm').style.display = 'none';
+    document.getElementById('loginForm').style.display = 'block';
+  }
+  async function submitForgotPassword() {
+    const msgEl = document.getElementById('forgotMsg');
+    msgEl.style.display = 'none';
+    const email = document.getElementById('forgotEmail').value.trim();
+    if (!email) {
+      msgEl.textContent = 'من فضلك أدخلي البريد الإلكتروني';
+      msgEl.style.cssText = 'display:block;background:#fdecea;color:#c0392b;border-radius:8px;padding:10px 14px;font-size:0.82rem;margin-bottom:14px;';
+      return;
+    }
+    const btn = document.getElementById('forgotSubmit');
+    btn.disabled = true;
+    try {
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      msgEl.textContent = data.message || (res.ok ? 'تم الإرسال' : (data.error || 'حصل خطأ'));
+      msgEl.style.cssText = `display:block;border-radius:8px;padding:10px 14px;font-size:0.82rem;margin-bottom:14px;${res.ok ? 'background:#e8f5e9;color:#2e7d32;' : 'background:#fdecea;color:#c0392b;'}`;
+    } catch (e) {
+      msgEl.textContent = 'تعذّر الاتصال بالسيرفر، حاولي تاني';
+      msgEl.style.cssText = 'display:block;background:#fdecea;color:#c0392b;border-radius:8px;padding:10px 14px;font-size:0.82rem;margin-bottom:14px;';
+    }
+    btn.disabled = false;
   }
 
   async function submitLogin() {

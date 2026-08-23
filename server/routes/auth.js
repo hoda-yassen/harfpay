@@ -1,8 +1,10 @@
 const express = require('express');
+const crypto = require('node:crypto');
 const rateLimit = require('express-rate-limit');
 const db = require('../db');
 const { hashPassword, verifyPassword } = require('../lib/password');
 const { createSessionToken, MAX_AGE_MS } = require('../lib/session');
+const { sendResetEmail } = require('../lib/mailer');
 
 const router = express.Router();
 
@@ -102,6 +104,48 @@ router.get('/me', (req, res) => {
   if (!req.userId) return res.json({ user: null });
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.userId);
   res.json({ user: publicUser(user) });
+});
+
+const RESET_TOKEN_MINUTES = 30;
+const GENERIC_RESET_MESSAGE = 'لو البريد الإلكتروني ده مسجّل عندنا، وصله رابط لاستعادة كلمة المرور.';
+
+router.post('/forgot-password', authLimiter, async (req, res) => {
+  const { email } = req.body || {};
+  if (!email || !EMAIL_RE.test(email)) {
+    return res.status(400).json({ error: 'أدخلي بريدًا إلكترونيًا صحيحًا' });
+  }
+
+  const user = db.prepare('SELECT id, email FROM users WHERE email = ?').get(email);
+  // نفس الرسالة سواء الإيميل موجود أو لأ، عشان محدش يقدر يعرف مين مسجّل في الموقع من غير كده.
+  if (!user) return res.json({ ok: true, message: GENERIC_RESET_MESSAGE });
+
+  const token = crypto.randomBytes(32).toString('hex');
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+  const expires = new Date(Date.now() + RESET_TOKEN_MINUTES * 60 * 1000).toISOString();
+  db.prepare('UPDATE users SET reset_token_hash = ?, reset_token_expires = ? WHERE id = ?').run(tokenHash, expires, user.id);
+
+  const origin = `${req.protocol}://${req.get('host')}`;
+  const resetUrl = `${origin}/reset-password.html?token=${token}`;
+  await sendResetEmail(user.email, resetUrl).catch(() => {});
+
+  res.json({ ok: true, message: GENERIC_RESET_MESSAGE });
+});
+
+router.post('/reset-password', authLimiter, (req, res) => {
+  const { token, password } = req.body || {};
+  if (!token || !password) return res.status(400).json({ error: 'الرابط أو كلمة المرور غير صحيحة' });
+  if (password.length < 8) return res.status(400).json({ error: 'كلمة المرور يجب أن تكون ٨ أحرف على الأقل' });
+
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+  const user = db.prepare('SELECT id, reset_token_expires FROM users WHERE reset_token_hash = ?').get(tokenHash);
+  if (!user || !user.reset_token_expires || new Date(user.reset_token_expires) < new Date()) {
+    return res.status(400).json({ error: 'رابط الاستعادة غير صالح أو منتهي — اطلبي رابطًا جديدًا' });
+  }
+
+  db.prepare('UPDATE users SET password_hash = ?, reset_token_hash = NULL, reset_token_expires = NULL WHERE id = ?')
+    .run(hashPassword(password), user.id);
+
+  res.json({ ok: true });
 });
 
 module.exports = router;
