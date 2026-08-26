@@ -51,6 +51,22 @@
   .btn-unpin { background: #f0f0f0; color: var(--ink-soft); padding: 8px 18px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; border: none; cursor: pointer; white-space: nowrap; }
   .btn-hero-pin { background: var(--green); color: var(--white); padding: 8px 18px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; border: none; cursor: pointer; white-space: nowrap; }
   .btn-hero-unpin { background: #f0f0f0; color: var(--ink-soft); padding: 8px 18px; border-radius: 8px; font-size: 0.82rem; font-weight: 700; border: none; cursor: pointer; white-space: nowrap; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 30px; }
+  .stat-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; text-align: center; }
+  .stat-card .stat-icon { font-size: 1.6rem; margin-bottom: 6px; }
+  .stat-card .stat-value { font-size: 1.8rem; font-weight: 800; color: var(--green); }
+  .stat-card .stat-label { font-size: 0.82rem; color: var(--ink-muted); margin-top: 2px; }
+
+  .top-articles { margin-top: 20px; margin-bottom: 30px; }
+  .top-articles h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 10px; }
+  .top-article-row { background: var(--white); border-radius: 10px; box-shadow: var(--shadow); padding: 14px 18px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .top-article-row .rank { background: var(--gold); color: var(--white); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; flex-shrink: 0; }
+  .top-article-row .article-info { flex: 1; min-width: 0; }
+  .top-article-row .article-title { font-weight: 700; font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .top-article-row .article-author { font-size: 0.78rem; color: var(--ink-muted); }
+  .top-article-row .article-stats { display: flex; gap: 14px; flex-shrink: 0; font-size: 0.8rem; color: var(--ink-soft); }
+  .top-article-row .article-stats span { display: flex; align-items: center; gap: 3px; }
 </style>
 </head>
 <body>
@@ -82,6 +98,21 @@
 </main>
 
 <main class="container" id="reviewView" style="display:none;">
+
+  <h1>لوحة الإحصائيات</h1>
+  <p class="subtitle">نظرة عامة على أداء الموقع</p>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon">👁️</div><div class="stat-value" id="statViews">—</div><div class="stat-label">إجمالي المشاهدات</div></div>
+    <div class="stat-card"><div class="stat-icon">✍️</div><div class="stat-value" id="statWriters">—</div><div class="stat-label">عدد الكتّاب</div></div>
+    <div class="stat-card"><div class="stat-icon">📄</div><div class="stat-value" id="statArticles">—</div><div class="stat-label">المقالات المنشورة</div></div>
+    <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="statPaid">—</div><div class="stat-label">المدفوعات ($)</div></div>
+  </div>
+
+  <div class="top-articles">
+    <h2>أكثر المقالات مشاهدة</h2>
+    <div id="topArticlesList"></div>
+  </div>
+
   <h1>مراجعة المقالات</h1>
   <p class="subtitle">المقالات المرسلة من الكتّاب وفي انتظار المراجعة قبل النشر.</p>
   <div id="pendingList"></div>
@@ -229,8 +260,46 @@
     loadPublished();
   }
 
+  async function loadStats() {
+    try {
+      const res = await fetch('/api/stats');
+      if (!res.ok) return;
+      const d = await res.json();
+      document.getElementById('statViews').textContent = Number(d.views).toLocaleString('ar-EG');
+      document.getElementById('statWriters').textContent = Number(d.writers).toLocaleString('ar-EG');
+      document.getElementById('statArticles').textContent = Number(d.articles).toLocaleString('ar-EG');
+      document.getElementById('statPaid').textContent = '$' + Number(d.paidOutUsd).toLocaleString('ar-EG');
+    } catch(e) {}
+  }
+
+  async function loadTopArticles() {
+    try {
+      const res = await fetch('/api/admin/published-articles');
+      if (!res.ok) return;
+      const d = await res.json();
+      const sorted = d.articles.sort((a, b) => (b.view_count || 0) - (a.view_count || 0)).slice(0, 10);
+      const list = document.getElementById('topArticlesList');
+      if (!sorted.length) { list.innerHTML = '<div class="empty-note">لا توجد مقالات بعد</div>'; return; }
+      list.innerHTML = sorted.map((a, i) => `
+        <div class="top-article-row">
+          <div class="rank">${i + 1}</div>
+          <div class="article-info">
+            <div class="article-title">${escapeHtml(a.title)}</div>
+            <div class="article-author">${escapeHtml(a.author_first_name || '')} ${escapeHtml(a.author_last_name || '')}</div>
+          </div>
+          <div class="article-stats">
+            <span>👁️ ${(a.view_count || 0).toLocaleString('ar-EG')}</span>
+            <span>❤️ ${(a.like_count || 0).toLocaleString('ar-EG')}</span>
+          </div>
+        </div>
+      `).join('');
+    } catch(e) {}
+  }
+
   loadPending();
   loadPublished();
+  loadStats();
+  loadTopArticles();
 </script>
 </body>
 </html>
