@@ -273,7 +273,7 @@ const MIN_WITHDRAWAL_USD = 10;
 })();
 
 function seedIfEmpty() {
-  const { count } = db.prepare('SELECT COUNT(*) AS count FROM users').get();
+  const { count } = db.prepare('SELECT COUNT(*) AS count FROM articles').get();
   if (count > 0) return;
 
   const getCategoryId = (slug) => db.prepare('SELECT id FROM categories WHERE slug = ?').get(slug).id;
