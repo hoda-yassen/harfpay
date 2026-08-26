@@ -1269,7 +1269,9 @@
   function goSlide(n) {
     if (!totalSlides) return;
     currentSlide = n;
-    slidesEl.style.transform = `translateX(${currentSlide * -100}%)`;
+    // الصفحة RTL، فـ flex بيرتّب الشرائح من اليمين لليسار طبيعيًا (كل شريحة تالية بتقع أبعد على الشمال بقيمة سالبة)،
+    // يعني لازم نزيح الحاوية لليمين (قيمة موجبة) عشان نجيب الشريحة المطلوبة لواجهة الشاشة، عكس افتراض LTR المعتاد.
+    slidesEl.style.transform = `translateX(${currentSlide * 100}%)`;
     document.querySelectorAll('.hero-dot').forEach((d,i) => d.classList.toggle('active', i === currentSlide));
   }
   function changeSlide(dir) {
