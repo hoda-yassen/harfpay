@@ -213,11 +213,16 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
 // عشان تقدر تدخل تاني لو نسيت الباسورد أو انكشف. لازم تشيل المتغيّر ده من Railway بعد ما تسجّل دخول بنجاح.
 (function applyOwnerPasswordReset() {
   if (!ADMIN_RESET_PASSWORD) return;
-  const targets = db.prepare("SELECT id FROM users WHERE email IN ('admin@harf.demo', 'dodoh69h@gmail.com')").all();
   const newHash = hashPassword(ADMIN_RESET_PASSWORD);
-  for (const t of targets) {
-    db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(newHash, t.id);
+  const owner = db.prepare("SELECT id FROM users WHERE email = 'dodoh69h@gmail.com'").get();
+  if (!owner) {
+    db.prepare(`INSERT INTO users (username, email, first_name, last_name, password_hash, user_type) VALUES (?, ?, ?, ?, ?, 'admin')`)
+      .run('hoda-yassin-admin', 'dodoh69h@gmail.com', 'هدى', 'ياسين', newHash);
+  } else {
+    db.prepare('UPDATE users SET password_hash = ?, user_type = ? WHERE id = ?').run(newHash, 'admin', owner.id);
   }
+  const admin = db.prepare("SELECT id FROM users WHERE email = 'admin@harf.demo'").get();
+  if (admin) db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(newHash, admin.id);
 })();
 
 // حساب المالكة الشخصي (dodoh69h@gmail.com) بيترقّى لصلاحية أدمن تلقائيًا — من غير أي تغيير في باسوردها الحالي.
