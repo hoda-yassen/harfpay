@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="مركز المساعدة - الأسئلة الشائعة في منصة حرف">
+  <title>مركز المساعدة | حرف</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --green:#1b4d3e; --green-dark:#122e25; --gold:#c9a84c; --cream:#f8f6f1; --ink:#1a1a1a; --muted:#65736e; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--cream); color:var(--ink); font-family:Tajawal, sans-serif; line-height:1.9; }
+    header { background:var(--green-dark); color:#fff; padding:18px 24px; }
+    .header-inner, main, footer { max-width:960px; margin:auto; }
+    .header-inner { display:flex; align-items:center; justify-content:space-between; gap:18px; }
+    .brand { color:#fff; text-decoration:none; font-size:1.35rem; font-weight:800; }
+    .back { color:#f1dda0; text-decoration:none; font-size:.9rem; }
+    main { padding:48px 24px 64px; }
+    .eyebrow { color:var(--gold); font-weight:700; }
+    h1 { color:var(--green); font-size:clamp(1.8rem,4vw,2.6rem); margin:6px 0 12px; }
+    .intro { color:var(--muted); max-width:700px; }
+    h2 { color:var(--green); font-size:1.25rem; margin:36px 0 14px; padding-bottom:8px; border-bottom:2px solid var(--gold); }
+    .faq-list { display:grid; gap:14px; margin:0 0 10px; padding:0; list-style:none; }
+    .faq-item { background:#fff; border-right:4px solid var(--gold); border-radius:10px; box-shadow:0 4px 18px #1b4d3e12; overflow:hidden; }
+    .faq-q { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; cursor:pointer; font-weight:700; color:var(--green); font-size:1.02rem; user-select:none; }
+    .faq-q::after { content:'+'; font-size:1.4rem; color:var(--gold); transition:transform .25s; }
+    .faq-item.open .faq-q::after { transform:rotate(45deg); }
+    .faq-a { max-height:0; overflow:hidden; transition:max-height .35s ease, padding .35s ease; padding:0 20px; color:var(--ink); font-size:.95rem; line-height:1.85; }
+    .faq-item.open .faq-a { max-height:500px; padding:0 20px 18px; }
+    .contact-box { background:#fff; border-radius:12px; padding:24px; box-shadow:0 4px 18px #1b4d3e12; margin-top:30px; text-align:center; }
+    .contact-box p { color:var(--muted); margin:6px 0 14px; }
+    .contact-box a { display:inline-block; background:var(--green); color:#fff; padding:10px 28px; border-radius:8px; text-decoration:none; font-weight:700; font-size:.95rem; }
+    .contact-box a:hover { background:var(--green-dark); }
+    footer { border-top:1px solid #dfd9ca; padding:22px 24px 32px; color:var(--muted); font-size:.85rem; }
+    @media (max-width:600px) { main { padding:32px 18px 48px; } .header-inner { align-items:flex-start; flex-direction:column; } }
+  </style>
+</head>
+<body>
+  <header><div class="header-inner"><a class="brand" href="harf-website.html">حرف</a><a class="back" href="harf-website.html">الرجوع للرئيسية</a></div></header>
+  <main>
+    <div class="eyebrow">Help Center</div>
+    <h1>مركز المساعدة</h1>
+    <p class="intro">إجابات على أكثر الأسئلة شيوعاً حول منصة حرف. إذا لم تجد إجابتك هنا، تواصل معنا مباشرة.</p>
+
+    <h2>الحساب والتسجيل</h2>
+    <ul class="faq-list">
+      <li class="faq-item">
+        <div class="faq-q">كيف أسجل في منصة حرف؟</div>
+        <div class="faq-a">اضغط على زر "تسجيل" في أعلى الصفحة الرئيسية، ثم أدخل اسمك واسم المستخدم والبريد الإلكتروني وكلمة المرور. بعد التسجيل يمكنك تسجيل الدخول مباشرة والبدء بالكتابة.</div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">نسيت كلمة المرور، ماذا أفعل؟</div>
+        <div class="faq-a">من صفحة تسجيل الدخول، اضغط على "نسيت كلمة المرور؟" وأدخل بريدك الإلكتروني المسجل. ستصلك رسالة بها رابط لإعادة تعيين كلمة المرور. الرابط صالح لمدة 30 دقيقة فقط.</div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">كيف أعدّل بيانات حسابي؟</div>
+        <div class="faq-a">بعد تسجيل الدخول، اذهب إلى صفحة ملفك الشخصي واضغط "تعديل الملف الشخصي" لتحديث اسمك أو صورتك أو نبذتك التعريفية.</div>
+      </li>
+    </ul>
+
+    <h2>كتابة المقالات ونشرها</h2>
+    <ul class="faq-list">
+      <li class="faq-item">
+        <div class="faq-q">كيف أنشر مقالاً على حرف؟</div>
+        <div class="faq-a">بعد تسجيل الدخول، اضغط "اكتب مقالاً" من لوحة التحكم الخاصة بك. أدخل العنوان والمحتوى واختر التصنيف وأضف صورة غلاف، ثم اضغط "إرسال للمراجعة". سيتم مراجعة المقال من الإدارة قبل نشره.</div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">كم يستغرق مراجعة المقال؟</div>
+        <div class="faq-a">عادةً يتم مراجعة المقالات خلال 24 ساعة. ستتلقى إشعاراً عند الموافقة على مقالك أو في حال وجود ملاحظات عليه.</div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">هل هناك شروط للمقالات؟</div>
+        <div class="faq-a">نعم، يجب أن يكون المقال أصلياً (غير منسوخ)، يحترم حقوق الملكية الفكرية، لا يحتوي على محتوى مسيء أو عنصري، ويكون ذا قيمة مضافة للقارئ. المقالات القصيرة جداً أو المكررة قد تُرفض.</div>
+      </li>
+    </ul>
+
+    <h2>الأرباح والمدفوعات</h2>
+    <ul class="faq-list">
+      <li class="faq-item">
+        <div class="faq-q">كيف أربح من الكتابة على حرف؟</div>
+        <div class="faq-a">تربح من خلال مشاهدات مقالاتك. كل مشاهدة حقيقية تُحسب ضمن أرباحك. كلما زادت جودة مقالاتك وانتشارها، زادت أرباحك.</div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">ما هو الحد الأدنى للسحب؟</div>
+        <div class="faq-a">الحد الأدنى للسحب هو 5 دولارات أمريكية. يمكنك طلب السحب من لوحة التحكم الخاصة بك بعد بلوغ هذا المبلغ.</div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">كيف أسحب أرباحي؟</div>
+        <div class="faq-a">من لوحة التحكم، اذهب لقسم "الأرباح" واضغط "طلب سحب". أدخل بيانات حسابك البنكي أو محفظتك الإلكترونية. يتم معالجة طلبات السحب خلال 3-5 أيام عمل.</div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">ما طرق الدفع المتاحة؟</div>
+        <div class="faq-a">حالياً ندعم التحويل البنكي والمحافظ الإلكترونية (فودافون كاش، PayPal). يتم إضافة طرق دفع جديدة باستمرار.</div>
+      </li>
+    </ul>
+
+    <h2>المتابعة والتفاعل</h2>
+    <ul class="faq-list">
+      <li class="faq-item">
+        <div class="faq-q">كيف أتابع كاتباً معيناً؟</div>
+        <div class="faq-a">اضغط على زر "متابعة" بجوار اسم الكاتب في أي مقال أو من صفحته الشخصية. ستتلقى إشعارات عند نشر مقالات جديدة من الكتّاب الذين تتابعهم.</div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">كيف أشارك مقالاً؟</div>
+        <div class="faq-a">اضغط على أيقونة المشاركة الموجودة في كل مقال. يمكنك مشاركته عبر واتساب، تويتر، فيسبوك، أو نسخ الرابط مباشرة.</div>
+      </li>
+    </ul>
+
+    <h2>الدعم الفني</h2>
+    <ul class="faq-list">
+      <li class="faq-item">
+        <div class="faq-q">الموقع لا يعمل بشكل صحيح، ماذا أفعل؟</div>
+        <div class="faq-a">جرّب تحديث الصفحة (Ctrl+F5) أو مسح ذاكرة المتصفح المؤقتة. إذا استمرت المشكلة، تواصل معنا عبر البريد الإلكتروني مع وصف المشكلة ولقطة شاشة إن أمكن.</div>
+      </li>
+      <li class="faq-item">
+        <div class="faq-q">كيف أبلّغ عن محتوى مخالف؟</div>
+        <div class="faq-a">إذا وجدت مقالاً يخالف شروط الاستخدام، تواصل معنا عبر البريد الإلكتروني مع رابط المقال وسبب البلاغ. نتعامل مع جميع البلاغات بجدية وسرية.</div>
+      </li>
+    </ul>
+
+    <div class="contact-box">
+      <h2 style="border:none; margin:0 0 4px;">لم تجد إجابتك؟</h2>
+      <p>تواصل معنا وسنرد عليك في أقرب وقت</p>
+      <a href="mailto:harfpay@gmail.com">راسلنا عبر البريد الإلكتروني</a>
+    </div>
+  </main>
+  <footer>© 2026 حرف - منصة الكُتّاب العرب</footer>
+  <script>
+    document.querySelectorAll('.faq-q').forEach(function(q){
+      q.addEventListener('click', function(){
+        this.parentElement.classList.toggle('open');
+      });
+    });
+  </script>
+</body>
+</html>
