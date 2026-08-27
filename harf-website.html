@@ -796,6 +796,7 @@
     <a class="sp-tg" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:#229ED9;color:#fff;font-size:.82rem;font-weight:700;">تليجرام</a>
     <a class="sp-fb" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:#1877F2;color:#fff;font-size:.82rem;font-weight:700;">فيسبوك</a>
     <a class="sp-x" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:#000;color:#fff;font-size:.82rem;font-weight:700;">X</a>
+    <button type="button" class="sp-copy" onclick="copyShareLink()" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:var(--green);color:#fff;font-size:.82rem;font-weight:700;border:none;cursor:pointer;">نسخ الرابط</button>
   </div>
 </div>
 <style>
@@ -1791,9 +1792,11 @@
   // SHARE PANEL
   function openSharePanel(e, title, articleLink) {
     e.preventDefault(); e.stopPropagation();
-    const url = encodeURIComponent(articleLink ? new URL(articleLink, window.location.href).href : window.location.href);
+    const rawUrl = articleLink ? new URL(articleLink, window.location.href).href : window.location.href;
+    const url = encodeURIComponent(rawUrl);
     const text = encodeURIComponent(title + ' — منصة حرف');
     const panel = document.getElementById('sharePanel');
+    panel.dataset.rawUrl = rawUrl;
     panel.querySelector('.sp-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
     panel.querySelector('.sp-x').href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
     panel.querySelector('.sp-wa').href = `https://api.whatsapp.com/send?text=${text}%20${url}`;
@@ -1804,15 +1807,39 @@
     panel.classList.toggle('open');
   }
   function shareSite() {
-    const url = encodeURIComponent(window.location.origin);
+    const rawUrl = window.location.origin;
+    const url = encodeURIComponent(rawUrl);
     const text = encodeURIComponent('منصة حرف — اكتب وانشر واربح');
     const panel = document.getElementById('sharePanel');
+    panel.dataset.rawUrl = rawUrl;
     panel.querySelector('.sp-fb').href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
     panel.querySelector('.sp-x').href = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
     panel.querySelector('.sp-wa').href = `https://api.whatsapp.com/send?text=${text}%20${url}`;
     panel.querySelector('.sp-tg').href = `https://t.me/share/url?url=${url}&text=${text}`;
     panel.style.top = '80px'; panel.style.right = '24px';
     panel.classList.toggle('open');
+  }
+  async function copyShareLink() {
+    const panel = document.getElementById('sharePanel');
+    const link = panel.dataset.rawUrl || window.location.href;
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(link);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = link;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      showToast('تم نسخ الرابط بنجاح', 'gold');
+      panel.classList.remove('open');
+    } catch (err) {
+      showToast('تعذّر نسخ الرابط، جربي تاني');
+    }
   }
   document.addEventListener('click', e => {
     const panel = document.getElementById('sharePanel');
