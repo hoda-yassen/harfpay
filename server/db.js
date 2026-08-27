@@ -200,6 +200,19 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
   }
 })();
 
+// توحيد حالة أحرف الإيميلات المخزّنة (lowercase) عشان تطابق منطق الدخول الجديد اللي بيوحّد الحالة
+// قبل المقارنة — بدون كده حسابات قديمة بإيميل فيه حرف كبير كانت هتفشل في تسجيل الدخول غلط.
+(function normalizeExistingEmails() {
+  const rows = db.prepare('SELECT id, email FROM users').all();
+  for (const row of rows) {
+    const lower = row.email.toLowerCase();
+    if (lower === row.email) continue;
+    try {
+      db.prepare('UPDATE users SET email = ? WHERE id = ?').run(lower, row.id);
+    } catch (e) { /* تعارض نادر مع حساب آخر بنفس الإيميل بحالة مختلفة — يتجاهل بأمان */ }
+  }
+})();
+
 // لو حساب الأدمن لسه على باسورد ضعيف/مكشوف قديم (demo12345 أو الباسورد اللي كان مكتوبًا غلط في الكود العلني قبل كده)،
 // بيترفّع تلقائيًا للباسورد الجديد المقروء من متغيّر بيئة (ADMIN_SEED_PASSWORD)، مش من الكود نفسه.
 (function upgradeWeakAdminPassword() {

@@ -10,6 +10,12 @@ const router = express.Router();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// مقارنة الإيميلات في SQLite حساسة لحالة الأحرف افتراضيًا — لو المستخدم سجّل بحرف كبير وبعدين
+// دخل بحرف صغير (زي ما بيحصل تلقائي على كيبورد الموبايل) هيفشل الدخول غلط. توحيد الحالة بيمنع ده.
+function normalizeEmail(email) {
+  return String(email || '').trim().toLowerCase();
+}
+
 // حماية من محاولات تخمين كلمة المرور (Brute Force) — ١٠ محاولات كحد أقصى كل ١٥ دقيقة لكل IP.
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -43,7 +49,8 @@ function setSessionCookie(req, res, userId) {
 }
 
 router.post('/register', authLimiter, (req, res) => {
-  const { fullName, email, phone, password, signupSource } = req.body || {};
+  const { fullName, phone, password, signupSource } = req.body || {};
+  const email = normalizeEmail((req.body || {}).email);
   if (!fullName || !email || !password) {
     return res.status(400).json({ error: 'الاسم والبريد الإلكتروني وكلمة المرور مطلوبة' });
   }
@@ -86,7 +93,8 @@ router.post('/register', authLimiter, (req, res) => {
 });
 
 router.post('/login', authLimiter, (req, res) => {
-  const { email, password } = req.body || {};
+  const { password } = req.body || {};
+  const email = normalizeEmail((req.body || {}).email);
   if (!email || !password) {
     return res.status(400).json({ error: 'البريد الإلكتروني وكلمة المرور مطلوبان' });
   }
@@ -113,7 +121,7 @@ const RESET_TOKEN_MINUTES = 30;
 const GENERIC_RESET_MESSAGE = 'لو البريد الإلكتروني ده مسجّل عندنا، وصله رابط لاستعادة كلمة المرور.';
 
 router.post('/forgot-password', authLimiter, async (req, res) => {
-  const { email } = req.body || {};
+  const email = normalizeEmail((req.body || {}).email);
   if (!email || !EMAIL_RE.test(email)) {
     return res.status(400).json({ error: 'أدخلي بريدًا إلكترونيًا صحيحًا' });
   }
