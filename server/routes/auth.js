@@ -43,7 +43,7 @@ function setSessionCookie(req, res, userId) {
 }
 
 router.post('/register', authLimiter, (req, res) => {
-  const { fullName, email, phone, password } = req.body || {};
+  const { fullName, email, phone, password, signupSource } = req.body || {};
   if (!fullName || !email || !password) {
     return res.status(400).json({ error: 'الاسم والبريد الإلكتروني وكلمة المرور مطلوبة' });
   }
@@ -69,10 +69,13 @@ router.post('/register', authLimiter, (req, res) => {
   const [firstName, ...rest] = fullName.trim().split(/\s+/);
   const lastName = rest.join(' ') || null;
 
+  // مصدر التسجيل (مثلاً اسم حملة إعلانية) بييجي من رابط UTM في صفحة الهبوط — بنقصّه ونقيّده كـ نص بسيط للأمان.
+  const source = typeof signupSource === 'string' ? signupSource.trim().slice(0, 60).replace(/[^\w؀-ۿ-]/g, '') : null;
+
   const info = db.prepare(`
-    INSERT INTO users (username, email, phone, password_hash, first_name, last_name, user_type)
-    VALUES (?, ?, ?, ?, ?, ?, 'writer')
-  `).run(username, email, phone || null, hashPassword(password), firstName, lastName);
+    INSERT INTO users (username, email, phone, password_hash, first_name, last_name, user_type, signup_source)
+    VALUES (?, ?, ?, ?, ?, ?, 'writer', ?)
+  `).run(username, email, phone || null, hashPassword(password), firstName, lastName, source || null);
 
   db.prepare('INSERT INTO writer_profiles (user_id) VALUES (?)').run(info.lastInsertRowid);
   db.prepare('INSERT INTO user_earnings (user_id) VALUES (?)').run(info.lastInsertRowid);

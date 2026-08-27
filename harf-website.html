@@ -1620,9 +1620,10 @@
     const password = document.getElementById('registerPassword').value;
     if (!fullName || !email || !password) return showFormError('registerError', 'من فضلك أكمل كل الحقول المطلوبة');
     try {
+      const signupSource = window.harfGetSignupSource ? window.harfGetSignupSource() : null;
       const res = await fetch('/api/auth/register', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, email, phone, password }),
+        body: JSON.stringify({ fullName, email, phone, password, signupSource }),
       });
       const data = await res.json();
       if (!res.ok) return showFormError('registerError', data.error || 'تعذّر إنشاء الحساب');

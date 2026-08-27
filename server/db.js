@@ -195,6 +195,9 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
   if (!hasColumn('view_events', 'report_token')) {
     db.exec('ALTER TABLE view_events ADD COLUMN report_token TEXT');
   }
+  if (!hasColumn('users', 'signup_source')) {
+    db.exec('ALTER TABLE users ADD COLUMN signup_source TEXT');
+  }
 })();
 
 // لو حساب الأدمن لسه على باسورد ضعيف/مكشوف قديم (demo12345 أو الباسورد اللي كان مكتوبًا غلط في الكود العلني قبل كده)،

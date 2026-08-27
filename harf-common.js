@@ -3,6 +3,21 @@
    site has no live backend yet — see harf-database-schema.sql for the
    schema a real server would use to make this synced across devices/users. */
 (function () {
+  // بيلقط مصدر الزيارة (utm_source/utm_campaign) من رابط أي إعلان أول ما حد يدخل الموقع بيه،
+  // ويحفظه محليًا (أول لمسة فقط) عشان لو سجّل بعد كده نعرف جاي منين.
+  const SOURCE_KEY = 'harf-signup-source';
+  try {
+    const params = new URLSearchParams(location.search);
+    const campaign = params.get('utm_campaign') || params.get('utm_source') || params.get('ref');
+    if (campaign && !localStorage.getItem(SOURCE_KEY)) {
+      localStorage.setItem(SOURCE_KEY, campaign.slice(0, 60));
+    }
+  } catch (e) {}
+  window.harfGetSignupSource = function () {
+    try { return localStorage.getItem(SOURCE_KEY) || null; }
+    catch (e) { return null; }
+  };
+
   const FOLLOW_KEY = 'harf-follows';
 
   function getFollows() {

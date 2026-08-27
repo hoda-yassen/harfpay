@@ -3,6 +3,7 @@ const crypto = require('node:crypto');
 const path = require('node:path');
 const fs = require('node:fs');
 const multer = require('multer');
+const rateLimit = require('express-rate-limit');
 const geoip = require('geoip-lite');
 const db = require('../db');
 const { requireAuth } = require('../lib/session');
@@ -39,7 +40,16 @@ const uploadArticleImage = multer({
   },
 });
 
-router.post('/upload-image', requireAuth, (req, res) => {
+// حماية من رفع صور بلا حدود لإغراق مساحة التخزين (DoS) — ٣٠ صورة كحد أقصى كل ١٥ دقيقة لكل IP.
+const uploadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'محاولات رفع كثيرة جداً، من فضلك حاولي مرة أخرى بعد قليل' },
+});
+
+router.post('/upload-image', requireAuth, uploadLimiter, (req, res) => {
   uploadArticleImage.single('image')(req, res, (err) => {
     if (err) return res.status(400).json({ error: err.message });
     if (!req.file) return res.status(400).json({ error: 'لم يتم إرفاق صورة' });
@@ -72,6 +82,14 @@ function shouldCountView(ip, articleId) {
   recentViews.set(key, now);
   return true;
 }
+
+// تنظيف دوري للمدخلات القديمة عشان الـ Map ما يكبرش من غير حدود على مدار عمر السيرفر.
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, ts] of recentViews) {
+    if (now - ts >= VIEW_COOLDOWN_MS) recentViews.delete(key);
+  }
+}, VIEW_COOLDOWN_MS).unref();
 
 // يرفض الزيارات القادمة من بوتات معروفة (محركات بحث، أدوات فحص، سكربتات آلية) قبل احتسابها أصلاً.
 const BOT_UA_PATTERN = /bot|crawl|spider|slurp|headless|curl|wget|python-requests|scrapy|phantomjs|axios|go-http-client/i;

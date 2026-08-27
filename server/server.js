@@ -62,7 +62,11 @@ app.get('/api/stats', (req, res) => {
   const articles = db.prepare("SELECT COUNT(*) AS n FROM articles WHERE status = 'published'").get().n;
   const views = db.prepare("SELECT COALESCE(SUM(view_count), 0) AS n FROM articles WHERE status = 'published'").get().n;
   const paidOut = db.prepare("SELECT COALESCE(SUM(amount), 0) AS n FROM withdrawal_requests WHERE status = 'completed'").get().n;
-  res.json({ writers, articles, views, paidOutUsd: paidOut });
+  const signupSources = db.prepare(`
+    SELECT COALESCE(NULLIF(signup_source, ''), 'مباشر') AS source, COUNT(*) AS n
+    FROM users WHERE user_type = 'writer' GROUP BY source ORDER BY n DESC
+  `).all();
+  res.json({ writers, articles, views, paidOutUsd: paidOut, signupSources });
 });
 
 // يمنع الوصول المباشر لفولدر السيرفر (قاعدة البيانات، الكود، الأسرار) عبر رابط — كان مكشوفاً بالكامل قبل هذا السطر.

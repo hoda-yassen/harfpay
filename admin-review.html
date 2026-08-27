@@ -121,6 +121,12 @@
     <div id="topArticlesList"></div>
   </div>
 
+  <div class="top-articles">
+    <h2>مصادر تسجيل الكتّاب</h2>
+    <p class="subtitle">من وين جاي كل كاتب سجّل — بيتحدد تلقائيًا من رابط الحملة (utm_campaign/utm_source) اللي دخل بيه أول مرة.</p>
+    <div id="signupSourcesList"></div>
+  </div>
+
   <h1>مراجعة المقالات</h1>
   <p class="subtitle">المقالات المرسلة من الكتّاب وفي انتظار المراجعة قبل النشر.</p>
   <div id="pendingList"></div>
@@ -277,6 +283,19 @@
       document.getElementById('statWriters').textContent = Number(d.writers).toLocaleString('ar-EG');
       document.getElementById('statArticles').textContent = Number(d.articles).toLocaleString('ar-EG');
       document.getElementById('statPaid').textContent = '$' + Number(d.paidOutUsd).toLocaleString('ar-EG');
+
+      const total = (d.signupSources || []).reduce((s, r) => s + r.n, 0);
+      const list = document.getElementById('signupSourcesList');
+      if (!total) { list.innerHTML = '<div class="empty-note">لا يوجد كتّاب مسجّلين بعد</div>'; return; }
+      list.innerHTML = (d.signupSources || []).map(r => `
+        <div class="top-article-row">
+          <div class="article-info"><div class="article-title">${escapeHtml(r.source)}</div></div>
+          <div class="article-stats">
+            <span>${Number(r.n).toLocaleString('ar-EG')} كاتب</span>
+            <span>${Math.round(r.n / total * 100)}٪</span>
+          </div>
+        </div>
+      `).join('');
     } catch(e) {}
   }
 
