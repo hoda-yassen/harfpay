@@ -4,6 +4,21 @@ const { requireAdmin } = require('../lib/session');
 
 const router = express.Router();
 
+router.get('/analytics', requireAdmin, (req, res) => {
+  const totalVisits = db.prepare('SELECT COUNT(*) AS n FROM site_visits').get().n;
+  const visitsByCountry = db.prepare(`
+    SELECT country, COUNT(*) AS n FROM site_visits GROUP BY country ORDER BY n DESC
+  `).all();
+  const visitsBySource = db.prepare(`
+    SELECT COALESCE(NULLIF(source, ''), 'مباشر') AS source, COUNT(*) AS n
+    FROM site_visits GROUP BY source ORDER BY n DESC
+  `).all();
+  const registrationsByCountry = db.prepare(`
+    SELECT signup_country AS country, COUNT(*) AS n FROM users WHERE user_type = 'writer' GROUP BY country ORDER BY n DESC
+  `).all();
+  res.json({ totalVisits, visitsByCountry, visitsBySource, registrationsByCountry });
+});
+
 router.get('/pending-articles', requireAdmin, (req, res) => {
   const rows = db.prepare(`
     SELECT a.id, a.title, a.slug, a.description, a.content, a.created_at,

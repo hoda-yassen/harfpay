@@ -5,6 +5,7 @@ const db = require('../db');
 const { hashPassword, verifyPassword } = require('../lib/password');
 const { createSessionToken, MAX_AGE_MS } = require('../lib/session');
 const { sendResetEmail } = require('../lib/mailer');
+const { lookupCountry } = require('../lib/geo');
 
 const router = express.Router();
 
@@ -78,11 +79,12 @@ router.post('/register', authLimiter, (req, res) => {
 
   // مصدر التسجيل (مثلاً اسم حملة إعلانية) بييجي من رابط UTM في صفحة الهبوط — بنقصّه ونقيّده كـ نص بسيط للأمان.
   const source = typeof signupSource === 'string' ? signupSource.trim().slice(0, 60).replace(/[^\w؀-ۿ-]/g, '') : null;
+  const country = lookupCountry(req.ip);
 
   const info = db.prepare(`
-    INSERT INTO users (username, email, phone, password_hash, first_name, last_name, user_type, signup_source)
-    VALUES (?, ?, ?, ?, ?, ?, 'writer', ?)
-  `).run(username, email, phone || null, hashPassword(password), firstName, lastName, source || null);
+    INSERT INTO users (username, email, phone, password_hash, first_name, last_name, user_type, signup_source, signup_country)
+    VALUES (?, ?, ?, ?, ?, ?, 'writer', ?, ?)
+  `).run(username, email, phone || null, hashPassword(password), firstName, lastName, source || null, country);
 
   db.prepare('INSERT INTO writer_profiles (user_id) VALUES (?)').run(info.lastInsertRowid);
   db.prepare('INSERT INTO user_earnings (user_id) VALUES (?)').run(info.lastInsertRowid);

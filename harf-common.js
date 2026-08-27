@@ -23,17 +23,28 @@
       return KNOWN[host] || host;
     } catch (e) { return null; }
   }
+  let detectedSource = null;
   try {
     const params = new URLSearchParams(location.search);
-    const campaign = params.get('utm_campaign') || params.get('utm_source') || params.get('ref') || detectSourceFromReferrer();
-    if (campaign && !localStorage.getItem(SOURCE_KEY)) {
-      localStorage.setItem(SOURCE_KEY, campaign.slice(0, 60));
+    detectedSource = params.get('utm_campaign') || params.get('utm_source') || params.get('ref') || detectSourceFromReferrer();
+    if (detectedSource && !localStorage.getItem(SOURCE_KEY)) {
+      localStorage.setItem(SOURCE_KEY, detectedSource.slice(0, 60));
     }
   } catch (e) {}
   window.harfGetSignupSource = function () {
     try { return localStorage.getItem(SOURCE_KEY) || null; }
     catch (e) { return null; }
   };
+
+  // تسجيل زيارة (مرة واحدة تُحتسب لكل IP يوميًا من ناحية السيرفر) — لمعرفة حجم الزوار الحقيقي وبلدهم
+  // ومصدرهم في لوحة الأدمن، بغض النظر عن كونهم سجّلوا حساب أو لأ.
+  try {
+    fetch('/api/track-visit', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source: detectedSource || window.harfGetSignupSource() }),
+      keepalive: true,
+    }).catch(() => {});
+  } catch (e) {}
 
   const FOLLOW_KEY = 'harf-follows';
 

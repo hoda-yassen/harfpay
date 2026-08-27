@@ -4,6 +4,7 @@ const path = require('node:path');
 
 const { attachSession } = require('./lib/session');
 const { DATA_DIR } = require('./lib/paths');
+const { lookupCountry } = require('./lib/geo');
 const authRoutes = require('./routes/auth');
 const authorRoutes = require('./routes/authors');
 const articleRoutes = require('./routes/articles');
@@ -44,6 +45,20 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/payment-accounts', paymentAccountRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
+
+// تسجيل زيارة واحدة لكل (IP + يوم) — القيد UNIQUE(ip_address, visit_date) في الجدول بيمنع التكرار
+// تلقائيًا فما فيش داعي لأي حماية إضافية من الضغط المتكرر على نفس الرابط.
+app.post('/api/track-visit', (req, res) => {
+  const db = require('./db');
+  const country = lookupCountry(req.ip);
+  const source = typeof req.body?.source === 'string' ? req.body.source.trim().slice(0, 60).replace(/[^\w؀-ۿ-]/g, '') : null;
+  const visitDate = new Date().toISOString().slice(0, 10);
+  try {
+    db.prepare('INSERT OR IGNORE INTO site_visits (ip_address, visit_date, country, source) VALUES (?, ?, ?, ?)')
+      .run(req.ip, visitDate, country, source || null);
+  } catch (e) {}
+  res.status(204).end();
+});
 
 app.get('/api/categories', (req, res) => {
   const db = require('./db');

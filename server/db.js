@@ -158,6 +158,18 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
   processed_at TEXT,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+-- صف واحد لكل (IP + يوم) بفضل UNIQUE أدناه — بيمنع تضخيم عدد الزيارات من إعادة تحميل نفس الصفحة
+-- عدة مرات في نفس اليوم، من غير ما نحتاج حد أقصى (rate limit) منفصل.
+CREATE TABLE IF NOT EXISTS site_visits (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ip_address TEXT NOT NULL,
+  visit_date TEXT NOT NULL,
+  country TEXT NOT NULL DEFAULT 'unknown',
+  source TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(ip_address, visit_date)
+);
 `);
 
 // يضيف أعمدة جديدة لجداول موجودة بالفعل بأمان (CREATE TABLE IF NOT EXISTS لا يعدّل جدولاً قائماً).
@@ -197,6 +209,9 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
   }
   if (!hasColumn('users', 'signup_source')) {
     db.exec('ALTER TABLE users ADD COLUMN signup_source TEXT');
+  }
+  if (!hasColumn('users', 'signup_country')) {
+    db.exec("ALTER TABLE users ADD COLUMN signup_country TEXT NOT NULL DEFAULT 'unknown'");
   }
 })();
 

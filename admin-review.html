@@ -114,6 +114,7 @@
     <div class="stat-card"><div class="stat-icon">✍️</div><div class="stat-value" id="statWriters">—</div><div class="stat-label">عدد الكتّاب</div></div>
     <div class="stat-card"><div class="stat-icon">📄</div><div class="stat-value" id="statArticles">—</div><div class="stat-label">المقالات المنشورة</div></div>
     <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="statPaid">—</div><div class="stat-label">المدفوعات ($)</div></div>
+    <div class="stat-card"><div class="stat-icon">🌐</div><div class="stat-value" id="statVisits">—</div><div class="stat-label">زوار الموقع (حقيقي)</div></div>
   </div>
 
   <div class="top-articles">
@@ -123,8 +124,19 @@
 
   <div class="top-articles">
     <h2>مصادر تسجيل الكتّاب</h2>
-    <p class="subtitle">من وين جاي كل كاتب سجّل — بيتحدد تلقائيًا من رابط الحملة (utm_campaign/utm_source) اللي دخل بيه أول مرة.</p>
+    <p class="subtitle">من وين جاي كل كاتب سجّل — بيتحدد تلقائيًا من رابط الحملة (utm_campaign/utm_source)، أو من الموقع اللي جاي منه الزائر لو مفيش رابط خاص.</p>
     <div id="signupSourcesList"></div>
+  </div>
+
+  <div class="top-articles">
+    <h2>مصادر الزوار (كل الداخلين، مش بس اللي سجّلوا)</h2>
+    <p class="subtitle">عدد حقيقي — كل IP بيتحسب مرة واحدة في اليوم بس، مش كل ما حد يعمل تحديث للصفحة.</p>
+    <div id="visitSourcesList"></div>
+  </div>
+
+  <div class="top-articles">
+    <h2>الزوار حسب البلد</h2>
+    <div id="visitCountriesList"></div>
   </div>
 
   <h1>مراجعة المقالات</h1>
@@ -299,6 +311,32 @@
     } catch(e) {}
   }
 
+  async function loadAnalytics() {
+    try {
+      const res = await fetch('/api/admin/analytics');
+      if (!res.ok) return;
+      const d = await res.json();
+      document.getElementById('statVisits').textContent = Number(d.totalVisits).toLocaleString('ar-EG');
+
+      const renderBreakdown = (elId, rows, unitLabel, emptyMsg) => {
+        const total = (rows || []).reduce((s, r) => s + r.n, 0);
+        const el = document.getElementById(elId);
+        if (!total) { el.innerHTML = `<div class="empty-note">${emptyMsg}</div>`; return; }
+        el.innerHTML = rows.map(r => `
+          <div class="top-article-row">
+            <div class="article-info"><div class="article-title">${escapeHtml(r.source || r.country)}</div></div>
+            <div class="article-stats">
+              <span>${Number(r.n).toLocaleString('ar-EG')} ${unitLabel}</span>
+              <span>${Math.round(r.n / total * 100)}٪</span>
+            </div>
+          </div>
+        `).join('');
+      };
+      renderBreakdown('visitSourcesList', d.visitsBySource, 'زيارة', 'لا توجد زيارات مسجّلة بعد');
+      renderBreakdown('visitCountriesList', d.visitsByCountry, 'زيارة', 'لا توجد زيارات مسجّلة بعد');
+    } catch(e) {}
+  }
+
   async function loadTopArticles() {
     try {
       const res = await fetch('/api/admin/published-articles');
@@ -326,6 +364,7 @@
   loadPending();
   loadPublished();
   loadStats();
+  loadAnalytics();
   loadTopArticles();
 </script>
 </body>
