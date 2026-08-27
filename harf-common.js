@@ -3,12 +3,29 @@
    site has no live backend yet — see harf-database-schema.sql for the
    schema a real server would use to make this synced across devices/users. */
 (function () {
-  // بيلقط مصدر الزيارة (utm_source/utm_campaign) من رابط أي إعلان أول ما حد يدخل الموقع بيه،
-  // ويحفظه محليًا (أول لمسة فقط) عشان لو سجّل بعد كده نعرف جاي منين.
+  // بيلقط مصدر الزيارة أول ما حد يدخل الموقع (أول لمسة فقط) عشان لو سجّل بعد كده نعرف جاي منين —
+  // من غير ما نحتاج رابط فيه utm مخصوص. لو الرابط فيه utm_campaign/utm_source بناخده كأولوية
+  // (لأنه أدق، زي "fb_ad_1")، ولو مفيش، بنستنتج المصدر تلقائيًا من referrer المتصفح (facebook.com،
+  // instagram.com، google، إلخ) اللي بييجي مع أي زيارة عادي من غير أي تعديل على الرابط نفسه.
   const SOURCE_KEY = 'harf-signup-source';
+  function detectSourceFromReferrer() {
+    try {
+      if (!document.referrer) return null;
+      const host = new URL(document.referrer).hostname.replace(/^www\./, '');
+      if (host === location.hostname) return null; // تنقل داخلي في نفس الموقع، مش مصدر خارجي
+      const KNOWN = {
+        'facebook.com': 'facebook', 'l.facebook.com': 'facebook', 'lm.facebook.com': 'facebook',
+        'instagram.com': 'instagram', 'l.instagram.com': 'instagram',
+        'google.com': 'google', 'x.com': 'twitter', 'twitter.com': 'twitter',
+        'tiktok.com': 'tiktok', 'whatsapp.com': 'whatsapp', 'wa.me': 'whatsapp',
+        'youtube.com': 'youtube', 'linkedin.com': 'linkedin',
+      };
+      return KNOWN[host] || host;
+    } catch (e) { return null; }
+  }
   try {
     const params = new URLSearchParams(location.search);
-    const campaign = params.get('utm_campaign') || params.get('utm_source') || params.get('ref');
+    const campaign = params.get('utm_campaign') || params.get('utm_source') || params.get('ref') || detectSourceFromReferrer();
     if (campaign && !localStorage.getItem(SOURCE_KEY)) {
       localStorage.setItem(SOURCE_KEY, campaign.slice(0, 60));
     }
