@@ -110,12 +110,13 @@
   <h1>لوحة الإحصائيات</h1>
   <p class="subtitle">نظرة عامة على أداء الموقع</p>
   <div class="stats-grid">
+    <a class="stat-card" href="#visitCountriesList" style="text-decoration:none;color:inherit;cursor:pointer;"><div class="stat-icon">🌐</div><div class="stat-value" id="statVisits">—</div><div class="stat-label">زوار الموقع (حقيقي)</div></a>
+    <a class="stat-card" href="#writerCountriesList" style="text-decoration:none;color:inherit;cursor:pointer;"><div class="stat-icon">🆕</div><div class="stat-value" id="statWriters">—</div><div class="stat-label">مشتركين جدد (سجّلوا فعليًا)</div></a>
     <div class="stat-card"><div class="stat-icon">👁️</div><div class="stat-value" id="statViews">—</div><div class="stat-label">إجمالي المشاهدات</div></div>
-    <div class="stat-card"><div class="stat-icon">✍️</div><div class="stat-value" id="statWriters">—</div><div class="stat-label">عدد الكتّاب</div></div>
     <div class="stat-card"><div class="stat-icon">📄</div><div class="stat-value" id="statArticles">—</div><div class="stat-label">المقالات المنشورة</div></div>
     <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-value" id="statPaid">—</div><div class="stat-label">المدفوعات ($)</div></div>
-    <div class="stat-card"><div class="stat-icon">🌐</div><div class="stat-value" id="statVisits">—</div><div class="stat-label">زوار الموقع (حقيقي)</div></div>
   </div>
+  <p class="subtitle">دوسي على "زوار الموقع" أو "مشتركين جدد" عشان تنزلي على طول لتفصيل البلد.</p>
 
   <div class="top-articles">
     <h2>أكثر المقالات مشاهدة</h2>
@@ -134,9 +135,14 @@
     <div id="visitSourcesList"></div>
   </div>
 
-  <div class="top-articles">
+  <div class="top-articles" id="visitCountriesList">
     <h2>الزوار حسب البلد</h2>
-    <div id="visitCountriesList"></div>
+    <div id="visitCountriesRows"></div>
+  </div>
+
+  <div class="top-articles" id="writerCountriesList">
+    <h2>الكتّاب المسجّلين حسب البلد</h2>
+    <div id="writerCountriesRows"></div>
   </div>
 
   <h1>مراجعة المقالات</h1>
@@ -333,7 +339,8 @@
         `).join('');
       };
       renderBreakdown('visitSourcesList', d.visitsBySource, 'زيارة', 'لا توجد زيارات مسجّلة بعد');
-      renderBreakdown('visitCountriesList', d.visitsByCountry, 'زيارة', 'لا توجد زيارات مسجّلة بعد');
+      renderBreakdown('visitCountriesRows', d.visitsByCountry, 'زيارة', 'لا توجد زيارات مسجّلة بعد');
+      renderBreakdown('writerCountriesRows', d.registrationsByCountry, 'كاتب', 'لا يوجد كتّاب مسجّلين بعد');
     } catch(e) {}
   }
 
