@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /server/
+Disallow: /api/
+Disallow: /admin-review.html
+Disallow: /admin-withdrawals.html
+Disallow: /dashboard.html
+Disallow: /wallet.html
+Disallow: /edit-profile.html
+Disallow: /my-articles.html
+Disallow: /reset-password.html
+
+Sitemap: https://harfpay-production.up.railway.app/sitemap.xml

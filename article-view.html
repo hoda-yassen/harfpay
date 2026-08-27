@@ -14,6 +14,14 @@
 <title id="pageTitle">مقال | حرف</title>
 <meta id="metaDescription" name="description" content="">
 <meta id="metaKeywords" name="keywords" content="">
+<meta name="robots" content="index, follow">
+<link id="canonicalLink" rel="canonical" href="">
+<meta property="og:type" content="article">
+<meta id="ogTitle" property="og:title" content="">
+<meta id="ogDescription" property="og:description" content="">
+<meta id="ogImage" property="og:image" content="">
+<meta id="ogUrl" property="og:url" content="">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
@@ -153,6 +161,11 @@
       document.getElementById('pageTitle').textContent = `${a.title} | حرف`;
       document.getElementById('metaDescription').setAttribute('content', a.description || '');
       document.getElementById('metaKeywords').setAttribute('content', a.meta_keywords || '');
+      document.getElementById('canonicalLink').setAttribute('href', window.location.href.split('#')[0]);
+      document.getElementById('ogTitle').setAttribute('content', a.title || '');
+      document.getElementById('ogDescription').setAttribute('content', a.description || '');
+      document.getElementById('ogImage').setAttribute('content', a.featured_image_url || '');
+      document.getElementById('ogUrl').setAttribute('content', window.location.href.split('#')[0]);
 
       const authorName = escapeHtml(`${a.author_first_name || ''} ${a.author_last_name || ''}`.trim() || a.author_username);
       const authorUsername = escapeHtml(a.author_username);
