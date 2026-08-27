@@ -16,7 +16,12 @@ router.get('/analytics', requireAdmin, (req, res) => {
   const registrationsByCountry = db.prepare(`
     SELECT signup_country AS country, COUNT(*) AS n FROM users WHERE user_type = 'writer' GROUP BY country ORDER BY n DESC
   `).all();
-  res.json({ totalVisits, visitsByCountry, visitsBySource, registrationsByCountry });
+  const writers = db.prepare(`
+    SELECT id, first_name, last_name, email, phone, signup_country AS country,
+           COALESCE(NULLIF(signup_source, ''), 'مباشر') AS source, created_at
+    FROM users WHERE user_type = 'writer' ORDER BY created_at DESC
+  `).all();
+  res.json({ totalVisits, visitsByCountry, visitsBySource, registrationsByCountry, writers });
 });
 
 router.get('/pending-articles', requireAdmin, (req, res) => {

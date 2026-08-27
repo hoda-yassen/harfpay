@@ -145,6 +145,12 @@
     <div id="writerCountriesRows"></div>
   </div>
 
+  <div class="top-articles">
+    <h2>كل الحسابات المسجّلة (الأحدث أولاً)</h2>
+    <p class="subtitle">الاسم، الإيميل، البلد، ومصدر التسجيل لكل كاتب — عشان تعرفي بالظبط مين دخل واشترك فعليًا.</p>
+    <div id="writersListTable"></div>
+  </div>
+
   <h1>مراجعة المقالات</h1>
   <p class="subtitle">المقالات المرسلة من الكتّاب وفي انتظار المراجعة قبل النشر.</p>
   <div id="pendingList"></div>
@@ -341,6 +347,25 @@
       renderBreakdown('visitSourcesList', d.visitsBySource, 'زيارة', 'لا توجد زيارات مسجّلة بعد');
       renderBreakdown('visitCountriesRows', d.visitsByCountry, 'زيارة', 'لا توجد زيارات مسجّلة بعد');
       renderBreakdown('writerCountriesRows', d.registrationsByCountry, 'كاتب', 'لا يوجد كتّاب مسجّلين بعد');
+
+      const tableEl = document.getElementById('writersListTable');
+      if (!d.writers || !d.writers.length) {
+        tableEl.innerHTML = '<div class="empty-note">لا يوجد كتّاب مسجّلين بعد</div>';
+      } else {
+        tableEl.innerHTML = d.writers.map(w => `
+          <div class="top-article-row">
+            <div class="article-info">
+              <div class="article-title">${escapeHtml(`${w.first_name || ''} ${w.last_name || ''}`.trim() || '—')}</div>
+              <div class="article-author">${escapeHtml(w.email)}${w.phone ? ' · ' + escapeHtml(w.phone) : ''}</div>
+            </div>
+            <div class="article-stats">
+              <span>🌍 ${escapeHtml(w.country)}</span>
+              <span>📌 ${escapeHtml(w.source)}</span>
+              <span>${escapeHtml(String(w.created_at).slice(0, 10))}</span>
+            </div>
+          </div>
+        `).join('');
+      }
     } catch(e) {}
   }
 
