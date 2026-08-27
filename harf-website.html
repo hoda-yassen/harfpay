@@ -732,6 +732,15 @@
     .article-list .card-img { min-height: 120px; }
     .article-list .card-body { padding: 12px 14px; }
     .article-list .card-excerpt { font-size: .76rem; }
+    .header-inner { padding: 0 12px; height: 56px; gap: 8px; }
+    .logo-text { font-size: 1.15rem; }
+    .logo-sub { font-size: 0.6rem; }
+    .logo-mark { width: 34px; height: 34px; }
+    .header-actions { gap: 6px; }
+    .header-actions > button[onclick="shareSite()"] { display: none !important; }
+    .btn-write { font-size: 0.78rem; padding: 7px 12px; }
+    .btn-write svg { display: none; }
+    .mobile-menu-btn { width: 36px; height: 36px; }
   }
 </style>
 </head>
@@ -882,7 +891,7 @@
       </div>
       <button onclick="shareSite()" title="شارك الموقع" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:var(--white);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,0.18)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'"><svg class="ui-icon" aria-hidden="true"><use href="#icon-share"></use></svg></button>
       <a class="btn-write" href="write-article.html"><svg class="ui-icon" aria-hidden="true"><use href="#icon-pen"></use></svg> اكتب مقالاً</a>
-      <button class="mobile-menu-btn" onclick="toggleMobileNav()" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mainNav">
+      <button class="mobile-menu-btn" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mainNav">
         <svg class="ui-icon" style="width:22px;height:22px;" aria-hidden="true"><use href="#icon-menu"></use></svg>
       </button>
     </div>
@@ -1342,6 +1351,9 @@
   function toggleMobileNav() {
     const isOpen = mainNav.classList.toggle('open');
     mobileMenuBtn.setAttribute('aria-expanded', isOpen);
+  }
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', toggleMobileNav);
   }
   document.querySelectorAll('.nav-item').forEach(item => {
     const link = item.querySelector('.nav-link');
