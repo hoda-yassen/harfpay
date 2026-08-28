@@ -722,7 +722,10 @@
     .nav-mobile-extra { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 12px 14px 4px; margin-top: 6px; border-top: 1px solid rgba(255,255,255,0.1); }
     .nav-mobile-extra .btn-login { text-align: right; background: rgba(255,255,255,0.06); }
     .nav-mobile-extra .language-toggle { width: fit-content; }
-    .header-actions .btn-login, .header-actions .language-toggle, .header-actions .auth-user { display: none !important; }
+    .header-actions .btn-login, .header-actions .auth-user { display: none !important; }
+    /* زر الترجمة لازم يفضل ظاهر في الهيدر مباشرة على كل المقاسات — مش مدفون جوه قائمة الهامبرجر
+       اللي محتاجة ضغطة زيادة، ومنفصل تمامًا عن زر تسجيل الدخول اللي بيتنقل للقائمة عادي. */
+    .header-actions .language-toggle { display: inline-flex; }
   }
   @media (max-width: 768px) {
     .hero-slide { grid-template-columns: 1fr; }
@@ -885,7 +888,7 @@
           <a class="btn-login" href="edit-profile.html">ملفي</a>
           <button class="btn-login" type="button" onclick="submitLogout()">خروج</button>
         </div>
-        <button class="language-toggle lang-btn" type="button" onclick="toggleLanguage()" aria-label="تغيير لغة الموقع">EN</button>
+        <button class="language-toggle lang-btn notranslate" translate="no" type="button" onclick="toggleLanguage()" aria-label="تغيير لغة الموقع">EN</button>
       </div>
     </nav>
 
@@ -894,7 +897,7 @@
         <span class="search-icon"><svg class="ui-icon" aria-hidden="true"><use href="#icon-search"></use></svg></span>
         <input type="text" placeholder="ابحث في المقالات...">
       </div>
-      <button class="language-toggle lang-btn" id="languageToggle" type="button" onclick="toggleLanguage()" aria-label="تغيير لغة الموقع">EN</button>
+      <button class="language-toggle lang-btn notranslate" translate="no" id="languageToggle" type="button" onclick="toggleLanguage()" aria-label="تغيير لغة الموقع">EN</button>
       <a class="btn-login auth-guest" href="#" onclick="openModal(); return false;">تسجيل الدخول</a>
       <div class="auth-user" style="display:none;align-items:center;gap:10px;">
         <span style="color:rgba(255,255,255,0.9);font-size:0.85rem;font-weight:700;">مرحباً، <span class="auth-user-name"></span></span>
@@ -1884,7 +1887,7 @@
     document.documentElement.lang = isEnglish ? 'en' : 'ar';
     document.documentElement.dir = isEnglish ? 'ltr' : 'rtl';
     localStorage.setItem('harf-language', isEnglish ? 'en' : 'ar');
-    document.querySelectorAll('.lang-btn').forEach(btn => btn.textContent = isEnglish ? 'عربي' : 'EN');
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.textContent = isEnglish ? 'AR' : 'EN');
     if (isEnglish) {
       applyEnglishUI();
       const select = document.querySelector('.goog-te-combo');
@@ -1901,7 +1904,7 @@
     if (localStorage.getItem('harf-language') === 'en') {
       document.documentElement.lang = 'en';
       document.documentElement.dir = 'ltr';
-      document.querySelectorAll('.lang-btn').forEach(btn => btn.textContent = 'عربي');
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.textContent = 'AR');
       applyEnglishUI();
     }
   })();

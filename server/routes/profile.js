@@ -57,10 +57,11 @@ router.post('/cover', requireAuth, (req, res) => {
 router.put('/', requireAuth, (req, res) => {
   const { bio, specialization, country, firstName, lastName } = req.body || {};
   if (firstName !== undefined) {
-    const trimmedFirst = String(firstName || '').trim();
+    const trimmedFirst = String(firstName || '').trim().slice(0, 80);
+    const trimmedLast = String(lastName || '').trim().slice(0, 80);
     if (!trimmedFirst) return res.status(400).json({ error: 'الاسم الأول مطلوب' });
     db.prepare('UPDATE users SET first_name = ?, last_name = ? WHERE id = ?')
-      .run(trimmedFirst, String(lastName || '').trim() || null, req.userId);
+      .run(trimmedFirst, trimmedLast || null, req.userId);
   }
   db.prepare(`
     UPDATE writer_profiles SET bio_full = ?, specialization = ?, country = ? WHERE user_id = ?

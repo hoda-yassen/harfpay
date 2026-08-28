@@ -161,6 +161,13 @@ CREATE TABLE IF NOT EXISTS withdrawal_requests (
 
 -- صف واحد لكل (IP + يوم) بفضل UNIQUE أدناه — بيمنع تضخيم عدد الزيارات من إعادة تحميل نفس الصفحة
 -- عدة مرات في نفس اليوم، من غير ما نحتاج حد أقصى (rate limit) منفصل.
+-- جدول عام لتخزين أعلام "تم تنفيذه مرة واحدة" (زي هجرات البيانات لمرة واحدة) بشكل دائم،
+-- عشان ميتكررش تنفيذها لو نفس الشرط اتحقق تاني بالصدفة (مثلاً حد سجّل بإيميل كان لحساب اتحذف).
+CREATE TABLE IF NOT EXISTS app_meta (
+  key TEXT PRIMARY KEY,
+  value TEXT
+);
+
 CREATE TABLE IF NOT EXISTS site_visits (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   ip_address TEXT NOT NULL,
@@ -224,7 +231,11 @@ CREATE TABLE IF NOT EXISTS site_visits (
     if (lower === row.email) continue;
     try {
       db.prepare('UPDATE users SET email = ? WHERE id = ?').run(lower, row.id);
-    } catch (e) { /* تعارض نادر مع حساب آخر بنفس الإيميل بحالة مختلفة — يتجاهل بأمان */ }
+    } catch (e) {
+      // تعارض نادر مع حساب آخر بنفس الإيميل بحالة مختلفة — بيتسجل في اللوج عشان يتراجع يدويًا،
+      // مش يتجاهل بصمت (وإلا الحساب ده هيفضل عالق ومايقدرش يدخل تاني).
+      console.error(`[db] email normalization conflict: user #${row.id} (${row.email}) → ${lower} already taken`);
+    }
   }
 })();
 
@@ -268,6 +279,11 @@ CREATE TABLE IF NOT EXISTS site_visits (
 // دلوقتي بننقل مقالاته وإحصائياته لحسابها الحقيقي (dodoh69h@gmail.com) مرة واحدة بس، عشان تشوف
 // مقالاتها الفعلية وأرباحها في لوحتها الشخصية زي أي كاتب — مش في حساب تجريبي منفصل.
 (function mergeDemoHodaIntoOwnerAccount() {
+  // علم دائم بدل الاعتماد على وجود الحساب التجريبي فقط — لو حد سجّل بنفس الإيميل ده بعد ما اتحذف
+  // (مثلاً عشان يهرّب محتوى تحت اسم المالكة)، الدمج ميتفعّلش تاني ومحدش هيتحذف أو يتنقل بالغلط.
+  const MERGE_FLAG = 'hoda_demo_merged';
+  if (db.prepare('SELECT 1 FROM app_meta WHERE key = ?').get(MERGE_FLAG)) return;
+
   const demo = db.prepare("SELECT id FROM users WHERE email = 'hoda@harf.demo'").get();
   const owner = db.prepare("SELECT id FROM users WHERE email = 'dodoh69h@gmail.com'").get();
   if (!demo || !owner) return;
@@ -312,6 +328,7 @@ CREATE TABLE IF NOT EXISTS site_visits (
   }
 
   db.prepare('DELETE FROM users WHERE id = ?').run(demo.id); // الحذف بيسحب معاه أي بواقي مرتبطة بالحساب التجريبي (CASCADE)
+  db.prepare('INSERT OR REPLACE INTO app_meta (key, value) VALUES (?, ?)').run(MERGE_FLAG, new Date().toISOString());
 })();
 
 // تصفير المشاهدات واللايكات والمتابعين الوهمية — مرة واحدة فقط

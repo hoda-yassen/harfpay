@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
 const path = require('node:path');
 
 const { attachSession } = require('./lib/session');
@@ -46,9 +47,17 @@ app.use('/api/payment-accounts', paymentAccountRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
-// تسجيل زيارة واحدة لكل (IP + يوم) — القيد UNIQUE(ip_address, visit_date) في الجدول بيمنع التكرار
-// تلقائيًا فما فيش داعي لأي حماية إضافية من الضغط المتكرر على نفس الرابط.
-app.post('/api/track-visit', (req, res) => {
+// القيد UNIQUE(ip_address, visit_date) بيمنع تكرار الصف في القاعدة، لكن ده لوحده مش كفاية: كل طلب
+// برضو بيوصل لـ SQLite المتزامن (DatabaseSync) اللي بيوقف الـ event loop لحظيًا، فطلبات كتير جدًا
+// في وقت قصير (DoS) لسه ممكنة من غير حد أقصى صريح — الـ rate limit ده بيمنع الاستنزاف ده.
+const trackVisitLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.post('/api/track-visit', trackVisitLimiter, (req, res) => {
   const db = require('./db');
   const country = lookupCountry(req.ip);
   const source = typeof req.body?.source === 'string' ? req.body.source.trim().slice(0, 60).replace(/[^\w؀-ۿ-]/g, '') : null;
