@@ -905,7 +905,7 @@
         <a class="btn-login auth-admin" href="admin-review.html" style="display:none;">لوحة الأدمن</a>
         <button class="btn-login" type="button" onclick="submitLogout()">خروج</button>
       </div>
-      <button onclick="shareSite()" title="شارك الموقع" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:var(--white);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,0.18)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'"><svg class="ui-icon" aria-hidden="true"><use href="#icon-share"></use></svg></button>
+      <button onclick="shareSite(event)" title="شارك الموقع" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:var(--white);border-radius:8px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;transition:background .2s;" onmouseover="this.style.background='rgba(255,255,255,0.18)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'"><svg class="ui-icon" aria-hidden="true"><use href="#icon-share"></use></svg></button>
       <a class="btn-write" href="write-article.html"><svg class="ui-icon" aria-hidden="true"><use href="#icon-pen"></use></svg> اكتب مقالاً</a>
       <button class="mobile-menu-btn" aria-label="فتح القائمة" aria-expanded="false" aria-controls="mainNav">
         <svg class="ui-icon" style="width:22px;height:22px;" aria-hidden="true"><use href="#icon-menu"></use></svg>
@@ -1809,7 +1809,8 @@
     panel.style.right = (document.body.clientWidth - rect.right) + 'px';
     panel.classList.toggle('open');
   }
-  function shareSite() {
+  function shareSite(e) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
     const rawUrl = window.location.origin;
     const url = encodeURIComponent(rawUrl);
     const text = encodeURIComponent('منصة حرف — اكتب وانشر واربح');
@@ -1893,7 +1894,14 @@
       const select = document.querySelector('.goog-te-combo');
       if (select) { select.value = 'en'; select.dispatchEvent(new Event('change')); }
     } else {
-      document.cookie = 'googtrans=/ar/ar;path=/';
+      // مسح كوكي جوجل ترانسليت مش بس تصفيره — جوجل أحيانًا بيحفظه على نطاق الدومين الأساسي (.harfpay.com)
+      // مش الفرعي بس، فلو مسحناه من مكان واحد بس بيفضل موجود في التاني ويرجّع الترجمة تلقائيًا بعد الـ reload.
+      const host = window.location.hostname;
+      const bareDomain = host.split('.').slice(-2).join('.');
+      const expire = 'expires=Thu, 01 Jan 1970 00:00:00 UTC';
+      document.cookie = `googtrans=; path=/; ${expire}`;
+      document.cookie = `googtrans=; path=/; domain=${host}; ${expire}`;
+      document.cookie = `googtrans=; path=/; domain=.${bareDomain}; ${expire}`;
       window.location.reload();
     }
   }
