@@ -109,6 +109,14 @@
   <div class="card">
     <div class="card-title">بيانات الملف الشخصي</div>
     <div class="form-group">
+      <label class="form-label">الاسم الأول</label>
+      <input class="form-input" id="firstNameInput" type="text" placeholder="مثال: هدى">
+    </div>
+    <div class="form-group">
+      <label class="form-label">اسم العائلة</label>
+      <input class="form-input" id="lastNameInput" type="text" placeholder="مثال: ياسين">
+    </div>
+    <div class="form-group">
       <label class="form-label">المجال / التخصص</label>
       <input class="form-input" id="specializationInput" type="text" placeholder="مثال: الذكاء الاصطناعي، التسويق الرقمي...">
     </div>
@@ -150,6 +158,8 @@
     if (data.author.cover) {
       document.getElementById('coverPreview').style.backgroundImage = `url('${data.author.cover}')`;
     }
+    document.getElementById('firstNameInput').value = data.author.firstName || '';
+    document.getElementById('lastNameInput').value = data.author.lastName || '';
     document.getElementById('specializationInput').value = data.author.specialization || '';
     document.getElementById('countryInput').value = data.author.country || '';
     document.getElementById('bioInput').value = data.author.bio || '';
@@ -177,12 +187,14 @@
       const res = await fetch('/api/profile', {
         method: 'PUT', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          firstName: document.getElementById('firstNameInput').value.trim(),
+          lastName: document.getElementById('lastNameInput').value.trim(),
           bio: document.getElementById('bioInput').value.trim(),
           specialization: document.getElementById('specializationInput').value.trim(),
           country: document.getElementById('countryInput').value.trim(),
         }),
       });
-      if (!res.ok) throw new Error('تعذّر حفظ البيانات');
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'تعذّر حفظ البيانات');
       showStatus('تم حفظ التعديلات بنجاح ✔', true);
     } catch (e) {
       showStatus(e.message || 'حدث خطأ غير متوقع', false);

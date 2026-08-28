@@ -264,6 +264,56 @@ CREATE TABLE IF NOT EXISTS site_visits (
   }
 })();
 
+// حساب "هدى ياسين" التجريبي (hoda@harf.demo) كان بديل مؤقت باسم المالكة قبل ما يبقى عندها حساب حقيقي.
+// دلوقتي بننقل مقالاته وإحصائياته لحسابها الحقيقي (dodoh69h@gmail.com) مرة واحدة بس، عشان تشوف
+// مقالاتها الفعلية وأرباحها في لوحتها الشخصية زي أي كاتب — مش في حساب تجريبي منفصل.
+(function mergeDemoHodaIntoOwnerAccount() {
+  const demo = db.prepare("SELECT id FROM users WHERE email = 'hoda@harf.demo'").get();
+  const owner = db.prepare("SELECT id FROM users WHERE email = 'dodoh69h@gmail.com'").get();
+  if (!demo || !owner) return;
+
+  db.prepare('UPDATE articles SET user_id = ? WHERE user_id = ?').run(owner.id, demo.id);
+
+  const demoProfile = db.prepare('SELECT * FROM writer_profiles WHERE user_id = ?').get(demo.id);
+  if (demoProfile) {
+    const exists = db.prepare('SELECT 1 FROM writer_profiles WHERE user_id = ?').get(owner.id);
+    if (exists) {
+      db.prepare(`
+        UPDATE writer_profiles SET follower_count = follower_count + ?, article_count = article_count + ?, total_views = total_views + ?
+        WHERE user_id = ?
+      `).run(demoProfile.follower_count, demoProfile.article_count, demoProfile.total_views, owner.id);
+    } else {
+      db.prepare(`
+        INSERT INTO writer_profiles (user_id, bio_full, country, specialization, follower_count, article_count, total_views)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).run(owner.id, demoProfile.bio_full, demoProfile.country, demoProfile.specialization,
+             demoProfile.follower_count, demoProfile.article_count, demoProfile.total_views);
+    }
+  }
+
+  const demoEarnings = db.prepare('SELECT * FROM user_earnings WHERE user_id = ?').get(demo.id);
+  if (demoEarnings) {
+    const exists = db.prepare('SELECT 1 FROM user_earnings WHERE user_id = ?').get(owner.id);
+    if (exists) {
+      db.prepare(`
+        UPDATE user_earnings SET total_earnings = total_earnings + ?, available_balance = available_balance + ?, total_views = total_views + ?
+        WHERE user_id = ?
+      `).run(demoEarnings.total_earnings, demoEarnings.available_balance, demoEarnings.total_views, owner.id);
+    } else {
+      db.prepare(`INSERT INTO user_earnings (user_id, total_earnings, available_balance, total_views) VALUES (?, ?, ?, ?)`)
+        .run(owner.id, demoEarnings.total_earnings, demoEarnings.available_balance, demoEarnings.total_views);
+    }
+  }
+
+  // نقل أي متابعين كانوا تابعين الحساب التجريبي لحساب المالكة الحقيقي (بتجاهل أي تكرار).
+  const followers = db.prepare('SELECT follower_id FROM followers WHERE writer_id = ?').all(demo.id);
+  for (const f of followers) {
+    try { db.prepare('INSERT OR IGNORE INTO followers (writer_id, follower_id) VALUES (?, ?)').run(owner.id, f.follower_id); } catch (e) {}
+  }
+
+  db.prepare('DELETE FROM users WHERE id = ?').run(demo.id); // الحذف بيسحب معاه أي بواقي مرتبطة بالحساب التجريبي (CASCADE)
+})();
+
 // تصفير المشاهدات واللايكات والمتابعين الوهمية — مرة واحدة فقط
 (function resetFakeStats() {
   const col = db.prepare("PRAGMA table_info(articles)").all().find(c => c.name === 'stats_reset_done');
